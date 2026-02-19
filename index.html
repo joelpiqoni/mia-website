@@ -1007,7 +1007,21 @@
 
     function answer(q){
       async function askAI(prompt) {
+  const res = await fetch(async function askAI(prompt) {
   const res = await fetch("https://sparkling-flower-928d.renibeshiri.workers.dev", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, profile: state.profile })
+  });
+
+  const raw = await res.text();
+  let data = {};
+  try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+  if (data.text) return data.text;
+  return "AI nuk u përgjigj siç duhet.";
+}
+, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt, profile: state.profile })
@@ -1201,4 +1215,5 @@
   </script>
 </body>
 </html>
+
 
