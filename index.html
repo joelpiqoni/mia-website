@@ -15,9 +15,6 @@
       --line: rgba(255,255,255,.16);
       --aero1: rgba(120,190,255,.22);
       --aero2: rgba(0,170,255,.12);
-      --ok: rgba(80,255,190,.18);
-      --warn: rgba(255,220,120,.18);
-      --bad: rgba(255,120,160,.18);
       --shadow: 0 20px 60px rgba(0,0,0,.45);
       --radius: 22px;
       --radius2: 28px;
@@ -108,6 +105,7 @@
       justify-content:space-between;
       gap:14px;
       margin-bottom:18px;
+      flex-wrap:wrap;
     }
     .brand{
       display:flex;
@@ -146,8 +144,7 @@
     .btn{
       appearance:none;
       border:1px solid rgba(255,255,255,.18);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
       color: var(--ink);
       padding: 14px 16px;
       border-radius: 18px;
@@ -187,10 +184,6 @@
     .btn.primary{
       background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(0,140,255,.10));
       border-color: rgba(140,220,255,.28);
-    }
-    .btn.danger{
-      background: linear-gradient(180deg, rgba(255,120,160,.16), rgba(255,255,255,.06));
-      border-color: rgba(255,160,190,.24);
     }
 
     /* --- Landing --- */
@@ -290,7 +283,6 @@
       border-color: rgba(140,220,255,.32);
       box-shadow: 0 0 0 4px rgba(80,180,255,.10);
     }
-    textarea{ resize: vertical; min-height: 92px; }
 
     .note{
       margin-top: 12px;
@@ -343,6 +335,7 @@
       font-size: 13.5px;
     }
     .out ul{ margin: 8px 0 0 18px; }
+
     .twoCol{
       display:grid;
       grid-template-columns: 1.15fr .85fr;
@@ -367,6 +360,39 @@
     .week .day:last-child{ margin-bottom:0; }
     .week .day strong{ display:block; margin-bottom: 6px; letter-spacing:.02em; }
 
+    /* --- Scrollable Analysis Panel + Floating buttons --- */
+    .analysisPanel{
+      margin-top:14px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      padding: 14px;
+      max-height: 62vh;
+      overflow:auto;
+      scroll-behavior:smooth;
+      position:relative;
+    }
+    .analysisActions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .fab{
+      position:absolute;
+      right: 14px;
+      bottom: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:5;
+    }
+    .fab .btn{ min-width:auto; }
+    @media (max-width:720px){
+      .analysisPanel{ max-height: 58vh; }
+    }
+
     /* --- Chat --- */
     .chatBox{
       height: 320px;
@@ -385,6 +411,7 @@
       background: rgba(255,255,255,.06);
       line-height: 1.35;
       font-size: 13.5px;
+      white-space: pre-wrap;
     }
     .msg.me{
       margin-left:auto;
@@ -396,7 +423,6 @@
     }
     .chatRow input{ flex:1; }
 
-    /* tiny footer */
     .footer{
       margin-top: 14px;
       color: rgba(230,241,255,.62);
@@ -444,7 +470,7 @@
           </div>
 
           <div class="note" style="margin-top:16px;">
-            <strong>Shënim:</strong> Ky projekt është për panairin e shkencës dhe ka qëllim edukativ. Nuk bën diagnozë dhe nuk zëvendëson mjekun.
+            <strong>Shënim:</strong> Ky projekt është edukativ për panairin e shkencës. Nuk bën diagnozë dhe nuk zëvendëson mjekun.
           </div>
         </div>
       </div>
@@ -485,7 +511,7 @@
                 <option value="tachy">Takikardi / rrahje të shpejta</option>
                 <option value="brady">Bradikardi / rrahje të ngadalta</option>
                 <option value="arr">Aritmi (të parregullta)</option>
-                <option value="bp">Tension i lartë / probleme presioni</option>
+                <option value="bp">Tension i lartë / presion</option>
                 <option value="pain">Dhimbje gjoksi / shqetësim</option>
                 <option value="other">Tjetër</option>
               </select>
@@ -521,7 +547,7 @@
             <button class="btn small ghost" id="backToMenu2">Kthehu</button>
           </div>
 
-          <div class="note" id="routineIntro">
+          <div class="note">
             Jep <strong>numrin e rrahjeve të zemrës për 1 minutë (BPM)</strong>. MIA do të përgatisë një plan edukativ javor në bazë të të dhënave të vendosura.
           </div>
 
@@ -546,39 +572,51 @@
             <button class="btn small primary" id="btnGenerate">Gjenero planin</button>
           </div>
 
-          <div class="out" id="output" style="display:none;">
-            <h3 id="outTitle">Plani javor</h3>
-            <div class="twoCol">
-              <div>
-                <div id="outSummary"></div>
-                <div id="outTips"></div>
+          <!-- ANALYSIS / OUTPUT (scrollable) -->
+          <div id="analysisWrap" style="display:none;">
+            <div class="analysisPanel" id="analysisPanel">
+              <div class="fab">
+                <button class="btn small ghost" id="btnScrollTop" title="Shko lart">⬆︎ Lart</button>
+                <button class="btn small primary" id="btnBackFromAnalysis" title="Kthehu mbrapa">↩︎ Kthehu</button>
               </div>
-              <div class="week" id="outWeek"></div>
-            </div>
 
-            <div style="margin-top:14px; display:flex; justify-content:flex-end;">
-              <button class="btn small ghost" id="backToMenu3">Kthehu në faqen e mëparshme</button>
+              <div class="out" style="margin-top:0;">
+                <h3 id="outTitle">Plani javor</h3>
+                <div class="twoCol">
+                  <div>
+                    <div id="outSummary"></div>
+                    <div id="outTips"></div>
+                  </div>
+                  <div class="week" id="outWeek"></div>
+                </div>
+              </div>
+
+              <div class="analysisActions">
+                <button class="btn small ghost" id="btnScrollTop2">⬆︎ Scroll Top</button>
+                <button class="btn small primary" id="btnBackFromAnalysis2">Kthehu në faqen e mëparshme</button>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- SCREEN 5: AI Assistant (offline) -->
+    <!-- SCREEN 5: AI Assistant (REAL via Worker) -->
     <section class="screen" id="screen-ai" aria-label="Asistenti AI">
       <div class="card">
         <div class="cardInner">
           <div class="topbar">
             <div class="brand">
               <div class="mia">MIA</div>
-              <div class="tag">Asistenti AI (offline, edukativ)</div>
+              <div class="tag">Asistenti AI (online, edukativ)</div>
             </div>
             <button class="btn small ghost" id="backToMenu4">Kthehu</button>
           </div>
 
           <div class="note">
-            Mund të pyesësh për kuptime si “çfarë është BPM?”, “çfarë të bëj kur ndihem i lodhur?”, “si ta mat pulsin saktë?”.
-            Për situata urgjente (dhimbje gjoksi, marramendje e fortë, të fikët), kërko ndihmë mjekësore.
+            Pyet për BPM, zakone të shëndetshme, si të organizosh rutinën, etj.
+            Nëse ke shenja alarmi (dhimbje gjoksi, të fikët, gulçim i fortë), kërko ndihmë mjekësore.
           </div>
 
           <div class="chatBox" id="chatBox" aria-live="polite"></div>
@@ -589,7 +627,7 @@
           </div>
 
           <div class="footer">
-            * Asistenti është rregull-bazë (pa internet, pa API key) dhe jep përgjigje të përgjithshme edukative.
+            * Asistenti jep përgjigje edukative. Nuk zëvendëson mjekun.
           </div>
         </div>
       </div>
@@ -597,9 +635,14 @@
   </div>
 
   <script>
-    // --------------------
-    // Simple screen router
-    // --------------------
+    /***********************
+     * CONFIG (AI Worker)
+     ***********************/
+    const WORKER_URL = "https://sparkling-flower-928d.renibeshiri.workers.dev";
+
+    /***********************
+     * Router
+     ***********************/
     const screens = {
       landing: document.getElementById("screen-landing"),
       menu: document.getElementById("screen-menu"),
@@ -611,26 +654,29 @@
     function go(to){
       Object.values(screens).forEach(s => s.classList.remove("active"));
       screens[to].classList.add("active");
-      // small UX: focus first actionable
       setTimeout(() => {
         const focusables = screens[to].querySelectorAll("button, input, select, textarea");
         if (focusables.length) focusables[0].focus({preventScroll:true});
       }, 60);
     }
 
-    // --------------------
-    // State
-    // --------------------
+    /***********************
+     * State
+     ***********************/
     const state = {
-      profile: {
-        age: null,
-        gender: "",
-        heartIssue: "",
-        name: ""
-      }
+      profile: { age:null, gender:"", heartIssue:"", name:"" }
     };
 
     const profilePill = document.getElementById("profilePill");
+    function escapeHtml(str){
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
     function updateProfilePill(){
       const p = state.profile;
       const ok = (p.age && p.gender && p.name);
@@ -648,41 +694,43 @@
         "other":"tjetër"
       })[p.heartIssue ?? ""] || "—";
 
-      const g = (p.gender==="F"?"F":"M") ? (p.gender==="F" ? "F" : (p.gender==="M" ? "M" : "X")) : "—";
+      const g = (p.gender==="F" ? "F" : (p.gender==="M" ? "M" : "X"));
       profilePill.innerHTML =
         `<strong>Profili:</strong> ${escapeHtml(p.name)} · ${p.age} vjeç · gjinia ${g} · ${issueLabel}`;
     }
 
-    // --------------------
-    // Landing interaction
-    // --------------------
-    const miaLogo = document.getElementById("miaLogo");
-    miaLogo.addEventListener("click", () => go("menu"));
+    /***********************
+     * Landing
+     ***********************/
+    document.getElementById("miaLogo").addEventListener("click", () => go("menu"));
     window.addEventListener("keydown", (e) => {
-      if(screens.landing.classList.contains("active") && e.key === "Enter"){
-        go("menu");
-      }
+      if(screens.landing.classList.contains("active") && e.key === "Enter") go("menu");
     });
 
-    // --------------------
-    // Menu buttons
-    // --------------------
+    /***********************
+     * Menu
+     ***********************/
     document.getElementById("btnData").addEventListener("click", () => go("data"));
+
     document.getElementById("btnRoutine").addEventListener("click", () => {
       const p = state.profile;
       if(!(p.age && p.gender && p.name)){
-        // gentle redirect
         go("data");
         flash(document.getElementById("formStatus"), "Duhet të plotësosh fillimisht Mosha, Gjinia, Emri.", 2200);
         return;
       }
       go("routine");
     });
-    document.getElementById("btnAI").addEventListener("click", () => go("ai"));
 
-    // --------------------
-    // Data form validation
-    // --------------------
+    document.getElementById("btnAI").addEventListener("click", () => {
+      go("ai");
+      bootChat();
+      setTimeout(() => document.getElementById("chatInput").focus(), 120);
+    });
+
+    /***********************
+     * Data Form
+     ***********************/
     const ageEl = document.getElementById("age");
     const genderEl = document.getElementById("gender");
     const heartIssueEl = document.getElementById("heartIssue");
@@ -724,12 +772,8 @@
     }
 
     [ageEl, genderEl, heartIssueEl, nameEl].forEach(el => {
-      el.addEventListener("input", () => {
-        validateProfile();
-      });
-      el.addEventListener("change", () => {
-        validateProfile();
-      });
+      el.addEventListener("input", validateProfile);
+      el.addEventListener("change", validateProfile);
     });
 
     btnReturnFromData.addEventListener("click", () => {
@@ -741,17 +785,23 @@
 
     document.getElementById("backToMenu1").addEventListener("click", () => go("menu"));
 
-    // --------------------
-    // Routine generator
-    // --------------------
+    /***********************
+     * Routine Generator + Analysis Scroll/Back
+     ***********************/
     document.getElementById("backToMenu2").addEventListener("click", () => go("menu"));
-    document.getElementById("backToMenu3").addEventListener("click", () => go("menu"));
 
     const bpmEl = document.getElementById("bpm");
     const bpmContextEl = document.getElementById("bpmContext");
     const bpmStatus = document.getElementById("bpmStatus");
     const btnGenerate = document.getElementById("btnGenerate");
-    const output = document.getElementById("output");
+
+    const analysisWrap = document.getElementById("analysisWrap");
+    const analysisPanel = document.getElementById("analysisPanel");
+    const btnScrollTop = document.getElementById("btnScrollTop");
+    const btnScrollTop2 = document.getElementById("btnScrollTop2");
+    const btnBackFromAnalysis = document.getElementById("btnBackFromAnalysis");
+    const btnBackFromAnalysis2 = document.getElementById("btnBackFromAnalysis2");
+
     const outTitle = document.getElementById("outTitle");
     const outSummary = document.getElementById("outSummary");
     const outTips = document.getElementById("outTips");
@@ -764,6 +814,20 @@
       return ok;
     }
     bpmEl.addEventListener("input", bpmOk);
+
+    function backFromAnalysis(){
+      analysisWrap.style.display = "none";
+      // keep user on routine screen with inputs visible
+      analysisPanel.scrollTop = 0;
+    }
+    btnBackFromAnalysis.addEventListener("click", backFromAnalysis);
+    btnBackFromAnalysis2.addEventListener("click", backFromAnalysis);
+
+    function scrollTopAnalysis(){
+      analysisPanel.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    btnScrollTop.addEventListener("click", scrollTopAnalysis);
+    btnScrollTop2.addEventListener("click", scrollTopAnalysis);
 
     btnGenerate.addEventListener("click", () => {
       const p = state.profile;
@@ -780,8 +844,10 @@
       const ctx = bpmContextEl.value;
       const plan = buildPlan(p, bpm, ctx);
       renderPlan(p, bpm, ctx, plan);
-      output.style.display = "block";
-      output.scrollIntoView({behavior:"smooth", block:"start"});
+
+      analysisWrap.style.display = "block";
+      analysisPanel.scrollTop = 0;
+      analysisWrap.scrollIntoView({behavior:"smooth", block:"start"});
     });
 
     function buildPlan(profile, bpm, ctx){
@@ -791,24 +857,17 @@
       const isAdult = age >= 36 && age <= 59;
       const isSenior = age >= 60;
 
-      // Simple educational categories (not diagnostic)
       const zone = (bpm < 60) ? "low" : (bpm <= 100 ? "normal" : "high");
 
-      // Context adjuster
       const ctxNote = {
         rest: "Matje në qetësi: më e krahasueshme me vlerat standarde.",
         after: "Pas aktiviteti: BPM rritet natyrshëm; prit disa minuta dhe mat sërish në qetësi.",
-        stress: "Në stres: frymëmarrja dhe ankthi mund ta rrisin përkohësisht BPM.",
+        stress: "Në stres: ankthi dhe frymëmarrja e shpejtë e rrisin përkohësisht BPM.",
         unknown: "Kontekst i panjohur: interpreto me kujdes dhe mat sërish në qetësi."
       }[ctx] || "";
 
       const issue = profile.heartIssue || "";
-      const flags = [];
-      if(zone === "high" && ctx === "rest") flags.push("BPM i lartë në qetësi");
-      if(zone === "low" && ctx === "rest") flags.push("BPM i ulët në qetësi");
-      if(issue === "pain") flags.push("Simptomë e deklaruar: shqetësim/dhimbje");
 
-      // Water (general wellness guidance; not strict medical)
       let waterL = 1.6;
       if(isTeen) waterL = 1.8;
       if(isYoungAdult) waterL = 2.0;
@@ -816,14 +875,12 @@
       if(isSenior) waterL = 1.7;
       if(zone === "high") waterL += 0.2;
 
-      // Sleep targets
       let sleepH = 8;
       if(isTeen) sleepH = 8.5;
       if(isYoungAdult) sleepH = 7.5;
       if(isAdult) sleepH = 7.5;
       if(isSenior) sleepH = 7.0;
 
-      // Activity intensity suggestions (educational)
       let activity = {
         cardio: "20–30 min ecje e shpejtë, 4–5 ditë/javë",
         strength: "2 ditë/javë ushtrime të lehta (peshë e trupit)",
@@ -840,66 +897,57 @@
         activity.strength = "2 ditë/javë (ritëm i kontrolluar)";
       }
 
-      // Issue-based emphasis (non-diagnostic)
       const emphasis = [];
       if(isTeen && (issue === "tachy" || zone === "high")){
-        emphasis.push("Te adoleshentët, stresi, kafeina/energizantët, mungesa e gjumit dhe nikotina mund të ndikojnë në rrahje.");
+        emphasis.push("Te adoleshentët, stresi, energizantët/kafeina, mungesa e gjumit dhe nikotina mund të rrisin rrahjet.");
       }
       if(issue === "tachy" || zone === "high"){
-        emphasis.push("Kufizo kafeinë/energizantë, pi ujë rregullisht dhe bëj pauza nga ekrani.");
+        emphasis.push("Kufizo energizantët/kafeinën, pi ujë rregullisht dhe bëj pauza frymëmarrjeje.");
       }
       if(issue === "arr"){
         emphasis.push("Nëse ndjen rrahje të parregullta + marramendje, mat pulsin në qetësi dhe konsultohu me mjek.");
       }
       if(issue === "bp"){
-        emphasis.push("Ushqim më i balancuar, më pak kripë dhe ecje e rregullt janë hapa të sigurt edukativë.");
+        emphasis.push("Ushqim më i balancuar, më pak kripë dhe ecje e rregullt janë hapa edukativë të dobishëm.");
       }
       if(issue === "pain"){
-        emphasis.push("Dhimbja e gjoksit kërkon vëmendje profesionale—mos e injoro, sidomos nëse shoqërohet me frymëmarrje të vështirë.");
+        emphasis.push("Dhimbja e gjoksit kërkon vëmendje profesionale—mos e injoro, sidomos me gulçim/të fikët.");
       }
 
-      // Schedule / timing
       const timing = [
-        {t:"08:00", a:`Ujë 250ml + mëngjes i lehtë (drithëra/fruta/produkte qumështi)`},
-        {t:"11:00", a:`Ujë 250ml + pushim 3 min frymëmarrje (4-4-6)`},
-        {t:"14:00", a:`Drekë e balancuar + ujë 300ml`},
+        {t:"08:00", a:"Ujë 250ml + mëngjes i lehtë (fruta/drithëra/produkte qumështi)"},
+        {t:"11:00", a:"Ujë 250ml + pushim 3 min frymëmarrje (4-4-6)"},
+        {t:"14:00", a:"Drekë e balancuar + ujë 300ml"},
         {t:"17:00", a:`Aktivitet: ${activity.cardio}`},
-        {t:"20:30", a:`Shtrirje: ${activity.mobility} + ekranet ulur 30 min para gjumit`},
+        {t:"20:30", a:`Shtrirje: ${activity.mobility} + ul ekranet 30 min para gjumit`},
       ];
 
-      // Weekly routine template
       const week = [
-        {d:"E Hënë", items:["Ecje 20–25 min", "Shtrirje 8 min", "Shënim: si u ndjeve (energji/stres)"]},
-        {d:"E Martë", items:["Ushtrime të lehta (15–20 min)", "Pushime 2–3 herë gjatë ditës", "Hidratim i rregullt"]},
+        {d:"E Hënë", items:["Ecje 20–25 min", "Shtrirje 8 min", "Shënim: energji/stres"]},
+        {d:"E Martë", items:["Ushtrime të lehta 15–20 min", "Pushime të shkurtra gjatë ditës", "Hidratim i rregullt"]},
         {d:"E Mërkurë", items:["Ecje 20–30 min", "Frymëmarrje 5 min", "Gjumë në orar"]},
-        {d:"E Enjte", items:["Ushtrime të lehta (15–20 min)", "Shtrirje 8 min", "Më pak kafeinë pas orës 15:00"]},
-        {d:"E Premte", items:["Ecje 20–30 min", "Aktivitet relaksues (muzikë/lexim)", "Hidratim + drekë e lehtë"]},
-        {d:"E Shtunë", items:["Aktivitet i lirë: biçikletë/ecje", "Shtrirje 10 min", "Koha jashtë 30–60 min"]},
+        {d:"E Enjte", items:["Ushtrime të lehta 15–20 min", "Shtrirje 8 min", "Më pak kafeinë pas orës 15:00"]},
+        {d:"E Premte", items:["Ecje 20–30 min", "Aktivitet relaksues (lexim/muzikë)", "Hidratim + vakt i lehtë"]},
+        {d:"E Shtunë", items:["Aktivitet i lirë: ecje/biçikletë", "Shtrirje 10 min", "Koha jashtë 30–60 min"]},
         {d:"E Diel", items:["Ditë rikuperimi: ecje e lehtë", "Planifikim i javës", "Gjumë më herët"]},
       ];
 
-      // Adjust week based on zone
       if(zone === "high"){
         week[0].items[0] = "Ecje moderuar 15–20 min (jo sprint)";
         week[2].items[0] = "Ecje 15–25 min + pauzë nëse rritet shumë BPM";
-        week[5].items[0] = "Aktivitet i lehtë: ecje e qetë / shëtitje";
+        week[5].items[0] = "Aktivitet i lehtë: shëtitje / ecje e qetë";
       }
 
       const caution = [];
-      if(flags.length){
-        caution.push("Nëse ke simptoma (marramendje e fortë, të fikët, dhimbje gjoksi, gulçim) — kërko ndihmë mjekësore.");
-      }
       if(zone === "high" && ctx === "rest"){
-        caution.push("BPM i lartë në qetësi, i përsëritur, është arsye e mirë për kontroll mjekësor.");
+        caution.push("Nëse BPM i lartë në qetësi përsëritet, është arsye e mirë për kontroll mjekësor.");
       }
       if(zone === "low" && ctx === "rest"){
         caution.push("BPM i ulët në qetësi mund të jetë normal te sportistët; nëse shoqërohet me lodhje/të fikët, konsultohu.");
       }
+      caution.push("Kjo është udhëzues edukativ, jo diagnozë.");
 
-      return {
-        meta: { zone, ctxNote, flags, isTeen, isYoungAdult, isAdult, isSenior },
-        waterL, sleepH, activity, timing, week, emphasis, caution
-      };
+      return { meta:{zone, ctxNote}, waterL, sleepH, activity, timing, week, emphasis, caution };
     }
 
     function renderPlan(profile, bpm, ctx, plan){
@@ -914,7 +962,7 @@
         "other":"tjetër"
       })[profile.heartIssue ?? ""] || "—";
 
-      outTitle.textContent = `Plani javor për ${profile.name}`;
+      outTitle.textContent = `Analiza & Plani javor për ${profile.name}`;
 
       const headline = `
         <p><strong>Profili:</strong> ${escapeHtml(profile.name)}, ${profile.age} vjeç · problemi: <strong>${issueLabel}</strong></p>
@@ -959,7 +1007,7 @@
           <h3>Rutina ditore (shembull)</h3>
           <ul>${timingList}</ul>
           <p style="margin-top:10px; color: rgba(230,241,255,.72);">
-            * Këshillat janë të përgjithshme edukative. Për gjendje shëndetësore specifike, ndiq këshillën e mjekut.
+            * Këshillat janë të përgjithshme edukative. Për gjendje specifike, ndiq këshillën e mjekut.
           </p>
         </div>
         ${emphasisList}
@@ -976,12 +1024,13 @@
       `).join("");
     }
 
-    // --------------------
-    // AI Assistant (offline)
-    // --------------------
+    /***********************
+     * AI Chat (Real)
+     ***********************/
     const chatBox = document.getElementById("chatBox");
     const chatInput = document.getElementById("chatInput");
     const chatSend = document.getElementById("chatSend");
+
     document.getElementById("backToMenu4").addEventListener("click", () => go("menu"));
 
     function addMsg(text, who="bot"){
@@ -994,149 +1043,55 @@
 
     function bootChat(){
       chatBox.innerHTML = "";
-      addMsg("Përshëndetje! Unë jam MIA (offline). Më pyet për BPM, matjen e pulsit, zakone të shëndetshme, apo si të organizosh një rutinë.");
+      addMsg("Përshëndetje! Unë jam MIA. Më pyet për BPM, rutinë, hidratim, gjumë, aktivitet fizik (edukativ).");
       const p = state.profile;
       if(p.age && p.gender && p.name){
-        addMsg(`E shoh që profili yt është: ${p.name}, ${p.age} vjeç. Pyet sa të duash. (Këshilla edukative)`);
+        addMsg(`Profili yt: ${p.name}, ${p.age} vjeç. (Nëse do rutinë të personalizuar, përdor edhe “Gjenero Rutinën Personale”.)`);
       } else {
         addMsg("Nëse do përgjigje më të përshtatura, plotëso më parë “Vendos të dhënat”.");
       }
     }
-    // boot when entering AI screen
-    document.getElementById("btnAI").addEventListener("click", bootChat);
 
-    function answer(q){
-      const WORKER_URL = "https://sparkling-flower-928d.renibeshiri.workers.dev";
+    async function askAI(prompt){
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, profile: state.profile })
+      });
 
-async function askAI(prompt) {
-  const res = await fetch(WORKER_URL, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      prompt: prompt,
-      profile: state.profile
-    })
-  });
+      const raw = await res.text();
+      let data = {};
+      try { data = raw ? JSON.parse(raw) : {}; } catch {}
 
-  const raw = await res.text();
-
-  if (!res.ok) {
-    return "AI error HTTP " + res.status + ": " + raw;
-  }
-
-  let data = {};
-  try {
-    data = raw ? JSON.parse(raw) : {};
-  } catch (e) {
-    return "Invalid JSON from AI.";
-  }
-
-  return data.text || "AI nuk u përgjigj siç duhet.";
-}
-  const res = await fetch(async function askAI(prompt) {
-  const res = await fetch("https://sparkling-flower-928d.renibeshiri.workers.dev", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, profile: state.profile })
-  });
-
-  const raw = await res.text();
-  let data = {};
-  try { data = raw ? JSON.parse(raw) : {}; } catch {}
-
-  if (data.text) return data.text;
-  return "AI nuk u përgjigj siç duhet.";
-}
-, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, profile: state.profile })
-  });
-
-  const raw = await res.text();
-  let data = {};
-  try { data = raw ? JSON.parse(raw) : {}; } catch {}
-
-  if (data.text) return data.text;
-  return "AI nuk u përgjigj siç duhet. Provo sërish.";
-}
-
-      const p = state.profile;
-      const text = q.toLowerCase();
-
-      // Quick emergency guardrails
-      if(text.includes("dhimbje") && text.includes("gjoks")) return "Dhimbja e gjoksit mund të jetë serioze. Nëse është e fortë, shoqërohet me gulçim, djersë të ftohta, marramendje ose të fikët, kërko ndihmë mjekësore menjëherë.";
-      if(text.includes("të fik") || text.includes("marramend")) return "Nëse ka marramendje të fortë ose të fikët, mos e injoro. Ulu/shtrihu, mat pulsin në qetësi dhe kontakto mjekun, sidomos nëse përsëritet.";
-
-      if(text.includes("bpm") || text.includes("rrahje") || text.includes("puls")){
-        return "BPM do të thotë rrahje të zemrës për minutë. Për matje të saktë: ulu 5 minuta, mat 30 sekonda dhe shumëzo me 2 (ose 60 sekonda të plota), shmang kafeinën/stresin para matjes.";
-      }
-      if(text.includes("si") && (text.includes("mat") || text.includes("mas"))){
-        return "Për ta matur pulsin: vendos 2 gishta te kyçi i dorës (ana e gishtit të madh), numëro rrahjet 30 sekonda dhe shumëzo me 2. Më mirë në qetësi, pa folur, me frymëmarrje normale.";
-      }
-      if(text.includes("energiz") || text.includes("kafein")){
-        return "Kafeina dhe energizantët mund të rrisin përkohësisht BPM dhe ankthin. Provo ta kufizosh pasdite, pi ujë rregullisht dhe shiko si reagon trupi.";
-      }
-      if(text.includes("gjum")){
-        return "Gjumë i rregullt është bazë për ritmin kardiak. Syno të njëjtën orë fjetjeje, ul ekranet 30 minuta para gjumit dhe mbaj dhomën pak më të freskët.";
-      }
-      if(text.includes("stres") || text.includes("ankth") || text.includes("frym")){
-        return "Për stresin: provo frymëmarrje 4-4-6 (thith 4s, mbaj 4s, nxirr 6s) për 3–5 minuta. Shpesh ul tensionin dhe ndihmon pulsin të stabilizohet.";
-      }
-      if(text.includes("rut") || text.includes("plan") || text.includes("jav")){
-        if(p.age && p.gender && p.name){
-          return "Mund ta gjenerosh rutinën te “Gjenero Rutinën Personale”. Vendos BPM dhe unë do të jap një plan edukativ javor (ujë, gjumë, aktivitet).";
-        }
-        return "Për plan më të përshtatur, plotëso “Vendos të dhënat” dhe pastaj shko te “Gjenero Rutinën Personale”.";
-      }
-
-      return "E kuptova. Mund të ma thuash pak më konkret: po pyet për BPM, matjen e pulsit, hidratimin, gjumin apo aktivitetin fizik?";
+      if (data.text) return data.text;
+      // fallback: show something useful
+      return raw ? raw.slice(0, 400) : "AI nuk u përgjigj siç duhet.";
     }
 
-    const WORKER_URL = "https://sparkling-flower-928d.renibeshiri.workers.dev";
-
-async function askAIReal(prompt) {
-  const res = await fetch(WORKER_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      prompt: prompt,
-      profile: state.profile
-    })
-  });
-
-  const raw = await res.text();
-  let data = {};
-  try { data = raw ? JSON.parse(raw) : {}; } catch {}
-
-  return data.text || "AI nuk u përgjigj siç duhet.";
-}
-function sendChat(){
+    function sendChat(){
       const q = chatInput.value.trim();
       if(!q) return;
       addMsg(q, "me");
       chatInput.value = "";
- setTimeout(async () => {
-  addMsg("Po mendoj…", "bot");
-  const last = chatBox.lastChild;
-  try {
-    last.textContent = await askAIReal(q);
-  } catch (e) {
-    last.textContent = "Gabim lidhjeje me AI. Provo sërish.";
-  }
-}, 150);
-    }
-    chatSend.addEventListener("click", sendChat);
-    chatInput.addEventListener("keydown", (e) => {
-      if(e.key === "Enter") sendChat();
-    });
 
-    // --------------------
-    // Helpers
-    // --------------------
+      // IMPORTANT: await only inside async function (safe)
+      setTimeout(async () => {
+        addMsg("Po mendoj…", "bot");
+        const last = chatBox.lastChild;
+        try {
+          last.textContent = await askAI(q);
+        } catch (e) {
+          last.textContent = "Gabim lidhjeje me AI. Provo sërish.";
+        }
+      }, 120);
+    }
+
+    chatSend.addEventListener("click", sendChat);
+    chatInput.addEventListener("keydown", (e) => { if(e.key === "Enter") sendChat(); });
+
+    /***********************
+     * Helpers
+     ***********************/
     function flash(el, text, ms=1800){
       const prev = el.textContent;
       el.textContent = text;
@@ -1149,18 +1104,15 @@ function sendChat(){
       }, ms);
     }
 
-    function escapeHtml(str){
-      return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+    /***********************
+     * Init
+     ***********************/
+    updateProfilePill();
+    validateProfile();
 
-    // --------------------
-    // ECG canvas animation
-    // --------------------
+    /***********************
+     * ECG canvas animation
+     ***********************/
     const canvas = document.getElementById("ecg");
     const ctx = canvas.getContext("2d");
     let W=0, H=0, t=0;
@@ -1179,11 +1131,9 @@ function sendChat(){
     function draw(){
       t += 0.016;
 
-      // Clear with slight trail
       ctx.fillStyle = "rgba(0,0,0,0.18)";
       ctx.fillRect(0,0,W,H);
 
-      // Grid subtle
       ctx.save();
       ctx.globalAlpha = 0.10;
       ctx.strokeStyle = "rgba(120,220,255,0.35)";
@@ -1197,7 +1147,6 @@ function sendChat(){
       }
       ctx.restore();
 
-      // ECG wave
       const mid = H*0.52;
       const amp = Math.min(64, H*0.10);
 
@@ -1208,18 +1157,14 @@ function sendChat(){
       ctx.shadowBlur = 18;
 
       ctx.beginPath();
-      const speed = 220; // px per second feel
+      const speed = 220;
       const phase = (t*speed) % W;
 
       for(let x=0; x<=W; x++){
-        // repeating heartbeat pulse shape
-        const u = ((x + phase) % 260) / 260; // 0..1
+        const u = ((x + phase) % 260) / 260;
         let y = 0;
-
-        // baseline ripple
         y += Math.sin((x*0.014) + t*1.6) * (amp*0.08);
 
-        // pulse (spike)
         if(u > 0.30 && u < 0.34) y += -amp*0.20;
         if(u >= 0.34 && u < 0.36) y +=  amp*0.55;
         if(u >= 0.36 && u < 0.40) y += -amp*1.00;
@@ -1232,7 +1177,6 @@ function sendChat(){
       }
       ctx.stroke();
 
-      // Glow line under
       ctx.globalAlpha = 0.25;
       ctx.lineWidth = 6;
       ctx.strokeStyle = "rgba(0,200,255,0.35)";
@@ -1242,27 +1186,10 @@ function sendChat(){
 
       requestAnimationFrame(draw);
     }
-    // initialize dark base behind trail
     ctx.fillStyle = "rgba(0,0,0,1)";
     ctx.fillRect(0,0,W,H);
     requestAnimationFrame(draw);
-
-    // --------------------
-    // Initialize
-    // --------------------
-    updateProfilePill();
-    validateProfile();
-
-    // menu back button
-    // (data screen already has back, routine & ai have back)
-    // auto boot chat if user enters AI directly later
-    document.getElementById("btnAI").addEventListener("click", () => {
-      setTimeout(() => chatInput.focus(), 120);
-    });
   </script>
 </body>
 </html>
-
-
-
 
