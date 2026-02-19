@@ -1096,7 +1096,25 @@ async function askAI(prompt) {
       return "E kuptova. Mund të ma thuash pak më konkret: po pyet për BPM, matjen e pulsit, hidratimin, gjumin apo aktivitetin fizik?";
     }
 
-    function sendChat(){
+    const WORKER_URL = "https://sparkling-flower-928d.renibeshiri.workers.dev";
+
+async function askAIReal(prompt) {
+  const res = await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt: prompt,
+      profile: state.profile
+    })
+  });
+
+  const raw = await res.text();
+  let data = {};
+  try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+  return data.text || "AI nuk u përgjigj siç duhet.";
+}
+function sendChat(){
       const q = chatInput.value.trim();
       if(!q) return;
       addMsg(q, "me");
@@ -1105,7 +1123,7 @@ async function askAI(prompt) {
   addMsg("Po mendoj…", "bot");
   const last = chatBox.lastChild;
   try {
-    last.textContent = await askAI(q);
+    last.textContent = await askAIReal(q);
   } catch (e) {
     last.textContent = "Gabim lidhjeje me AI. Provo sërish.";
   }
@@ -1244,6 +1262,7 @@ async function askAI(prompt) {
   </script>
 </body>
 </html>
+
 
 
 
