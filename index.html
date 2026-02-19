@@ -1006,7 +1006,36 @@
     document.getElementById("btnAI").addEventListener("click", bootChat);
 
     function answer(q){
-      async function askAI(prompt) {
+      const WORKER_URL = "https://sparkling-flower-928d.renibeshiri.workers.dev";
+
+async function askAI(prompt) {
+  const res = await fetch(WORKER_URL, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+      profile: state.profile
+    })
+  });
+
+  const raw = await res.text();
+
+  if (!res.ok) {
+    return "AI error HTTP " + res.status + ": " + raw;
+  }
+
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return "Invalid JSON from AI.";
+  }
+
+  return data.text || "AI nuk u përgjigj siç duhet.";
+}
   const res = await fetch(async function askAI(prompt) {
   const res = await fetch("https://sparkling-flower-928d.renibeshiri.workers.dev", {
     method: "POST",
@@ -1215,5 +1244,6 @@
   </script>
 </body>
 </html>
+
 
 
