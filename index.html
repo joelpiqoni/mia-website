@@ -1006,6 +1006,21 @@
     document.getElementById("btnAI").addEventListener("click", bootChat);
 
     function answer(q){
+      async function askAI(prompt) {
+  const res = await fetch("https://sparkling-flower-928d.renibeshiri.workers.dev", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, profile: state.profile })
+  });
+
+  const raw = await res.text();
+  let data = {};
+  try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+  if (data.text) return data.text;
+  return "AI nuk u përgjigj siç duhet. Provo sërish.";
+}
+
       const p = state.profile;
       const text = q.toLowerCase();
 
@@ -1043,7 +1058,15 @@
       if(!q) return;
       addMsg(q, "me");
       chatInput.value = "";
-      setTimeout(() => addMsg(answer(q), "bot"), 220);
+ setTimeout(async () => {
+  addMsg("Po mendoj…", "bot");
+  const last = chatBox.lastChild;
+  try {
+    last.textContent = await askAI(q);
+  } catch (e) {
+    last.textContent = "Gabim lidhjeje me AI. Provo sërish.";
+  }
+}, 150);
     }
     chatSend.addEventListener("click", sendChat);
     chatInput.addEventListener("keydown", (e) => {
@@ -1178,3 +1201,4 @@
   </script>
 </body>
 </html>
+
