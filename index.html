@@ -12,13 +12,14 @@
       --ink:#EAF4FF;
       --muted:#A7C1DF;
 
-      --glass1: rgba(255,255,255,.10);
+      --glass1: rgba(255,255,255,.11);
       --glass2: rgba(255,255,255,.06);
       --line: rgba(255,255,255,.14);
 
       --shadow: 0 22px 70px rgba(0,0,0,.55);
       --r2: 26px;
     }
+
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
@@ -34,7 +35,12 @@
 
     /* Background ECG */
     .bg{ position:absolute; inset:0; overflow:hidden; }
-    canvas#ecg{ position:absolute; inset:0; width:100%; height:100%; opacity:.92; filter: drop-shadow(0 0 16px rgba(0,180,255,.22)); }
+    #ecg{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      opacity:.92;
+      filter: drop-shadow(0 0 16px rgba(0,180,255,.22));
+    }
     .noise{
       position:absolute; inset:-40px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.30'/%3E%3C/svg%3E");
@@ -48,7 +54,7 @@
       pointer-events:none;
     }
 
-    /* Screens router */
+    /* Screens */
     .app{ position:relative; height:100%; width:100%; }
     .screen{
       position:absolute; inset:0;
@@ -65,7 +71,7 @@
       pointer-events:auto;
     }
 
-    /* Card + glass */
+    /* Card + Glass */
     .card{
       width:min(980px, 94vw);
       border-radius: var(--r2);
@@ -94,7 +100,7 @@
     }
     .brand{ display:flex; align-items:center; gap:12px; user-select:none; }
     .logo{
-      width:44px; height:44px; border-radius: 14px;
+      width:44px; height:44px; border-radius:14px;
       background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(255,255,255,.06));
       border:1px solid rgba(140,220,255,.22);
       display:grid; place-items:center;
@@ -121,7 +127,8 @@
       line-height:1.05;
     }
     .brandText .sub{
-      font-size:12.5px; color: var(--muted);
+      font-size:12.5px;
+      color:var(--muted);
     }
 
     .pill{
@@ -165,22 +172,26 @@
     }
     .btn:hover{ transform: translateY(-1px); border-color: rgba(170,230,255,.34); box-shadow: 0 16px 38px rgba(0,0,0,.32); }
     .btn:active{ transform: translateY(0); }
-
     .btn.primary{
       background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(0,140,255,.10));
       border-color: rgba(140,220,255,.28);
     }
-    .btn.small{ min-width:auto; padding: 10px 12px; border-radius: 16px; font-size: 13px; font-weight:850; }
-    .btn.ghost{ background: rgba(0,0,0,.12); border-color: rgba(255,255,255,.14); box-shadow:none; }
-
+    .btn.small{
+      min-width:auto;
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight:850;
+    }
+    .btn.ghost{
+      background: rgba(0,0,0,.12);
+      border-color: rgba(255,255,255,.14);
+      box-shadow:none;
+    }
     @media (max-width: 720px){ .btn{ min-width: 100%; } }
 
     /* Landing */
-    .landing{
-      width:min(920px, 94vw);
-      text-align:center;
-      padding: 26px 16px;
-    }
+    .landing{ width:min(920px, 94vw); text-align:center; padding: 26px 16px; }
     .big{
       font-size: clamp(58px, 10vw, 96px);
       font-weight: 980;
@@ -260,7 +271,8 @@
       line-height: 1.35;
     }
     .statusRow{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
       margin-top:12px;
     }
     .chip{
@@ -287,7 +299,8 @@
     }
     .fab{
       position:absolute; right: 14px; bottom: 14px;
-      display:flex; flex-direction:column; gap:10px; z-index:5;
+      display:flex; flex-direction:column; gap:10px;
+      z-index:5;
     }
     .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .kpi{
@@ -348,6 +361,7 @@
       font-size: 12.8px;
       line-height: 1.35;
     }
+
     .infoPanel{
       margin-top: 12px;
       border-radius: 22px;
@@ -528,7 +542,8 @@
           </div>
 
           <div class="note" style="margin-top:0;">
-            Vendos <strong>BPM</strong> (rrahje/minutë) dhe (nëse do) <strong>SpO₂</strong>. Rezultati del me pika të qarta.
+            Vendos <strong>BPM</strong> (rrahje/minutë) dhe (nëse do) <strong>SpO₂</strong>.
+            Rezultati del me pika të qarta dhe është i personalizuar.
           </div>
 
           <div class="grid">
@@ -621,7 +636,9 @@
             <canvas id="threeCanvas"></canvas>
             <div class="hud">
               <div class="hintBox"><strong>Tip:</strong> Drag = rrotullim • Scroll = zoom • Double-click = pjesa + info</div>
-              <div class="hintBox" style="max-width: 290px; text-align:right;"><strong>Gjendja:</strong> <span id="mapState">Duke u ngarkuar…</span></div>
+              <div class="hintBox" style="max-width: 300px; text-align:right;">
+                <strong>Gjendja:</strong> <span id="mapState">Duke u ngarkuar…</span>
+              </div>
             </div>
           </div>
 
@@ -634,7 +651,7 @@
           </div>
 
           <div class="note" id="webglNote" style="display:none;">
-            <span class="err">3D nuk u hap.</span> Provo Chrome/Edge dhe hap linkun e GitHub Pages (jo “Edit file”).
+            <span class="err">3D nuk u hap.</span> Provo Chrome/Edge dhe hape linkun e GitHub Pages (jo “Edit file”).
           </div>
         </div>
       </div>
@@ -642,17 +659,16 @@
 
   </div>
 
-  <script>
-    /* ======================
-       Helpers
-    ====================== */
+  <!-- IMPORTANT: This is a module script to avoid "await" errors and ensure Three loads correctly -->
+  <script type="module">
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
+
+    /* ---------- small helpers ---------- */
     const esc = (s)=> (s??"").toString()
       .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
-    /* ======================
-       Router
-    ====================== */
+    /* ---------- router ---------- */
     const S = {
       landing: document.getElementById("s-landing"),
       menu: document.getElementById("s-menu"),
@@ -663,16 +679,18 @@
     function go(name){
       Object.values(S).forEach(x => x.classList.remove("active"));
       S[name].classList.add("active");
-      setTimeout(()=>{ const f=S[name].querySelector("button,input,select"); if(f) f.focus({preventScroll:true}); }, 60);
+
+      setTimeout(()=> {
+        const f = S[name].querySelector("button,input,select");
+        if(f) f.focus({ preventScroll:true });
+      }, 60);
 
       if(name === "map"){
-        requestAnimationFrame(()=>requestAnimationFrame(()=>initHeartMapSafely()));
+        requestAnimationFrame(()=>requestAnimationFrame(()=>initHeartMap()));
       }
     }
 
-    /* ======================
-       State
-    ====================== */
+    /* ---------- state ---------- */
     const state = { profile:{ age:null, gender:"", issue:"", name:"" } };
     const pillProfile = document.getElementById("pillProfile");
     function updatePill(){
@@ -685,28 +703,22 @@
       pillProfile.innerHTML = `<strong>Profili:</strong> ${esc(p.name)} · ${p.age} vjeç · ${esc(p.gender)}${prob}`;
     }
 
-    /* ======================
-       Landing
-    ====================== */
-    document.getElementById("miaBig").addEventListener("click", () => go("menu"));
-    window.addEventListener("keydown", (e) => {
+    /* ---------- landing ---------- */
+    document.getElementById("miaBig").addEventListener("click", ()=>go("menu"));
+    window.addEventListener("keydown", (e)=>{
       if(S.landing.classList.contains("active") && e.key === "Enter") go("menu");
     });
 
-    /* ======================
-       Menu
-    ====================== */
-    document.getElementById("bData").addEventListener("click", () => go("data"));
-    document.getElementById("bRoutine").addEventListener("click", () => {
+    /* ---------- menu ---------- */
+    document.getElementById("bData").addEventListener("click", ()=>go("data"));
+    document.getElementById("bRoutine").addEventListener("click", ()=>{
       const p = state.profile;
       if(!(p.age && p.gender && p.name)) return go("data");
       go("routine");
     });
-    document.getElementById("bMap").addEventListener("click", () => go("map"));
+    document.getElementById("bMap").addEventListener("click", ()=>go("map"));
 
-    /* ======================
-       Data form
-    ====================== */
+    /* ---------- data form ---------- */
     const age = document.getElementById("age");
     const gender = document.getElementById("gender");
     const issue = document.getElementById("issue");
@@ -738,9 +750,8 @@
       el.addEventListener("input", validateData);
       el.addEventListener("change", validateData);
     });
-
-    document.getElementById("backData").addEventListener("click", () => go("menu"));
-    saveGo.addEventListener("click", () => {
+    document.getElementById("backData").addEventListener("click", ()=>go("menu"));
+    saveGo.addEventListener("click", ()=>{
       if(!validateData()) return;
       state.profile.age = parseInt(age.value,10);
       state.profile.gender = gender.value;
@@ -750,10 +761,8 @@
       go("menu");
     });
 
-    /* ======================
-       Routine (deterministic)
-    ====================== */
-    document.getElementById("backRoutine").addEventListener("click", () => go("menu"));
+    /* ---------- routine (deterministic) ---------- */
+    document.getElementById("backRoutine").addEventListener("click", ()=>{ hideOut(); go("menu"); });
 
     const bpm = document.getElementById("bpm");
     const spo2 = document.getElementById("spo2");
@@ -776,15 +785,15 @@
 
     const wrapOut = document.getElementById("wrapOut");
     const panelOut = document.getElementById("panelOut");
-    document.getElementById("topOut").addEventListener("click", ()=> panelOut.scrollTo({top:0, behavior:"smooth"}));
-    function hideOut(){ wrapOut.style.display="none"; panelOut.scrollTop=0; }
-    document.getElementById("hideOut").addEventListener("click", hideOut);
-    document.getElementById("hideOut2").addEventListener("click", hideOut);
-
     const kpis = document.getElementById("kpis");
     const daily = document.getElementById("daily");
     const week = document.getElementById("week");
     const caution = document.getElementById("caution");
+
+    document.getElementById("topOut").addEventListener("click", ()=> panelOut.scrollTo({top:0, behavior:"smooth"}));
+    function hideOut(){ wrapOut.style.display="none"; panelOut.scrollTop=0; }
+    document.getElementById("hideOut").addEventListener("click", hideOut);
+    document.getElementById("hideOut2").addEventListener("click", hideOut);
 
     function ageGroup(a){
       if(a<=11) return "fëmijë";
@@ -827,12 +836,12 @@
       }
 
       const d=[];
-      d.push(`Ujë: ${water.toFixed(1)} L/ditë në 5 momente (08:00, 11:00, 14:00, 17:00, 20:00).`);
-      d.push(`Gjumë: ${sleep.toFixed(1)} orë/natë (orari i qëndrueshëm).`);
-      d.push(`Aktivitet: ${cardio}.`);
+      d.push(\`Ujë: \${water.toFixed(1)} L/ditë në 5 momente (08:00, 11:00, 14:00, 17:00, 20:00).\`);
+      d.push(\`Gjumë: \${sleep.toFixed(1)} orë/natë (orari i qëndrueshëm).\`);
+      d.push(\`Aktivitet: \${cardio}.\`);
       d.push("Forcë: 2 ditë/javë ushtrime të lehta (pa e tepruar).");
       d.push("Relaksim: 2–3 herë/ditë, 2 min frymëmarrje (4-4-6).");
-      d.push(`Kontekst: ${ctxNote}`);
+      d.push(\`Kontekst: \${ctxNote}\`);
       if(group==="adoleshent") d.push("Shmang energizantët dhe kafeinën e tepërt (sidomos pas 15:00).");
       if(prob==="Takikardi" || zone==="i lartë") d.push("Nëse BPM i lartë në qetësi përsëritet: rekomandohet vlerësim mjekësor.");
       if(prob==="Bradikardi" || zone==="i ulët") d.push("Nëse BPM i ulët shoqërohet me marramendje/të fikët: rekomandohet vlerësim mjekësor.");
@@ -857,10 +866,10 @@
       if(spo2Flag==="low") c.push("SpO₂ e ulët + gulçim/dobësi: kërko ndihmë mjekësore.");
       c.push("Ky plan është edukativ dhe nuk zëvendëson mjekun.");
 
-      return { group, zone, water, sleep, d, w, c };
+      return { group, zone, d, w, c };
     }
 
-    document.getElementById("gen").addEventListener("click", () => {
+    document.getElementById("gen").addEventListener("click", ()=>{
       const p = state.profile;
       if(!(p.age && p.gender && p.name)) return go("data");
       if(!okBpm()) return;
@@ -870,30 +879,29 @@
       const spo2Val = spo2.value ? parseInt(spo2.value,10) : NaN;
       const plan = buildPlan(p, bpmVal, spo2Val, ctx.value);
 
-      kpis.innerHTML = `
-        <div class="kpi">Emri: <strong>${esc(p.name)}</strong></div>
-        <div class="kpi">Mosha: <strong>${p.age}</strong> (${plan.group})</div>
-        <div class="kpi">BPM: <strong>${bpmVal}</strong> (${plan.zone})</div>
-        <div class="kpi">SpO₂: <strong>${Number.isFinite(spo2Val) ? (spo2Val+"%") : "—"}</strong></div>
-        <div class="kpi">Problemi: <strong>${esc(p.issue || "—")}</strong></div>
-      `;
-      daily.innerHTML = plan.d.map(x=>`<li>${esc(x)}</li>`).join("");
-      week.innerHTML  = plan.w.map(x=>`<li>${esc(x)}</li>`).join("");
-      caution.innerHTML = plan.c.map(x=>`<li>${esc(x)}</li>`).join("");
+      kpis.innerHTML = \`
+        <div class="kpi">Emri: <strong>\${esc(p.name)}</strong></div>
+        <div class="kpi">Mosha: <strong>\${p.age}</strong> (\${plan.group})</div>
+        <div class="kpi">BPM: <strong>\${bpmVal}</strong> (\${plan.zone})</div>
+        <div class="kpi">SpO₂: <strong>\${Number.isFinite(spo2Val) ? (spo2Val+"%") : "—"}</strong></div>
+        <div class="kpi">Problemi: <strong>\${esc(p.issue || "—")}</strong></div>
+      \`;
+      daily.innerHTML = plan.d.map(x=>\`<li>\${esc(x)}</li>\`).join("");
+      week.innerHTML  = plan.w.map(x=>\`<li>\${esc(x)}</li>\`).join("");
+      caution.innerHTML = plan.c.map(x=>\`<li>\${esc(x)}</li>\`).join("");
 
       wrapOut.style.display = "block";
       panelOut.scrollTop = 0;
     });
 
-    /* ======================
-       Heart 3D (robust)
-    ====================== */
-    document.getElementById("backMap").addEventListener("click", ()=> go("menu"));
+    /* ---------- heart map 3D ---------- */
+    document.getElementById("backMap").addEventListener("click", ()=>go("menu"));
+
     const mapStateEl = document.getElementById("mapState");
     const partNameEl = document.getElementById("partName");
     const partInfoEl = document.getElementById("partInfo");
     const partHintEl = document.getElementById("partHint");
-    const webglNote  = document.getElementById("webglNote");
+    const webglNote = document.getElementById("webglNote");
 
     const PARTS = {
       LV:{title:"Ventrikuli i majtë", info:"Pompon gjakun e oksigjenuar në aortë për gjithë trupin."},
@@ -917,39 +925,18 @@
       partHintEl.textContent = "Double-click pjesë tjetër për fokus";
     }
 
-    // Load THREE from CDN with fallback
-    function loadScript(src){
-      return new Promise((resolve,reject)=>{
-        const s=document.createElement("script");
-        s.src=src; s.async=true;
-        s.onload=()=>resolve(true);
-        s.onerror=()=>reject(new Error("Failed "+src));
-        document.head.appendChild(s);
-      });
-    }
-    async function ensureThree(){
-      if(window.THREE) return true;
-      try{
-        await loadScript("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js");
-        if(window.THREE) return true;
-      }catch(e){}
-      try{
-        await loadScript("https://unpkg.com/three@0.161.0/build/three.min.js");
-        return !!window.THREE;
-      }catch(e){}
-      return false;
-    }
-
-    let mapInit=false;
-    let renderer, scene, camera, heartGroup, parts=[], raycaster, pointer;
-    let dragging=false,lastX=0,lastY=0,targetRotX=0.15,targetRotY=-0.35,zoom=1.9;
-
     function webglAvailable(){
       try{
-        const c=document.createElement("canvas");
+        const c = document.createElement("canvas");
         return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
-      }catch(e){ return false; }
+      }catch{ return false; }
     }
+
+    let mapInit = false;
+    let renderer, scene, camera, group, raycaster, pointer;
+    let parts = [];
+    let dragging=false, lastX=0, lastY=0;
+    let targetRotX=0.15, targetRotY=-0.35, zoom=1.9;
 
     function tweenScale(mesh, mult, dur=260){
       const start = mesh.scale.clone();
@@ -957,15 +944,24 @@
       const end   = base.clone().multiplyScalar(mult);
       const t0 = performance.now();
       function step(now){
-        const p = Math.min(1, (now - t0)/dur);
-        const e = 1 - Math.pow(1-p,3);
+        const p = Math.min(1, (now-t0)/dur);
+        const e = 1 - Math.pow(1-p, 3);
         mesh.scale.lerpVectors(start, end, e);
-        if(p < 1) requestAnimationFrame(step);
+        if(p<1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     }
 
-    async function initHeartMapSafely(){
+    async function waitForSize(el, tries=60){
+      for(let i=0;i<tries;i++){
+        const w = el.clientWidth, h = el.clientHeight;
+        if(w>80 && h>80) return {w,h};
+        await new Promise(r=>setTimeout(r,50));
+      }
+      return {w: el.clientWidth, h: el.clientHeight};
+    }
+
+    async function initHeartMap(){
       if(mapInit) return;
       mapInit = true;
 
@@ -973,250 +969,243 @@
       webglNote.style.display = "none";
       setInfo(null);
 
-      const okThree = await ensureThree();
-      if(!okThree){
-        mapStateEl.textContent = "Gabim";
-        webglNote.style.display = "block";
-        webglNote.innerHTML = `<span class="err">3D nuk u hap.</span> Three.js nuk u ngarkua (CDN). Provo rifreskim ose internet tjetër.`;
-        return;
-      }
       if(!webglAvailable()){
         mapStateEl.textContent = "WebGL off";
         webglNote.style.display = "block";
+        webglNote.innerHTML = `<span class="err">3D nuk u hap.</span> WebGL duket i çaktivizuar në këtë pajisje/shfletues.`;
         return;
       }
 
+      const wrap = document.getElementById("threeWrap");
       const canvas = document.getElementById("threeCanvas");
-      const wrap   = document.getElementById("threeWrap");
 
-      // Wait until canvas has real size (GitHub Pages + transitions can cause 0 size momentarily)
-      for(let i=0;i<40;i++){
-        const w = wrap.clientWidth, h = wrap.clientHeight;
-        if(w>50 && h>50) break;
-        await new Promise(r=>setTimeout(r,50));
+      // ensure size is real (critical on transitions)
+      await waitForSize(wrap, 60);
+
+      // renderer + scene
+      renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+      renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+
+      scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x020817, 2.0, 7.5);
+
+      camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+
+      scene.add(new THREE.AmbientLight(0x88bbff, 0.55));
+      const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(2,2,2); scene.add(key);
+      const rim = new THREE.DirectionalLight(0x66ccff, 0.85); rim.position.set(-2,1.5,-1.5); scene.add(rim);
+
+      group = new THREE.Group();
+      scene.add(group);
+
+      const mat = (hex, em)=> new THREE.MeshStandardMaterial({
+        color: hex, roughness: 0.42, metalness: 0.05, emissive: em, emissiveIntensity: 0.12
+      });
+
+      const mV=mat(0x8b1f2f, 0x22040a);
+      const mA=mat(0x7a2136, 0x1a050b);
+      const mAo=mat(0x9b2b3a,0x26060e);
+      const mPu=mat(0x7f2a4a,0x220816);
+      const mCv=mat(0x5c2a52,0x160516);
+
+      parts = [];
+      function addPart(key, geom, material){
+        const mesh = new THREE.Mesh(geom, material);
+        mesh.userData.key = key;
+        mesh.userData.baseScale = mesh.scale.clone();
+        group.add(mesh);
+        parts.push(mesh);
+        return mesh;
       }
 
-      // Setup scene
-      try{
-        renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
-        renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+      // Ventricles
+      const gV = new THREE.SphereGeometry(0.22, 48, 48);
+      const LV = addPart("LV", gV.clone(), mV);
+      LV.scale.set(1.18, 1.40, 1.06);
+      LV.position.set(0.11, 0.18, 0.00);
+      LV.rotation.set(0.20, 0.25, 0.06);
 
-        scene = new THREE.Scene();
-        scene.fog = new THREE.Fog(0x020817, 2.0, 7.5);
+      const RV = addPart("RV", gV.clone(), mV);
+      RV.scale.set(1.06, 1.28, 0.96);
+      RV.position.set(-0.12, 0.15, 0.06);
+      RV.rotation.set(0.20, -0.22, -0.06);
 
-        camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      // Atria
+      const gA = new THREE.SphereGeometry(0.15, 40, 40);
+      const LA = addPart("LA", gA.clone(), mA);
+      LA.scale.set(1.05, 0.95, 1.05);
+      LA.position.set(0.14, 0.40, -0.03);
 
-        scene.add(new THREE.AmbientLight(0x88bbff, 0.55));
-        const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(2,2,2); scene.add(key);
-        const rim = new THREE.DirectionalLight(0x66ccff, 0.85); rim.position.set(-2,1.5,-1.5); scene.add(rim);
+      const RA = addPart("RA", gA.clone(), mA);
+      RA.scale.set(1.00, 0.92, 1.00);
+      RA.position.set(-0.16, 0.38, 0.03);
 
-        heartGroup = new THREE.Group();
-        scene.add(heartGroup);
+      // Aorta
+      const gCyl = new THREE.CylinderGeometry(0.06, 0.07, 0.36, 32);
+      const A1 = addPart("AORTA", gCyl, mAo);
+      A1.position.set(0.04, 0.56, -0.05);
+      A1.rotation.set(0.20, 0.0, -0.35);
 
-        const mat=(hex, emiss)=> new THREE.MeshStandardMaterial({
-          color: hex, roughness: 0.42, metalness: 0.05, emissive: emiss, emissiveIntensity: 0.12
-        });
+      const gT = new THREE.TorusGeometry(0.15, 0.055, 22, 60, Math.PI*0.82);
+      const A2 = addPart("AORTA", gT, mAo);
+      A2.position.set(0.08, 0.56, -0.11);
+      A2.rotation.set(0.25, 1.2, 0.85);
 
-        const mV=mat(0x8b1f2f, 0x22040a);
-        const mA=mat(0x7a2136, 0x1a050b);
-        const mAo=mat(0x9b2b3a,0x26060e);
-        const mPu=mat(0x7f2a4a,0x220816);
-        const mCv=mat(0x5c2a52,0x160516);
+      // Pulmonary artery
+      const gP = new THREE.CylinderGeometry(0.055, 0.06, 0.30, 32);
+      const P = addPart("PULM", gP, mPu);
+      P.position.set(-0.08, 0.54, 0.02);
+      P.rotation.set(0.15, 0.0, 0.45);
 
-        parts = [];
-        function addPart(key, geom, material){
-          const mesh = new THREE.Mesh(geom, material);
-          mesh.userData.key = key;
-          mesh.userData.baseScale = mesh.scale.clone();
-          heartGroup.add(mesh);
-          parts.push(mesh);
-          return mesh;
-        }
+      // Vena cava
+      const gCv = new THREE.CylinderGeometry(0.055, 0.065, 0.28, 32);
+      const C1 = addPart("CAVA", gCv.clone(), mCv);
+      C1.position.set(-0.26, 0.52, 0.02);
+      C1.rotation.set(0.12, 0.0, 0.20);
 
-        // Ventricles
-        const gV = new THREE.SphereGeometry(0.22, 48, 48);
-        const LV = addPart("LV", gV.clone(), mV);
-        LV.scale.set(1.18, 1.40, 1.06);
-        LV.position.set(0.11, 0.18, 0.00);
-        LV.rotation.set(0.20, 0.25, 0.06);
+      const C2 = addPart("CAVA", gCv.clone(), mCv);
+      C2.position.set(-0.22, 0.26, 0.08);
+      C2.rotation.set(-0.25, 0.25, 0.15);
 
-        const RV = addPart("RV", gV.clone(), mV);
-        RV.scale.set(1.06, 1.28, 0.96);
-        RV.position.set(-0.12, 0.15, 0.06);
-        RV.rotation.set(0.20, -0.22, -0.06);
-
-        // Atria
-        const gA = new THREE.SphereGeometry(0.15, 40, 40);
-        const LA = addPart("LA", gA.clone(), mA);
-        LA.scale.set(1.05, 0.95, 1.05);
-        LA.position.set(0.14, 0.40, -0.03);
-
-        const RA = addPart("RA", gA.clone(), mA);
-        RA.scale.set(1.00, 0.92, 1.00);
-        RA.position.set(-0.16, 0.38, 0.03);
-
-        // Aorta
-        const gCyl = new THREE.CylinderGeometry(0.06, 0.07, 0.36, 32);
-        const A1 = addPart("AORTA", gCyl, mAo);
-        A1.position.set(0.04, 0.56, -0.05);
-        A1.rotation.set(0.20, 0.0, -0.35);
-
-        const gT = new THREE.TorusGeometry(0.15, 0.055, 22, 60, Math.PI*0.82);
-        const A2 = addPart("AORTA", gT, mAo);
-        A2.position.set(0.08, 0.56, -0.11);
-        A2.rotation.set(0.25, 1.2, 0.85);
-
-        // Pulmonary
-        const gP = new THREE.CylinderGeometry(0.055, 0.06, 0.30, 32);
-        const P = addPart("PULM", gP, mPu);
-        P.position.set(-0.08, 0.54, 0.02);
-        P.rotation.set(0.15, 0.0, 0.45);
-
-        // Vena cava
-        const gCv = new THREE.CylinderGeometry(0.055, 0.065, 0.28, 32);
-        const C1 = addPart("CAVA", gCv.clone(), mCv);
-        C1.position.set(-0.26, 0.52, 0.02);
-        C1.rotation.set(0.12, 0.0, 0.20);
-
-        const C2 = addPart("CAVA", gCv.clone(), mCv);
-        C2.position.set(-0.22, 0.26, 0.08);
-        C2.rotation.set(-0.25, 0.25, 0.15);
-
-        // Details (not clickable)
-        const detailMat = new THREE.MeshStandardMaterial({
-          color: 0x5b1720, roughness: 0.55, metalness: 0.02, transparent:true, opacity: 0.55
-        });
-        const gB = new THREE.SphereGeometry(0.07, 24, 24);
-        for(let i=0;i<10;i++){
-          const b = new THREE.Mesh(gB, detailMat);
-          b.position.set((Math.random()*0.34-0.17),(Math.random()*0.38+0.12),(Math.random()*0.26-0.13));
-          b.scale.setScalar(0.6 + Math.random()*0.7);
-          heartGroup.add(b);
-        }
-
-        heartGroup.position.set(0, 0.10, 0);
-        heartGroup.rotation.set(targetRotX, targetRotY, 0.03);
-
-        raycaster = new THREE.Raycaster();
-        pointer = new THREE.Vector2();
-
-        function resize(){
-          const w = wrap.clientWidth;
-          const h = wrap.clientHeight;
-          renderer.setSize(w, h, false);
-          camera.aspect = w / h;
-          camera.updateProjectionMatrix();
-        }
-        window.addEventListener("resize", resize);
-        resize();
-
-        // Interaction (drag/zoom)
-        canvas.addEventListener("pointerdown", (e)=>{
-          dragging=true; lastX=e.clientX; lastY=e.clientY;
-          try{ canvas.setPointerCapture(e.pointerId); }catch{}
-        });
-        canvas.addEventListener("pointerup", (e)=>{
-          dragging=false;
-          try{ canvas.releasePointerCapture(e.pointerId); }catch{}
-        });
-        canvas.addEventListener("pointermove", (e)=>{
-          if(!dragging) return;
-          const dx = e.clientX - lastX;
-          const dy = e.clientY - lastY;
-          lastX = e.clientX; lastY = e.clientY;
-          targetRotY += dx * 0.006;
-          targetRotX += dy * 0.006;
-          targetRotX = Math.max(-0.85, Math.min(0.85, targetRotX));
-        });
-        canvas.addEventListener("wheel", (e)=>{
-          e.preventDefault();
-          zoom += e.deltaY * 0.0016;
-          zoom = Math.max(1.15, Math.min(3.2, zoom));
-        }, { passive:false });
-
-        // Double click (raycast)
-        canvas.addEventListener("dblclick", (e)=>{
-          const rect = canvas.getBoundingClientRect();
-          pointer.x = ((e.clientX - rect.left)/rect.width)*2 - 1;
-          pointer.y = -(((e.clientY - rect.top)/rect.height)*2 - 1);
-          raycaster.setFromCamera(pointer, camera);
-          const hits = raycaster.intersectObjects(parts, false);
-          if(!hits.length) return;
-          const key = hits[0].object.userData.key;
-          setInfo(key);
-          mapStateEl.textContent = "Fokus";
-          parts.forEach(m => tweenScale(m, (m.userData.key===key)?1.16:1.0));
-        });
-
-        function updateCamera(){
-          camera.position.set(0.0, 0.40, zoom);
-          camera.lookAt(0, 0.30, 0);
-        }
-
-        setInfo(null);
-        mapStateEl.textContent = "Gati";
-
-        function loop(){
-          const tt = performance.now()*0.001;
-          heartGroup.rotation.x += (targetRotX - heartGroup.rotation.x) * 0.10;
-          heartGroup.rotation.y += (targetRotY - heartGroup.rotation.y) * 0.10;
-          heartGroup.position.y = 0.10 + Math.sin(tt*1.2)*0.003;
-
-          updateCamera();
-          renderer.render(scene, camera);
-          requestAnimationFrame(loop);
-        }
-        loop();
-
-      }catch(err){
-        mapStateEl.textContent = "Gabim";
-        webglNote.style.display = "block";
+      // Decorative bumps (non clickable)
+      const detailMat = new THREE.MeshStandardMaterial({
+        color: 0x5b1720, roughness: 0.55, metalness: 0.02, transparent:true, opacity: 0.55
+      });
+      const gB = new THREE.SphereGeometry(0.07, 24, 24);
+      for(let i=0;i<10;i++){
+        const b = new THREE.Mesh(gB, detailMat);
+        b.position.set((Math.random()*0.34-0.17),(Math.random()*0.38+0.12),(Math.random()*0.26-0.13));
+        b.scale.setScalar(0.6 + Math.random()*0.7);
+        group.add(b);
       }
+
+      group.position.set(0, 0.10, 0);
+      group.rotation.set(targetRotX, targetRotY, 0.03);
+
+      raycaster = new THREE.Raycaster();
+      pointer = new THREE.Vector2();
+
+      // Resize handling (robust)
+      const resize = ()=>{
+        const w = wrap.clientWidth;
+        const h = wrap.clientHeight;
+        if(w<10 || h<10) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize();
+      window.addEventListener("resize", resize);
+
+      const ro = new ResizeObserver(()=>resize());
+      ro.observe(wrap);
+
+      // Interactions
+      canvas.addEventListener("pointerdown", (e)=>{
+        dragging = true;
+        lastX = e.clientX; lastY = e.clientY;
+        try{ canvas.setPointerCapture(e.pointerId); }catch{}
+      });
+      canvas.addEventListener("pointerup", (e)=>{
+        dragging = false;
+        try{ canvas.releasePointerCapture(e.pointerId); }catch{}
+      });
+      canvas.addEventListener("pointermove", (e)=>{
+        if(!dragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        targetRotY += dx * 0.006;
+        targetRotX += dy * 0.006;
+        targetRotX = Math.max(-0.85, Math.min(0.85, targetRotX));
+      });
+      canvas.addEventListener("wheel", (e)=>{
+        e.preventDefault();
+        zoom += e.deltaY * 0.0016;
+        zoom = Math.max(1.15, Math.min(3.2, zoom));
+      }, { passive:false });
+
+      // Double click selects part
+      canvas.addEventListener("dblclick", (e)=>{
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects(parts, false);
+        if(!hits.length) return;
+        const key = hits[0].object.userData.key;
+
+        setInfo(key);
+        mapStateEl.textContent = "Fokus";
+
+        for(const m of parts){
+          tweenScale(m, (m.userData.key === key) ? 1.16 : 1.0);
+        }
+      });
+
+      function updateCamera(){
+        camera.position.set(0.0, 0.40, zoom);
+        camera.lookAt(0, 0.30, 0);
+      }
+
+      setInfo(null);
+      mapStateEl.textContent = "Gati";
+
+      // Animation loop
+      function loop(){
+        const tt = performance.now()*0.001;
+        group.rotation.x += (targetRotX - group.rotation.x) * 0.10;
+        group.rotation.y += (targetRotY - group.rotation.y) * 0.10;
+        group.position.y = 0.10 + Math.sin(tt*1.2) * 0.003;
+
+        updateCamera();
+        renderer.render(scene, camera);
+        requestAnimationFrame(loop);
+      }
+      loop();
     }
 
-    /* ======================
-       ECG background animation
-    ====================== */
-    const canvasEcg = document.getElementById("ecg");
-    const c = canvasEcg.getContext("2d");
+    /* ---------- ECG background animation ---------- */
+    const ecg = document.getElementById("ecg");
+    const g = ecg.getContext("2d");
     let W=0,H=0,t=0;
 
     function resizeEcg(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
-      W = canvasEcg.clientWidth; H = canvasEcg.clientHeight;
-      canvasEcg.width = Math.floor(W*dpr);
-      canvasEcg.height = Math.floor(H*dpr);
-      c.setTransform(dpr,0,0,dpr,0,0);
+      W = ecg.clientWidth; H = ecg.clientHeight;
+      ecg.width = Math.floor(W*dpr);
+      ecg.height = Math.floor(H*dpr);
+      g.setTransform(dpr,0,0,dpr,0,0);
     }
     window.addEventListener("resize", resizeEcg);
     resizeEcg();
 
     function drawEcg(){
       t += 0.016;
-      c.fillStyle = "rgba(0,0,0,0.18)";
-      c.fillRect(0,0,W,H);
+      g.fillStyle = "rgba(0,0,0,0.18)";
+      g.fillRect(0,0,W,H);
 
       // grid
-      c.save();
-      c.globalAlpha = 0.10;
-      c.strokeStyle = "rgba(120,220,255,0.35)";
-      c.lineWidth = 1;
+      g.save();
+      g.globalAlpha = 0.10;
+      g.strokeStyle = "rgba(120,220,255,0.35)";
+      g.lineWidth = 1;
       const step = 42;
-      for(let x=0;x<W;x+=step){ c.beginPath(); c.moveTo(x,0); c.lineTo(x,H); c.stroke(); }
-      for(let y=0;y<H;y+=step){ c.beginPath(); c.moveTo(0,y); c.lineTo(W,y); c.stroke(); }
-      c.restore();
+      for(let x=0;x<W;x+=step){ g.beginPath(); g.moveTo(x,0); g.lineTo(x,H); g.stroke(); }
+      for(let y=0;y<H;y+=step){ g.beginPath(); g.moveTo(0,y); g.lineTo(W,y); g.stroke(); }
+      g.restore();
 
       // wave
       const mid = H*0.52;
       const amp = Math.min(64, H*0.10);
 
-      c.save();
-      c.lineWidth = 2.2;
-      c.strokeStyle = "rgba(140,220,255,0.95)";
-      c.shadowColor = "rgba(0,190,255,0.35)";
-      c.shadowBlur = 18;
+      g.save();
+      g.lineWidth = 2.2;
+      g.strokeStyle = "rgba(140,220,255,0.95)";
+      g.shadowColor = "rgba(0,190,255,0.35)";
+      g.shadowBlur = 18;
 
-      c.beginPath();
+      g.beginPath();
       const speed = 220;
       const phase = (t*speed) % W;
 
@@ -1231,31 +1220,27 @@
         if(u >= 0.44 && u < 0.52) y +=  Math.sin((u-0.44)*Math.PI*6) * (amp*0.10);
 
         const yy = mid + y;
-        if(x===0) c.moveTo(x,yy); else c.lineTo(x,yy);
+        if(x===0) g.moveTo(x,yy); else g.lineTo(x,yy);
       }
-      c.stroke();
+      g.stroke();
 
-      c.globalAlpha = 0.25;
-      c.lineWidth = 6;
-      c.strokeStyle = "rgba(0,200,255,0.35)";
-      c.stroke();
-      c.restore();
+      g.globalAlpha = 0.25;
+      g.lineWidth = 6;
+      g.strokeStyle = "rgba(0,200,255,0.35)";
+      g.stroke();
+      g.restore();
 
       requestAnimationFrame(drawEcg);
     }
     requestAnimationFrame(drawEcg);
 
-    /* ======================
-       Buttons + init
-    ====================== */
-    document.getElementById("backMap").addEventListener("click", () => go("menu"));
-    document.getElementById("backRoutine").addEventListener("click", () => { hideOut(); go("menu"); });
-
+    /* ---------- init + navigation ---------- */
     updatePill();
     validateData();
+
+    document.getElementById("backMap").addEventListener("click", ()=>go("menu"));
 
     go("landing");
   </script>
 </body>
 </html>
-
