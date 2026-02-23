@@ -1,665 +1,1180 @@
-[7:34 PM, 2/23/2026] Renita: <!doctype html>
+<!doctype html>
 <html lang="sq">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>MIA — Mjekët e Inteligjencës Artificiale</title>
-<style>
-:root{
-  --bg0:#050914; --bg1:#020817; --ink:#EAF4FF; --muted:#A7C1DF;
-  --glass1:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
-  --line:rgba(255,255,255,.14); --shadow:0 22px 70px rgba(0,0,0,.55);
-  --r1:18px; --r2:26px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 700px at 12% 0%, rgba(40,120,255,.22), transparent 60%),
-    radial-gradient(900px 600px at 85% 20%, rgba(0,220,255,.14), …
-[7:35 PM, 2/23/2026] Renita: <!doctype html>
-<html lang="sq">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MIA - Mjeket e Inteligjences Artificiale</title>
-<style>
-:root{
-  --bg0:#050914; --bg1:#020817; --ink:#EAF4FF; --muted:#A7C1DF;
-  --glass1:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
-  --line:rgba(255,255,255,.14); --shadow:0 22px 70px rgba(0,0,0,.55);
-  --r2:26px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 700px at 12% 0%, rgba(40,120,255,.22), transparent 60%),
-    radial-gradient(900px 600px at 85% 20%, rgba(0,220,255,.14), transparent 55%),
-    linear-gradient(180deg,var(--bg0),var(--bg1));
-  overflow:hidden;
-}
-.bg{position:absolute;inset:0;overflow:hidden}
-#ecg{position:absolute;inset:0;width:100%;height:100%;opacity:.92;filter:drop-shadow(0 0 16px rgba(0,180,255,.22))}
-.noise{
-  position:absolute;inset:-40px;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.30'/%3E%3C/svg%3E");
-}
-.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(1000px 600px at 50% 30%,transparent 30%,rgba(0,0,0,.62) 82%)}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MIA — Mjekët e Inteligjencës Artificiale</title>
+  <style>
+    :root{
+      --bg0:#030712;
+      --bg1:#020817;
+      --ink:#e6f1ff;
+      --muted:#9bb3d3;
+      --glass: rgba(255,255,255,.08);
+      --glass2: rgba(255,255,255,.12);
+      --line: rgba(255,255,255,.16);
+      --aero1: rgba(120,190,255,.22);
+      --aero2: rgba(0,170,255,.12);
+      --ok: rgba(80,255,190,.18);
+      --warn: rgba(255,220,120,.18);
+      --bad: rgba(255,120,160,.18);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+      --radius2: 28px;
+    }
 
-.app{position:relative;height:100%;width:100%}
-.screen{
-  position:absolute;inset:0;display:grid;place-items:center;padding:24px;
-  opacity:0;transform:translateY(16px) scale(.985);pointer-events:none;
-  transition:opacity .45s ease, transform .55s cubic-bezier(.2,.9,.2,1);
-}
-.screen.active{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 700px at 10% 0%, rgba(40,120,255,.22), transparent 60%),
+                  radial-gradient(900px 600px at 80% 20%, rgba(0,220,255,.14), transparent 55%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow:hidden;
+    }
 
-.card{
-  width:min(980px,94vw);border-radius:var(--r2);
-  background:linear-gradient(180deg,var(--glass1),var(--glass2));
-  border:1px solid var(--line);box-shadow:var(--shadow);
-  backdrop-filter:blur(18px);
-  overflow:hidden;position:relative;
-}
-.card.wide{width:min(1160px,96vw)}
-.card::before{
-  content:"";position:absolute;inset:-2px;pointer-events:none;
-  background:
-    radial-gradient(700px 240px at 18% 0%, rgba(140,220,255,.20), transparent 60%),
-    radial-gradient(600px 240px at 92% 18%, rgba(0,160,255,.16), transparent 55%);
-}
-.inner{position:relative;padding:24px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{
-  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;position:relative;overflow:hidden;
-  background:linear-gradient(180deg,rgba(120,220,255,.22),rgba(255,255,255,.06));
-  border:1px solid rgba(140,220,255,.22);
-  box-shadow:0 12px 28px rgba(0,0,0,.30);
-}
-.logo::before{content:"";position:absolute;inset:-2px;opacity:.9;pointer-events:none;background:radial-gradient(100px 60px at 25% 10%, rgba(255,255,255,.32), transparent 60%)}
-.logo span{position:relative;font-weight:950;letter-spacing:.18em;transform:translateX(2px)}
-.brandText .mia{font-weight:950;letter-spacing:.16em;font-size:18px;line-height:1.05}
-.brandText .sub{font-size:12.5px;color:var(--muted)}
-.pill{
-  font-size:12px;color:rgba(234,244,255,.90);
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  padding:8px 10px;border-radius:999px;display:flex;gap:8px;align-items:center;max-width:560px
-}
-.pill strong{font-weight:800}
+    /* --- Smooth page system --- */
+    .app{ height:100%; width:100%; position:relative; }
+    .screen{
+      position:absolute; inset:0;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      opacity:0;
+      transform: translateY(18px) scale(.985);
+      pointer-events:none;
+      transition: opacity .5s ease, transform .55s cubic-bezier(.2,.9,.2,1);
+    }
+    .screen.active{
+      opacity:1;
+      transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
 
-.btnRow{display:flex;gap:12px;flex-wrap:wrap}
-.btn{
-  border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
-  color:var(--ink);padding:13px 16px;border-radius:18px;font-weight:850;cursor:pointer;min-width:240px;
-  transition:transform .15s ease,border-color .2s ease,box-shadow .2s ease,opacity .2s ease;
-  box-shadow:0 12px 30px rgba(0,0,0,.26);
-  position:relative;overflow:hidden;
-}
-.btn:hover{transform:translateY(-1px);border-color:rgba(170,230,255,.34);box-shadow:0 16px 38px rgba(0,0,0,.32)}
-.btn:active{transform:translateY(0)}
-.btn.primary{background:linear-gradient(180deg,rgba(120,220,255,.22),rgba(0,140,255,.10));border-color:rgba(140,220,255,.28)}
-.btn.small{min-width:auto;padding:10px 12px;border-radius:16px;font-size:13px}
-.btn.ghost{background:rgba(0,0,0,.12);border-color:rgba(255,255,255,.14);box-shadow:none}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-@media(max-width:720px){.btn{min-width:100%}}
+    /* --- Background ECG layer --- */
+    .bg{
+      position:absolute; inset:0;
+      overflow:hidden;
+    }
+    .noise{
+      position:absolute; inset:-40px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity:.12;
+      transform: rotate(3deg);
+      pointer-events:none;
+    }
+    canvas#ecg{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      opacity:.9;
+      filter: drop-shadow(0 0 16px rgba(0,180,255,.25));
+    }
+    .vignette{
+      position:absolute; inset:0;
+      background: radial-gradient(1000px 600px at 50% 30%, transparent 30%, rgba(0,0,0,.55) 80%);
+      pointer-events:none;
+    }
 
-.landing{width:min(920px,94vw);text-align:center;padding:26px 16px}
-.big{
-  font-size:clamp(58px,10vw,96px);font-weight:980;letter-spacing:.22em;margin:0;
-  display:inline-block;cursor:pointer;text-shadow:0 0 22px rgba(0,200,255,.25);user-select:none;position:relative
-}
-.subtitle{margin-top:14px;color:var(--muted);font-size:clamp(14px,2.2vw,18px)}
-.hint{margin-top:18px;font-size:13px;color:rgba(234,244,255,.72)}
+    /* --- Cards / Aero glass --- */
+    .card{
+      width:min(980px, 94vw);
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow:hidden;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: radial-gradient(700px 240px at 20% 0%, rgba(140,220,255,.20), transparent 60%),
+                  radial-gradient(600px 240px at 90% 20%, rgba(0,160,255,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .cardInner{
+      position:relative;
+      padding: 26px;
+    }
 
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-@media(max-width:720px){.grid{grid-template-columns:1fr}}
-.field{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:18px;padding:12px}
-.field label{display:block;font-size:12px;color:rgba(234,244,255,.82);margin-bottom:8px}
-.req{color:rgba(180,240,255,.95);font-weight:900;margin-left:6px;font-size:11px}
-input,select{
-  width:100%;border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.18);color:var(--ink);border-radius:14px;padding:12px;font-size:14px;outline:none
-}
-.note{
-  margin-top:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);color:rgba(234,244,255,.88);font-size:13px;line-height:1.35
-}
-.statusRow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}
-.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:12px}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      user-select:none;
+    }
+    .brand .mia{
+      font-weight:900;
+      letter-spacing:.16em;
+      font-size: 22px;
+      text-shadow: 0 0 18px rgba(0,190,255,.22);
+    }
+    .brand .tag{
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing:.02em;
+    }
 
-.neuroWrap{border-radius:22px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.14);overflow:hidden;position:relative;min-height:420px}
-.neuroCalm{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(1000px 600px at 20% 10%, rgba(120,220,255,.16), transparent 60%),
-    radial-gradient(700px 500px at 80% 30%, rgba(0,220,255,.10), transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.36));
-  opacity:.96;
-}
-.neuroStage{position:absolute;inset:0;display:grid;place-items:center;padding:18px;text-align:center}
-.flashOverlay{position:absolute;inset:0;background:radial-gradient(700px 380px at 50% 50%, rgba(255,255,255,.35), transparent 60%);opacity:0;pointer-events:none}
-.flashOverlay.on{animation:pulseFlash .8s ease-in-out infinite;opacity:.22}
-@keyframes pulseFlash{0%,100%{opacity:.10}50%{opacity:.36}}
-.shakeOverlay{position:absolute;inset:0;pointer-events:none;opacity:0}
-.shakeOverlay.on{opacity:1;animation:shake .55s ease-in-out infinite}
-@keyframes shake{0%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}100%{transform:translate(0,0)}}
-.breatheOverlay{position:absolute;inset:0;pointer-events:none;opacity:0}
-.breatheOverlay.on{opacity:.9;animation:breathe 5s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.08);opacity:.34}}
-</style>
+    .pill{
+      font-size:12px;
+      color: rgba(230,241,255,.86);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      max-width: 520px;
+    }
+    .pill strong{ font-weight:700; }
+
+    /* --- Buttons (iOS glass + Aero shine) --- */
+    .btnRow{ display:flex; gap:14px; flex-wrap:wrap; }
+    .btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.18);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+      color: var(--ink);
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-weight:700;
+      letter-spacing:.01em;
+      cursor:pointer;
+      min-width: 240px;
+      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow: 0 10px 28px rgba(0,0,0,.25);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position:relative;
+      overflow:hidden;
+    }
+    .btn::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(300px 80px at 20% 0%, rgba(255,255,255,.28), transparent 55%),
+        radial-gradient(280px 90px at 80% 10%, rgba(120,220,255,.22), transparent 55%);
+      opacity:.75;
+      pointer-events:none;
+      transform: translateY(-10px);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(170,230,255,.35);
+      box-shadow: 0 16px 38px rgba(0,0,0,.30);
+    }
+    .btn:active{ transform: translateY(0); }
+    .btn.small{ min-width:auto; padding: 11px 14px; border-radius: 16px; font-size: 13px; }
+    .btn.ghost{
+      background: rgba(0,0,0,.10);
+      border-color: rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(0,140,255,.10));
+      border-color: rgba(140,220,255,.28);
+    }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(255,120,160,.16), rgba(255,255,255,.06));
+      border-color: rgba(255,160,190,.24);
+    }
+
+    /* --- Landing --- */
+    .landingWrap{
+      width:min(920px, 94vw);
+      text-align:center;
+      padding: 30px 22px;
+    }
+    .bigMIA{
+      font-size: clamp(54px, 10vw, 96px);
+      font-weight: 950;
+      letter-spacing: .22em;
+      margin: 0;
+      display:inline-block;
+      cursor:pointer;
+      position:relative;
+      text-shadow: 0 0 22px rgba(0,200,255,.25);
+      user-select:none;
+    }
+    .bigMIA::after{
+      content:"";
+      position:absolute; left:50%; top:100%;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(120,220,255,.75), transparent);
+      transform: translateX(-50%);
+      opacity:.7;
+    }
+    .subtitle{
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: clamp(14px, 2.2vw, 18px);
+      letter-spacing:.02em;
+    }
+    .hint{
+      margin-top: 22px;
+      color: rgba(230,241,255,.75);
+      font-size: 13px;
+      opacity:.9;
+    }
+    .kbd{
+      display:inline-block;
+      padding: 3px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      margin: 0 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+
+    /* --- Forms --- */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr; }
+      .btn{ min-width: 100%; }
+    }
+
+    .field{
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      padding: 12px 12px 10px;
+      position:relative;
+    }
+    .field label{
+      display:block;
+      font-size: 12px;
+      color: rgba(230,241,255,.80);
+      margin-bottom: 8px;
+      letter-spacing:.02em;
+    }
+    .field .req{
+      color: rgba(180,240,255,.95);
+      font-weight:700;
+      margin-left: 6px;
+      font-size: 11px;
+      opacity:.9;
+    }
+    input, select, textarea{
+      width:100%;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 14px;
+      outline:none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(140,220,255,.32);
+      box-shadow: 0 0 0 4px rgba(80,180,255,.10);
+    }
+    textarea{ resize: vertical; min-height: 92px; }
+
+    .note{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(230,241,255,.85);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .note strong{ color: rgba(220,250,255,.95); }
+
+    .statusRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      color: rgba(230,241,255,.86);
+    }
+
+    /* --- Output --- */
+    .out{
+      margin-top: 14px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      padding: 14px;
+    }
+    .out h3{
+      margin: 0 0 10px;
+      font-size: 15px;
+      letter-spacing:.02em;
+    }
+    .out p, .out li{
+      color: rgba(230,241,255,.86);
+      line-height: 1.45;
+      font-size: 13.5px;
+    }
+    .out ul{ margin: 8px 0 0 18px; }
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 860px){ .twoCol{ grid-template-columns: 1fr; } }
+
+    .week{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding: 12px;
+    }
+    .week .day{
+      padding: 10px 10px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      margin-bottom: 10px;
+    }
+    .week .day:last-child{ margin-bottom:0; }
+    .week .day strong{ display:block; margin-bottom: 6px; letter-spacing:.02em; }
+
+    /* --- Chat --- */
+    .chatBox{
+      height: 320px;
+      overflow:auto;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .msg{
+      max-width: 92%;
+      padding: 10px 12px;
+      border-radius: 16px;
+      margin: 8px 0;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      line-height: 1.35;
+      font-size: 13.5px;
+    }
+    .msg.me{
+      margin-left:auto;
+      background: linear-gradient(180deg, rgba(120,220,255,.16), rgba(255,255,255,.06));
+      border-color: rgba(140,220,255,.20);
+    }
+    .chatRow{
+      display:flex; gap:10px; margin-top: 12px;
+    }
+    .chatRow input{ flex:1; }
+
+    /* tiny footer */
+    .footer{
+      margin-top: 14px;
+      color: rgba(230,241,255,.62);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+  </style>
 </head>
 
 <body>
-<div class="app">
-  <div class="bg">
-    <canvas id="ecg"></canvas>
-    <div class="noise"></div>
-    <div class="vignette"></div>
+  <div class="app">
+    <div class="bg">
+      <canvas id="ecg"></canvas>
+      <div class="noise"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <!-- SCREEN 1: Landing -->
+    <section class="screen active" id="screen-landing" aria-label="Faqja hyrëse">
+      <div class="landingWrap">
+        <h1 class="bigMIA" id="miaLogo" title="Kliko për të vazhduar">MIA</h1>
+        <div class="subtitle">Mjekët e Inteligjencës Artificiale</div>
+        <div class="hint">Kliko mbi <span class="kbd">MIA</span> ose shtyp <span class="kbd">Enter</span>.</div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: Main Menu -->
+    <section class="screen" id="screen-menu" aria-label="Menuja">
+      <div class="card">
+        <div class="cardInner">
+          <div class="topbar">
+            <div class="brand">
+              <div class="mia">MIA</div>
+              <div class="tag">Mjekët e Inteligjencës Artificiale</div>
+            </div>
+            <div class="pill" id="profilePill">
+              <strong>Profili:</strong> ende pa të dhëna — plotëso “Vendos të dhënat”
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn primary" id="btnData">Vendos të dhënat (e detyrueshme)</button>
+            <button class="btn" id="btnRoutine">Gjenero Rutinën Personale</button>
+            <button class="btn" id="btnAI">Pyet Asistentin AI</button>
+          </div>
+
+          <div class="note" style="margin-top:16px;">
+            <strong>Shënim:</strong> Ky projekt është për panairin e shkencës dhe ka qëllim edukativ. Nuk bën diagnozë dhe nuk zëvendëson mjekun.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: Data Form -->
+    <section class="screen" id="screen-data" aria-label="Vendos të dhënat">
+      <div class="card">
+        <div class="cardInner">
+          <div class="topbar">
+            <div class="brand">
+              <div class="mia">MIA</div>
+              <div class="tag">Vendos të dhënat</div>
+            </div>
+            <button class="btn small ghost" id="backToMenu1">Kthehu</button>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label>Mosha <span class="req">(e detyrueshme)</span></label>
+              <input id="age" type="number" min="5" max="120" placeholder="p.sh. 16" />
+            </div>
+
+            <div class="field">
+              <label>Gjinia <span class="req">(e detyrueshme)</span></label>
+              <select id="gender">
+                <option value="">Zgjidh…</option>
+                <option value="F">Femër</option>
+                <option value="M">Mashkull</option>
+                <option value="X">Tjetër / preferoj të mos them</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Problemi i zemrës <span style="opacity:.7">(opsional)</span></label>
+              <select id="heartIssue">
+                <option value="">—</option>
+                <option value="tachy">Takikardi / rrahje të shpejta</option>
+                <option value="brady">Bradikardi / rrahje të ngadalta</option>
+                <option value="arr">Aritmi (të parregullta)</option>
+                <option value="bp">Tension i lartë / probleme presioni</option>
+                <option value="pain">Dhimbje gjoksi / shqetësim</option>
+                <option value="other">Tjetër</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Emri <span class="req">(e detyrueshme)</span></label>
+              <input id="name" type="text" placeholder="p.sh. Ardi" maxlength="32" />
+            </div>
+          </div>
+
+          <div class="statusRow">
+            <div class="chip" id="formStatus">Plotëso fushat e detyrueshme për të aktivizuar kthimin.</div>
+            <button class="btn small primary" id="btnReturnFromData" style="display:none;">Kthehu në faqen kryesore</button>
+          </div>
+
+          <div class="footer">
+            * Fushat e detyrueshme: Mosha, Gjinia, Emri. “Problemi i zemrës” është opsional.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: Routine Generator -->
+    <section class="screen" id="screen-routine" aria-label="Gjenero rutinën">
+      <div class="card">
+        <div class="cardInner">
+          <div class="topbar">
+            <div class="brand">
+              <div class="mia">MIA</div>
+              <div class="tag">Rutina personale (edukative)</div>
+            </div>
+            <button class="btn small ghost" id="backToMenu2">Kthehu</button>
+          </div>
+
+          <div class="note" id="routineIntro">
+            Jep <strong>numrin e rrahjeve të zemrës për 1 minutë (BPM)</strong>. MIA do të përgatisë një plan edukativ javor në bazë të të dhënave të vendosura.
+          </div>
+
+          <div class="grid" style="margin-top:12px;">
+            <div class="field">
+              <label>Rrahjet e zemrës (BPM) <span class="req">(e detyrueshme)</span></label>
+              <input id="bpm" type="number" min="30" max="220" placeholder="p.sh. 92" />
+            </div>
+            <div class="field">
+              <label>Kur u mat? <span style="opacity:.7">(opsional)</span></label>
+              <select id="bpmContext">
+                <option value="rest">Në qetësi / ulur</option>
+                <option value="after">Pas aktiviteti të lehtë</option>
+                <option value="stress">Në stres / ankth</option>
+                <option value="unknown">Nuk jam i sigurt</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="statusRow">
+            <div class="chip" id="bpmStatus">Vendos BPM për të gjeneruar planin.</div>
+            <button class="btn small primary" id="btnGenerate">Gjenero planin</button>
+          </div>
+
+          <div class="out" id="output" style="display:none;">
+            <h3 id="outTitle">Plani javor</h3>
+            <div class="twoCol">
+              <div>
+                <div id="outSummary"></div>
+                <div id="outTips"></div>
+              </div>
+              <div class="week" id="outWeek"></div>
+            </div>
+
+            <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+              <button class="btn small ghost" id="backToMenu3">Kthehu në faqen e mëparshme</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: AI Assistant (offline) -->
+    <section class="screen" id="screen-ai" aria-label="Asistenti AI">
+      <div class="card">
+        <div class="cardInner">
+          <div class="topbar">
+            <div class="brand">
+              <div class="mia">MIA</div>
+              <div class="tag">Asistenti AI (offline, edukativ)</div>
+            </div>
+            <button class="btn small ghost" id="backToMenu4">Kthehu</button>
+          </div>
+
+          <div class="note">
+            Mund të pyesësh për kuptime si “çfarë është BPM?”, “çfarë të bëj kur ndihem i lodhur?”, “si ta mat pulsin saktë?”.
+            Për situata urgjente (dhimbje gjoksi, marramendje e fortë, të fikët), kërko ndihmë mjekësore.
+          </div>
+
+          <div class="chatBox" id="chatBox" aria-live="polite"></div>
+
+          <div class="chatRow">
+            <input id="chatInput" type="text" placeholder="Shkruaj pyetjen…" />
+            <button class="btn small primary" id="chatSend">Dërgo</button>
+          </div>
+
+          <div class="footer">
+            * Asistenti është rregull-bazë (pa internet, pa API key) dhe jep përgjigje të përgjithshme edukative.
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <section class="screen active" id="s-landing">
-    <div class="landing">
-      <h1 class="big" id="miaBig">MIA</h1>
-      <div class="subtitle">Mjeket e Inteligjences Artificiale</div>
-      <div class="hint">Kliko mbi MIA ose shtyp Enter.</div>
-    </div>
-  </section>
+  <script>
+    // --------------------
+    // Simple screen router
+    // --------------------
+    const screens = {
+      landing: document.getElementById("screen-landing"),
+      menu: document.getElementById("screen-menu"),
+      data: document.getElementById("screen-data"),
+      routine: document.getElementById("screen-routine"),
+      ai: document.getElementById("screen-ai"),
+    };
 
-  <section class="screen" id="s-menu">
-    <div class="card">
-      <div class="inner">
-        <div class="topbar">
-          <div class="brand">
-            <div class="logo"><span>MIA</span></div>
-            <div class="brandText">
-              <div class="mia">MIA</div>
-              <div class="sub">Mjeket e Inteligjences Artificiale</div>
-            </div>
-          </div>
-          <div class="pill" id="pillProfile"><strong>Profili:</strong> ende pa te dhena</div>
-        </div>
+    function go(to){
+      Object.values(screens).forEach(s => s.classList.remove("active"));
+      screens[to].classList.add("active");
+      // small UX: focus first actionable
+      setTimeout(() => {
+        const focusables = screens[to].querySelectorAll("button, input, select, textarea");
+        if (focusables.length) focusables[0].focus({preventScroll:true});
+      }, 60);
+    }
 
-        <div class="btnRow">
-          <button class="btn primary" id="bData">Vendos te dhenat (e detyrueshme)</button>
-          <button class="btn" id="bRoutine">Gjenero Rutinen Personale</button>
-          <button class="btn" id="bNeuro" disabled>NeuroSpark</button>
-        </div>
+    // --------------------
+    // State
+    // --------------------
+    const state = {
+      profile: {
+        age: null,
+        gender: "",
+        heartIssue: "",
+        name: ""
+      }
+    };
 
-        <div class="note">
-          Shenim: Kjo faqe jep udhezime edukative. Nuk zevendeson mjekun.
-          <br>Kujdes: NeuroSpark perdor efekte vizuale dhe audio.
-        </div>
-      </div>
-    </div>
-  </section>
+    const profilePill = document.getElementById("profilePill");
+    function updateProfilePill(){
+      const p = state.profile;
+      const ok = (p.age && p.gender && p.name);
+      if(!ok){
+        profilePill.innerHTML = "<strong>Profili:</strong> ende pa të dhëna — plotëso “Vendos të dhënat”";
+        return;
+      }
+      const issueLabel = ({
+        "": "pa problem të deklaruar",
+        "tachy":"takikardi",
+        "brady":"bradikardi",
+        "arr":"aritmi",
+        "bp":"tension i lartë",
+        "pain":"shqetësim/dhimbje gjoksi",
+        "other":"tjetër"
+      })[p.heartIssue ?? ""] || "—";
 
-  <section class="screen" id="s-data">
-    <div class="card">
-      <div class="inner">
-        <div class="topbar">
-          <div class="brand">
-            <div class="logo"><span>MIA</span></div>
-            <div class="brandText">
-              <div class="mia">Vendos te dhenat</div>
-              <div class="sub">Detyrueshme: Mosha, Gjinia, Emri</div>
-            </div>
-          </div>
-          <button class="btn small ghost" id="backData">Kthehu</button>
-        </div>
+      const g = (p.gender==="F"?"F":"M") ? (p.gender==="F" ? "F" : (p.gender==="M" ? "M" : "X")) : "—";
+      profilePill.innerHTML =
+        `<strong>Profili:</strong> ${escapeHtml(p.name)} · ${p.age} vjeç · gjinia ${g} · ${issueLabel}`;
+    }
 
-        <div class="grid">
-          <div class="field">
-            <label>Mosha <span class="req">(det.)</span></label>
-            <input id="age" type="number" min="5" max="120" placeholder="p.sh. 16">
-          </div>
-          <div class="field">
-            <label>Gjinia <span class="req">(det.)</span></label>
-            <select id="gender">
-              <option value="">Zgjidh...</option>
-              <option value="Femer">Femer</option>
-              <option value="Mashkull">Mashkull</option>
-              <option value="Tjeter">Tjeter</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Problemi i zemres (ops.)</label>
-            <select id="issue">
-              <option value="">-</option>
-              <option value="Takikardi">Takikardi</option>
-              <option value="Bradikardi">Bradikardi</option>
-              <option value="Aritmi">Aritmi</option>
-              <option value="Tension i larte">Tension i larte</option>
-              <option value="Dhimbje gjoksi">Dhimbje gjoksi</option>
-              <option value="Tjeter">Tjeter</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Emri <span class="req">(det.)</span></label>
-            <input id="name" type="text" maxlength="32" placeholder="p.sh. Ardi">
-          </div>
-        </div>
+    // --------------------
+    // Landing interaction
+    // --------------------
+    const miaLogo = document.getElementById("miaLogo");
+    miaLogo.addEventListener("click", () => go("menu"));
+    window.addEventListener("keydown", (e) => {
+      if(screens.landing.classList.contains("active") && e.key === "Enter"){
+        go("menu");
+      }
+    });
 
-        <div class="statusRow">
-          <div class="chip" id="statusData">Ploteso fushat e detyrueshme.</div>
-          <button class="btn small primary" id="saveGo" style="display:none;">Kthehu ne faqen kryesore</button>
-        </div>
-      </div>
-    </div>
-  </section>
+    // --------------------
+    // Menu buttons
+    // --------------------
+    document.getElementById("btnData").addEventListener("click", () => go("data"));
+    document.getElementById("btnRoutine").addEventListener("click", () => {
+      const p = state.profile;
+      if(!(p.age && p.gender && p.name)){
+        // gentle redirect
+        go("data");
+        flash(document.getElementById("formStatus"), "Duhet të plotësosh fillimisht Mosha, Gjinia, Emri.", 2200);
+        return;
+      }
+      go("routine");
+    });
+    document.getElementById("btnAI").addEventListener("click", () => go("ai"));
 
-  <section class="screen" id="s-routine">
-    <div class="card wide">
-      <div class="inner">
-        <div class="topbar">
-          <div class="brand">
-            <div class="logo"><span>MIA</span></div>
-            <div class="brandText">
-              <div class="mia" id="routineTitle">Rutina personale</div>
-              <div class="sub" id="routineSub">Vendos BPM dhe SpO2</div>
-            </div>
-          </div>
-          <button class="btn small ghost" id="backRoutine">Kthehu</button>
-        </div>
+    // --------------------
+    // Data form validation
+    // --------------------
+    const ageEl = document.getElementById("age");
+    const genderEl = document.getElementById("gender");
+    const heartIssueEl = document.getElementById("heartIssue");
+    const nameEl = document.getElementById("name");
+    const formStatus = document.getElementById("formStatus");
+    const btnReturnFromData = document.getElementById("btnReturnFromData");
 
-        <div class="grid">
-          <div class="field">
-            <label>BPM <span class="req">(det.)</span></label>
-            <input id="bpm" type="number" min="30" max="220" placeholder="p.sh. 92">
-          </div>
-          <div class="field">
-            <label>SpO2 (%) (ops.)</label>
-            <input id="spo2" type="number" min="50" max="100" placeholder="p.sh. 98">
-          </div>
-          <div class="field">
-            <label>Konteksti (ops.)</label>
-            <select id="ctx">
-              <option value="rest">Ne qetesi</option>
-              <option value="after">Pas aktiviteti</option>
-              <option value="stress">Ne stres</option>
-              <option value="unknown">Nuk jam i sigurt</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Status</label>
-            <div class="chip" id="statusBpm">Vendos BPM (30-220).</div>
-          </div>
-        </div>
+    function validateProfile(){
+      const age = parseInt(ageEl.value, 10);
+      const gender = genderEl.value;
+      const name = nameEl.value.trim();
 
-        <div class="statusRow">
-          <div></div>
-          <button class="btn small primary" id="gen">Gjenero</button>
-        </div>
+      const ageOk = Number.isFinite(age) && age >= 5 && age <= 120;
+      const genderOk = !!gender;
+      const nameOk = name.length >= 2;
 
-        <div class="note" id="out" style="display:none;"></div>
-      </div>
-    </div>
-  </section>
+      const ok = ageOk && genderOk && nameOk;
 
-  <section class="screen" id="s-neuro">
-    <div class="card wide">
-      <div class="inner">
-        <div class="topbar">
-          <div class="brand">
-            <div class="logo"><span>MIA</span></div>
-            <div class="brandText">
-              <div class="mia">NeuroSpark</div>
-              <div class="sub">Test i reagimit nen stres</div>
-            </div>
-          </div>
-          <button class="btn small ghost" id="backNeuro">Kthehu</button>
-        </div>
+      if(ok){
+        formStatus.textContent = "Gati ✅ Tani mund të kthehesh në faqen kryesore.";
+        btnReturnFromData.style.display = "inline-flex";
+      } else {
+        let missing = [];
+        if(!ageOk) missing.push("Mosha (5–120)");
+        if(!genderOk) missing.push("Gjinia");
+        if(!nameOk) missing.push("Emri (min 2 shkronja)");
+        formStatus.textContent = "Plotëso: " + missing.join(" · ");
+        btnReturnFromData.style.display = "none";
+      }
+      return ok;
+    }
 
+    function saveProfile(){
+      state.profile.age = parseInt(ageEl.value, 10);
+      state.profile.gender = genderEl.value;
+      state.profile.heartIssue = heartIssueEl.value;
+      state.profile.name = nameEl.value.trim();
+      updateProfilePill();
+    }
+
+    [ageEl, genderEl, heartIssueEl, nameEl].forEach(el => {
+      el.addEventListener("input", () => {
+        validateProfile();
+      });
+      el.addEventListener("change", () => {
+        validateProfile();
+      });
+    });
+
+    btnReturnFromData.addEventListener("click", () => {
+      if(validateProfile()){
+        saveProfile();
+        go("menu");
+      }
+    });
+
+    document.getElementById("backToMenu1").addEventListener("click", () => go("menu"));
+
+    // --------------------
+    // Routine generator
+    // --------------------
+    document.getElementById("backToMenu2").addEventListener("click", () => go("menu"));
+    document.getElementById("backToMenu3").addEventListener("click", () => go("menu"));
+
+    const bpmEl = document.getElementById("bpm");
+    const bpmContextEl = document.getElementById("bpmContext");
+    const bpmStatus = document.getElementById("bpmStatus");
+    const btnGenerate = document.getElementById("btnGenerate");
+    const output = document.getElementById("output");
+    const outTitle = document.getElementById("outTitle");
+    const outSummary = document.getElementById("outSummary");
+    const outTips = document.getElementById("outTips");
+    const outWeek = document.getElementById("outWeek");
+
+    function bpmOk(){
+      const bpm = parseInt(bpmEl.value, 10);
+      const ok = Number.isFinite(bpm) && bpm >= 30 && bpm <= 220;
+      bpmStatus.textContent = ok ? "BPM i vlefshëm ✅" : "Vendos BPM (30–220).";
+      return ok;
+    }
+    bpmEl.addEventListener("input", bpmOk);
+
+    btnGenerate.addEventListener("click", () => {
+      const p = state.profile;
+      if(!(p.age && p.gender && p.name)){
+        go("data");
+        flash(formStatus, "Plotëso të dhënat e detyrueshme përpara rutinës.", 2200);
+        return;
+      }
+      if(!bpmOk()){
+        flash(bpmStatus, "BPM nuk është i vlefshëm. Provoni 30–220.", 2000);
+        return;
+      }
+      const bpm = parseInt(bpmEl.value, 10);
+      const ctx = bpmContextEl.value;
+      const plan = buildPlan(p, bpm, ctx);
+      renderPlan(p, bpm, ctx, plan);
+      output.style.display = "block";
+      output.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+
+    function buildPlan(profile, bpm, ctx){
+      const age = profile.age;
+      const isTeen = age >= 12 && age <= 19;
+      const isYoungAdult = age >= 20 && age <= 35;
+      const isAdult = age >= 36 && age <= 59;
+      const isSenior = age >= 60;
+
+      // Simple educational categories (not diagnostic)
+      const zone = (bpm < 60) ? "low" : (bpm <= 100 ? "normal" : "high");
+
+      // Context adjuster
+      const ctxNote = {
+        rest: "Matje në qetësi: më e krahasueshme me vlerat standarde.",
+        after: "Pas aktiviteti: BPM rritet natyrshëm; prit disa minuta dhe mat sërish në qetësi.",
+        stress: "Në stres: frymëmarrja dhe ankthi mund ta rrisin përkohësisht BPM.",
+        unknown: "Kontekst i panjohur: interpreto me kujdes dhe mat sërish në qetësi."
+      }[ctx] || "";
+
+      const issue = profile.heartIssue || "";
+      const flags = [];
+      if(zone === "high" && ctx === "rest") flags.push("BPM i lartë në qetësi");
+      if(zone === "low" && ctx === "rest") flags.push("BPM i ulët në qetësi");
+      if(issue === "pain") flags.push("Simptomë e deklaruar: shqetësim/dhimbje");
+
+      // Water (general wellness guidance; not strict medical)
+      let waterL = 1.6;
+      if(isTeen) waterL = 1.8;
+      if(isYoungAdult) waterL = 2.0;
+      if(isAdult) waterL = 1.9;
+      if(isSenior) waterL = 1.7;
+      if(zone === "high") waterL += 0.2;
+
+      // Sleep targets
+      let sleepH = 8;
+      if(isTeen) sleepH = 8.5;
+      if(isYoungAdult) sleepH = 7.5;
+      if(isAdult) sleepH = 7.5;
+      if(isSenior) sleepH = 7.0;
+
+      // Activity intensity suggestions (educational)
+      let activity = {
+        cardio: "20–30 min ecje e shpejtë, 4–5 ditë/javë",
+        strength: "2 ditë/javë ushtrime të lehta (peshë e trupit)",
+        mobility: "5–8 min shtrirje çdo ditë"
+      };
+
+      if(zone === "high"){
+        activity.cardio = "15–25 min ecje e moderuar, 4 ditë/javë (pa e tepruar)";
+        activity.strength = "2 ditë/javë ushtrime të lehta + pauza";
+        activity.mobility = "8–10 min shtrirje + frymëmarrje";
+      }
+      if(zone === "low"){
+        activity.cardio = "20 min ecje e lehtë, 4 ditë/javë + ngrohje e gjatë";
+        activity.strength = "2 ditë/javë (ritëm i kontrolluar)";
+      }
+
+      // Issue-based emphasis (non-diagnostic)
+      const emphasis = [];
+      if(isTeen && (issue === "tachy" || zone === "high")){
+        emphasis.push("Te adoleshentët, stresi, kafeina/energizantët, mungesa e gjumit dhe nikotina mund të ndikojnë në rrahje.");
+      }
+      if(issue === "tachy" || zone === "high"){
+        emphasis.push("Kufizo kafeinë/energizantë, pi ujë rregullisht dhe bëj pauza nga ekrani.");
+      }
+      if(issue === "arr"){
+        emphasis.push("Nëse ndjen rrahje të parregullta + marramendje, mat pulsin në qetësi dhe konsultohu me mjek.");
+      }
+      if(issue === "bp"){
+        emphasis.push("Ushqim më i balancuar, më pak kripë dhe ecje e rregullt janë hapa të sigurt edukativë.");
+      }
+      if(issue === "pain"){
+        emphasis.push("Dhimbja e gjoksit kërkon vëmendje profesionale—mos e injoro, sidomos nëse shoqërohet me frymëmarrje të vështirë.");
+      }
+
+      // Schedule / timing
+      const timing = [
+        {t:"08:00", a:`Ujë 250ml + mëngjes i lehtë (drithëra/fruta/produkte qumështi)`},
+        {t:"11:00", a:`Ujë 250ml + pushim 3 min frymëmarrje (4-4-6)`},
+        {t:"14:00", a:`Drekë e balancuar + ujë 300ml`},
+        {t:"17:00", a:`Aktivitet: ${activity.cardio}`},
+        {t:"20:30", a:`Shtrirje: ${activity.mobility} + ekranet ulur 30 min para gjumit`},
+      ];
+
+      // Weekly routine template
+      const week = [
+        {d:"E Hënë", items:["Ecje 20–25 min", "Shtrirje 8 min", "Shënim: si u ndjeve (energji/stres)"]},
+        {d:"E Martë", items:["Ushtrime të lehta (15–20 min)", "Pushime 2–3 herë gjatë ditës", "Hidratim i rregullt"]},
+        {d:"E Mërkurë", items:["Ecje 20–30 min", "Frymëmarrje 5 min", "Gjumë në orar"]},
+        {d:"E Enjte", items:["Ushtrime të lehta (15–20 min)", "Shtrirje 8 min", "Më pak kafeinë pas orës 15:00"]},
+        {d:"E Premte", items:["Ecje 20–30 min", "Aktivitet relaksues (muzikë/lexim)", "Hidratim + drekë e lehtë"]},
+        {d:"E Shtunë", items:["Aktivitet i lirë: biçikletë/ecje", "Shtrirje 10 min", "Koha jashtë 30–60 min"]},
+        {d:"E Diel", items:["Ditë rikuperimi: ecje e lehtë", "Planifikim i javës", "Gjumë më herët"]},
+      ];
+
+      // Adjust week based on zone
+      if(zone === "high"){
+        week[0].items[0] = "Ecje moderuar 15–20 min (jo sprint)";
+        week[2].items[0] = "Ecje 15–25 min + pauzë nëse rritet shumë BPM";
+        week[5].items[0] = "Aktivitet i lehtë: ecje e qetë / shëtitje";
+      }
+
+      const caution = [];
+      if(flags.length){
+        caution.push("Nëse ke simptoma (marramendje e fortë, të fikët, dhimbje gjoksi, gulçim) — kërko ndihmë mjekësore.");
+      }
+      if(zone === "high" && ctx === "rest"){
+        caution.push("BPM i lartë në qetësi, i përsëritur, është arsye e mirë për kontroll mjekësor.");
+      }
+      if(zone === "low" && ctx === "rest"){
+        caution.push("BPM i ulët në qetësi mund të jetë normal te sportistët; nëse shoqërohet me lodhje/të fikët, konsultohu.");
+      }
+
+      return {
+        meta: { zone, ctxNote, flags, isTeen, isYoungAdult, isAdult, isSenior },
+        waterL, sleepH, activity, timing, week, emphasis, caution
+      };
+    }
+
+    function renderPlan(profile, bpm, ctx, plan){
+      const zoneLabel = plan.meta.zone === "high" ? "i lartë" : (plan.meta.zone==="low" ? "i ulët" : "normal");
+      const issueLabel = ({
+        "": "pa problem të deklaruar",
+        "tachy":"takikardi",
+        "brady":"bradikardi",
+        "arr":"aritmi",
+        "bp":"tension i lartë",
+        "pain":"dhimbje/shqetësim gjoksi",
+        "other":"tjetër"
+      })[profile.heartIssue ?? ""] || "—";
+
+      outTitle.textContent = `Plani javor për ${profile.name}`;
+
+      const headline = `
+        <p><strong>Profili:</strong> ${escapeHtml(profile.name)}, ${profile.age} vjeç · problemi: <strong>${issueLabel}</strong></p>
+        <p><strong>BPM:</strong> ${bpm} (${zoneLabel}) · <strong>Kontekst:</strong> ${escapeHtml(ctx)}<br>
+        <span style="color: rgba(230,241,255,.72);">${escapeHtml(plan.meta.ctxNote)}</span></p>
+      `;
+
+      const water = plan.waterL.toFixed(1);
+      const sleep = plan.sleepH.toFixed(1);
+
+      const summary = `
         <div class="note" style="margin-top:0;">
-          ESC = ndalo menjehere. Audio luhet vetem pasi klikon "Fillo testin".
-        </div>
-
-        <div class="neuroWrap">
-          <div class="neuroCalm"></div>
-          <div class="flashOverlay" id="flash"></div>
-          <div class="shakeOverlay" id="shake"></div>
-          <div class="breatheOverlay" id="breathe" style="background:radial-gradient(700px 380px at 50% 50%, rgba(140,220,255,.22), transparent 60%);"></div>
-
-          <div class="neuroStage">
-            <div>
-              <h3 class="neuroTitle" id="nsTitle">NeuroSpark</h3>
-              <p class="neuroText" id="nsText">Faza 1: drita pulsante. Faza 2: zhurme. Faza 3: fokus.</p>
-
-              <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn small primary" id="startNeuro">Fillo testin</button>
-                <button class="btn small ghost" id="remeasureBtn" style="display:none;">Mat perseri rrahjet</button>
-              </div>
-            </div>
+          <strong>Objektivi edukativ i javës:</strong> stabilitet energjie, hidratim, gjumë i rregullt dhe aktivitet i moderuar.
+          <div style="margin-top:10px;">
+            <span class="chip">Ujë: ~${water} L/ditë</span>
+            <span class="chip">Gjumë: ~${sleep} orë/natë</span>
+            <span class="chip">Aktivitet: ${escapeHtml(plan.activity.cardio)}</span>
           </div>
         </div>
+      `;
 
-      </div>
-    </div>
-  </section>
+      const timingList = plan.timing.map(x => `<li><strong>${x.t}</strong> — ${escapeHtml(x.a)}</li>`).join("");
 
-  <section class="screen" id="s-result">
-    <div class="card wide">
-      <div class="inner">
-        <div class="topbar">
-          <div class="brand">
-            <div class="logo"><span>MIA</span></div>
-            <div class="brandText">
-              <div class="mia">Rezultati</div>
-              <div class="sub">Matja 1 vs Matja 2</div>
-            </div>
-          </div>
-          <button class="btn small ghost" id="backResult">Kthehu</button>
+      const emphasisList = (plan.emphasis.length ? `
+        <div class="note" style="background: var(--aero2); border-color: rgba(120,220,255,.22);">
+          <strong>Përshtatje sipas profilit:</strong>
+          <ul>${plan.emphasis.map(e => `<li>${escapeHtml(e)}</li>`).join("")}</ul>
         </div>
+      ` : "");
 
-        <div class="note" id="resultNote" style="margin-top:0;"></div>
-        <div id="tableWrap"></div>
-
-        <div class="statusRow">
-          <div></div>
-          <button class="btn small primary" id="toMenu">Kthehu ne faqen kryesore</button>
+      const cautionList = (plan.caution.length ? `
+        <div class="note" style="background: rgba(255,200,120,.10); border-color: rgba(255,220,140,.20);">
+          <strong>Kujdes:</strong>
+          <ul>${plan.caution.map(c => `<li>${escapeHtml(c)}</li>`).join("")}</ul>
         </div>
-      </div>
-    </div>
-  </section>
+      ` : "");
 
-</div>
+      outSummary.innerHTML = headline + summary;
 
-<script>
-/* Screens */
-var S = {
-  landing: document.getElementById("s-landing"),
-  menu: document.getElementById("s-menu"),
-  data: document.getElementById("s-data"),
-  routine: document.getElementById("s-routine"),
-  neuro: document.getElementById("s-neuro"),
-  result: document.getElementById("s-result")
-};
-function go(name){
-  for(var k in S){ S[k].classList.remove("active"); }
-  S[name].classList.add("active");
-}
+      outTips.innerHTML = `
+        <div class="out" style="margin-top:12px;">
+          <h3>Rutina ditore (shembull)</h3>
+          <ul>${timingList}</ul>
+          <p style="margin-top:10px; color: rgba(230,241,255,.72);">
+            * Këshillat janë të përgjithshme edukative. Për gjendje shëndetësore specifike, ndiq këshillën e mjekut.
+          </p>
+        </div>
+        ${emphasisList}
+        ${cautionList}
+      `;
 
-var state = {
-  profile:{age:null, gender:"", issue:"", name:""},
-  m1:null, m2:null,
-  remeasure:false
-};
+      outWeek.innerHTML = plan.week.map(d => `
+        <div class="day">
+          <strong>${d.d}</strong>
+          <ul style="margin:0 0 0 18px;">
+            ${d.items.map(it => `<li>${escapeHtml(it)}</li>`).join("")}
+          </ul>
+        </div>
+      `).join("");
+    }
 
-document.getElementById("miaBig").addEventListener("click", function(){ go("menu"); });
-window.addEventListener("keydown", function(e){
-  if(S.landing.classList.contains("active") && e.key==="Enter"){ go("menu"); }
-});
+    // --------------------
+    // AI Assistant (offline)
+    // --------------------
+    const chatBox = document.getElementById("chatBox");
+    const chatInput = document.getElementById("chatInput");
+    const chatSend = document.getElementById("chatSend");
+    document.getElementById("backToMenu4").addEventListener("click", () => go("menu"));
 
-/* Data */
-var age = document.getElementById("age");
-var gender = document.getElementById("gender");
-var issue = document.getElementById("issue");
-var nameI = document.getElementById("name");
-var statusData = document.getElementById("statusData");
-var saveGo = document.getElementById("saveGo");
-var pill = document.getElementById("pillProfile");
+    function addMsg(text, who="bot"){
+      const div = document.createElement("div");
+      div.className = "msg" + (who==="me" ? " me" : "");
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-function updatePill(){
-  var p = state.profile;
-  if(!(p.age && p.gender && p.name)){
-    pill.innerHTML = "<strong>Profili:</strong> ende pa te dhena";
-    return;
-  }
-  pill.innerHTML = "<strong>Profili:</strong> " + p.name + " - " + p.age + " vjec - " + p.gender + (p.issue?(" - "+p.issue):"");
-}
-function validateData(){
-  var a = parseInt(age.value,10);
-  var okAge = isFinite(a) && a>=5 && a<=120;
-  var okG = !!gender.value;
-  var okN = nameI.value.trim().length>=2;
-  var ok = okAge && okG && okN;
-  if(ok){
-    statusData.textContent = "Gati";
-    saveGo.style.display = "inline-flex";
-  }else{
-    statusData.textContent = "Ploteso fushat e detyrueshme.";
-    saveGo.style.display = "none";
-  }
-  return ok;
-}
-age.oninput = validateData;
-gender.onchange = validateData;
-issue.onchange = validateData;
-nameI.oninput = validateData;
+    function bootChat(){
+      chatBox.innerHTML = "";
+      addMsg("Përshëndetje! Unë jam MIA (offline). Më pyet për BPM, matjen e pulsit, zakone të shëndetshme, apo si të organizosh një rutinë.");
+      const p = state.profile;
+      if(p.age && p.gender && p.name){
+        addMsg(`E shoh që profili yt është: ${p.name}, ${p.age} vjeç. Pyet sa të duash. (Këshilla edukative)`);
+      } else {
+        addMsg("Nëse do përgjigje më të përshtatura, plotëso më parë “Vendos të dhënat”.");
+      }
+    }
+    // boot when entering AI screen
+    document.getElementById("btnAI").addEventListener("click", bootChat);
 
-document.getElementById("bData").onclick = function(){ go("data"); };
-document.getElementById("backData").onclick = function(){ go("menu"); };
+    function answer(q){
+      const p = state.profile;
+      const text = q.toLowerCase();
 
-saveGo.onclick = function(){
-  if(!validateData()) return;
-  state.profile.age = parseInt(age.value,10);
-  state.profile.gender = gender.value;
-  state.profile.issue = issue.value;
-  state.profile.name = nameI.value.trim();
-  updatePill();
-  go("menu");
-};
+      // Quick emergency guardrails
+      if(text.includes("dhimbje") && text.includes("gjoks")) return "Dhimbja e gjoksit mund të jetë serioze. Nëse është e fortë, shoqërohet me gulçim, djersë të ftohta, marramendje ose të fikët, kërko ndihmë mjekësore menjëherë.";
+      if(text.includes("të fik") || text.includes("marramend")) return "Nëse ka marramendje të fortë ose të fikët, mos e injoro. Ulu/shtrihu, mat pulsin në qetësi dhe kontakto mjekun, sidomos nëse përsëritet.";
 
-/* Routine */
-var bpm = document.getElementById("bpm");
-var spo2 = document.getElementById("spo2");
-var ctx = document.getElementById("ctx");
-var statusBpm = document.getElementById("statusBpm");
-var out = document.getElementById("out");
+      if(text.includes("bpm") || text.includes("rrahje") || text.includes("puls")){
+        return "BPM do të thotë rrahje të zemrës për minutë. Për matje të saktë: ulu 5 minuta, mat 30 sekonda dhe shumëzo me 2 (ose 60 sekonda të plota), shmang kafeinën/stresin para matjes.";
+      }
+      if(text.includes("si") && (text.includes("mat") || text.includes("mas"))){
+        return "Për ta matur pulsin: vendos 2 gishta te kyçi i dorës (ana e gishtit të madh), numëro rrahjet 30 sekonda dhe shumëzo me 2. Më mirë në qetësi, pa folur, me frymëmarrje normale.";
+      }
+      if(text.includes("energiz") || text.includes("kafein")){
+        return "Kafeina dhe energizantët mund të rrisin përkohësisht BPM dhe ankthin. Provo ta kufizosh pasdite, pi ujë rregullisht dhe shiko si reagon trupi.";
+      }
+      if(text.includes("gjum")){
+        return "Gjumë i rregullt është bazë për ritmin kardiak. Syno të njëjtën orë fjetjeje, ul ekranet 30 minuta para gjumit dhe mbaj dhomën pak më të freskët.";
+      }
+      if(text.includes("stres") || text.includes("ankth") || text.includes("frym")){
+        return "Për stresin: provo frymëmarrje 4-4-6 (thith 4s, mbaj 4s, nxirr 6s) për 3–5 minuta. Shpesh ul tensionin dhe ndihmon pulsin të stabilizohet.";
+      }
+      if(text.includes("rut") || text.includes("plan") || text.includes("jav")){
+        if(p.age && p.gender && p.name){
+          return "Mund ta gjenerosh rutinën te “Gjenero Rutinën Personale”. Vendos BPM dhe unë do të jap një plan edukativ javor (ujë, gjumë, aktivitet).";
+        }
+        return "Për plan më të përshtatur, plotëso “Vendos të dhënat” dhe pastaj shko te “Gjenero Rutinën Personale”.";
+      }
 
-document.getElementById("bRoutine").onclick = function(){
-  if(!(state.profile.age && state.profile.gender && state.profile.name)) { go("data"); return; }
-  state.remeasure = false;
-  out.style.display = "none";
-  go("routine");
-};
-document.getElementById("backRoutine").onclick = function(){ go("menu"); };
+      return "E kuptova. Mund të ma thuash pak më konkret: po pyet për BPM, matjen e pulsit, hidratimin, gjumin apo aktivitetin fizik?";
+    }
 
-function okBpm(){
-  var v = parseInt(bpm.value,10);
-  var ok = isFinite(v) && v>=30 && v<=220;
-  statusBpm.textContent = ok ? "BPM i vlefshem" : "Vendos BPM (30-220).";
-  return ok;
-}
-bpm.oninput = okBpm;
+    function sendChat(){
+      const q = chatInput.value.trim();
+      if(!q) return;
+      addMsg(q, "me");
+      chatInput.value = "";
+      setTimeout(() => addMsg(answer(q), "bot"), 220);
+    }
+    chatSend.addEventListener("click", sendChat);
+    chatInput.addEventListener("keydown", (e) => {
+      if(e.key === "Enter") sendChat();
+    });
 
-function store(which){
-  var bpmVal = parseInt(bpm.value,10);
-  var spo2Val = spo2.value ? parseInt(spo2.value,10) : null;
-  if(which==="m1") state.m1 = {bpm:bpmVal, spo2:spo2Val, ctx:ctx.value};
-  if(which==="m2") state.m2 = {bpm:bpmVal, spo2:spo2Val, ctx:ctx.value};
-}
+    // --------------------
+    // Helpers
+    // --------------------
+    function flash(el, text, ms=1800){
+      const prev = el.textContent;
+      el.textContent = text;
+      el.style.borderColor = "rgba(255,220,140,.28)";
+      el.style.background = "rgba(255,220,140,.10)";
+      setTimeout(() => {
+        el.textContent = prev;
+        el.style.borderColor = "";
+        el.style.background = "";
+      }, ms);
+    }
 
-document.getElementById("gen").onclick = function(){
-  if(!okBpm()) return;
+    function escapeHtml(str){
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
-  if(state.remeasure) store("m2"); else store("m1");
+    // --------------------
+    // ECG canvas animation
+    // --------------------
+    const canvas = document.getElementById("ecg");
+    const ctx = canvas.getContext("2d");
+    let W=0, H=0, t=0;
 
-  out.style.display = "block";
-  out.innerHTML = "<strong>Plan i shkurter:</strong><br>- Uje: 1.8-2.2 L/dit<br>- Ecje: 20-30 min, 4-5 dite/jave<br>- Gjum: 7.5-8.5 ore<br>- Frymemarrje: 2 min, 2-3 here/dit";
+    function resize(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      W = canvas.clientWidth;
+      H = canvas.clientHeight;
+      canvas.width = Math.floor(W*dpr);
+      canvas.height = Math.floor(H*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
 
-  if(state.m1) document.getElementById("bNeuro").disabled = false;
+    function draw(){
+      t += 0.016;
 
-  if(state.remeasure){
-    state.remeasure = false;
-    renderResult();
-    go("result");
-  }
-};
+      // Clear with slight trail
+      ctx.fillStyle = "rgba(0,0,0,0.18)";
+      ctx.fillRect(0,0,W,H);
 
-/* NeuroSpark */
-document.getElementById("bNeuro").onclick = function(){
-  if(!state.m1){ go("routine"); return; }
-  resetNeuro();
-  go("neuro");
-};
-document.getElementById("backNeuro").onclick = function(){ stopTone(); go("menu"); };
+      // Grid subtle
+      ctx.save();
+      ctx.globalAlpha = 0.10;
+      ctx.strokeStyle = "rgba(120,220,255,0.35)";
+      ctx.lineWidth = 1;
+      const step = 42;
+      for(let x=0; x<W; x+=step){
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+      }
+      for(let y=0; y<H; y+=step){
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+      }
+      ctx.restore();
 
-var flash = document.getElementById("flash");
-var shake = document.getElementById("shake");
-var breathe = document.getElementById("breathe");
-var startNeuro = document.getElementById("startNeuro");
-var remeasureBtn = document.getElementById("remeasureBtn");
+      // ECG wave
+      const mid = H*0.52;
+      const amp = Math.min(64, H*0.10);
 
-var audioCtx=null, osc=null, gain=null;
+      ctx.save();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "rgba(140,220,255,0.95)";
+      ctx.shadowColor = "rgba(0,190,255,0.35)";
+      ctx.shadowBlur = 18;
 
-function startTone(){
-  try{
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    osc = audioCtx.createOscillator();
-    gain = audioCtx.createGain();
-    osc.type="square";
-    osc.frequency.value=920;
-    gain.gain.value=0.08;
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start();
-  }catch(e){ stopTone(); }
-}
-function stopTone(){
-  try{ if(osc) osc.stop(); }catch(e){}
-  osc=null;
-  try{ if(audioCtx) audioCtx.close(); }catch(e){}
-  audioCtx=null; gain=null;
-}
+      ctx.beginPath();
+      const speed = 220; // px per second feel
+      const phase = (t*speed) % W;
 
-function resetNeuro(){
-  flash.classList.remove("on");
-  shake.classList.remove("on");
-  breathe.classList.remove("on");
-  remeasureBtn.style.display="none";
-}
+      for(let x=0; x<=W; x++){
+        // repeating heartbeat pulse shape
+        const u = ((x + phase) % 260) / 260; // 0..1
+        let y = 0;
 
-function delay(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+        // baseline ripple
+        y += Math.sin((x*0.014) + t*1.6) * (amp*0.08);
 
-window.addEventListener("keydown", function(e){
-  if(e.key==="Escape" && S.neuro.classList.contains("active")){
-    resetNeuro(); stopTone();
-  }
-});
+        // pulse (spike)
+        if(u > 0.30 && u < 0.34) y += -amp*0.20;
+        if(u >= 0.34 && u < 0.36) y +=  amp*0.55;
+        if(u >= 0.36 && u < 0.40) y += -amp*1.00;
+        if(u >= 0.40 && u < 0.44) y +=  amp*0.30;
+        if(u >= 0.44 && u < 0.52) y +=  Math.sin((u-0.44)*Math.PI*6) * (amp*0.10);
 
-startNeuro.onclick = async function(){
-  resetNeuro();
-  remeasureBtn.style.display="none";
+        const yy = mid + y;
+        if(x===0) ctx.moveTo(x, yy);
+        else ctx.lineTo(x, yy);
+      }
+      ctx.stroke();
 
-  flash.classList.add("on");
-  await delay(3000);
-  flash.classList.remove("on");
+      // Glow line under
+      ctx.globalAlpha = 0.25;
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "rgba(0,200,255,0.35)";
+      ctx.stroke();
 
-  shake.classList.add("on");
-  startTone();
-  await delay(1600);
-  stopTone();
-  shake.classList.remove("on");
+      ctx.restore();
 
-  breathe.classList.add("on");
-  await delay(2200);
-  breathe.classList.remove("on");
+      requestAnimationFrame(draw);
+    }
+    // initialize dark base behind trail
+    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.fillRect(0,0,W,H);
+    requestAnimationFrame(draw);
 
-  remeasureBtn.style.display="inline-flex";
-};
+    // --------------------
+    // Initialize
+    // --------------------
+    updateProfilePill();
+    validateProfile();
 
-remeasureBtn.onclick = function(){
-  stopTone();
-  state.remeasure = true;
-  bpm.value=""; spo2.value="";
-  out.style.display="none";
-  go("routine");
-};
-
-/* Result */
-document.getElementById("backResult").onclick = function(){ go("menu"); };
-document.getElementById("toMenu").onclick = function(){ go("menu"); };
-
-function renderResult(){
-  if(!state.m1 || !state.m2) return;
-  var dBpm = state.m2.bpm - state.m1.bpm;
-  var big = dBpm >= 25;
-
-  var note = document.getElementById("resultNote");
-  var wrap = document.getElementById("tableWrap");
-  if(big){
-    note.innerHTML = "<strong>Rezultat:</strong> ndryshim i madh i BPM. Mund te tregoje reagim te forte ndaj stresit/ankthit (edukative).";
-    wrap.innerHTML = "<table><thead><tr><th>Menyra</th><th>Si behet</th></tr></thead><tbody>"
-      + "<tr><td><strong>Frymarrja 4-4-6</strong></td><td>4 sek merr fryme, 4 sek mbaj, 6 sek nxirr (5 cikle).</td></tr>"
-      + "<tr><td><strong>Grounding</strong></td><td>Gjej 5 gjera qe sheh, 4 qe prek, 3 qe degjon.</td></tr>"
-      + "<tr><td><strong>Ecje 10 min</strong></td><td>Ecje e lehte + frymemarrje e kontrolluar.</td></tr>"
-      + "</tbody></table>";
-  }else{
-    note.innerHTML = "<strong>Rezultat:</strong> pa shenja te forta ankthi ne kete test. Vazhdoni me keto zakone te mira.";
-    wrap.innerHTML = "<table><thead><tr><th>Vazhdo</th><th>Pse</th></tr></thead><tbody>"
-      + "<tr><td><strong>Aktivitet i rregullt</strong></td><td>Stabilizon pulsin dhe ul stresin.</td></tr>"
-      + "<tr><td><strong>Gjum i mire</strong></td><td>Rregullon sistemin nervor.</td></tr>"
-      + "</tbody></table>";
-  }
-}
-
-/* ECG background */
-var canvas = document.getElementById("ecg");
-var c = canvas.getContext("2d");
-var W=0,H=0,t=0,last=0;
-
-function resize(){
-  var dpr = Math.max(1, window.devicePixelRatio||1);
-  W = canvas.clientWidth; H = canvas.clientHeight;
-  canvas.width = Math.floor(W*dpr);
-  canvas.height = Math.floor(H*dpr);
-  c.setTransform(dpr,0,0,dpr,0,0);
-}
-window.addEventListener("resize", resize);
-resize();
-
-function draw(now){
-  if(now-last < 33){ requestAnimationFrame(draw); return; }
-  last = now;
-  t += 0.016;
-
-  c.fillStyle = "rgba(0,0,0,0.18)";
-  c.fillRect(0,0,W,H);
-
-  var mid = H*0.52;
-  var amp = Math.min(64, H*0.10);
-
-  c.save();
-  c.lineWidth = 2.2;
-  c.strokeStyle = "rgba(140,220,255,0.95)";
-  c.shadowColor = "rgba(0,190,255,0.35)";
-  c.shadowBlur = 18;
-
-  c.beginPath();
-  var speed = 220;
-  var phase = (t*speed) % W;
-
-  for(var x=0;x<=W;x++){
-    var u = ((x+phase)%260)/260;
-    var y = 0;
-    y += Math.sin((x*0.014)+t*1.6)*(amp*0.08);
-    if(u>0.30 && u<0.34) y += -amp*0.20;
-    if(u>=0.34 && u<0.36) y +=  amp*0.55;
-    if(u>=0.36 && u<0.40) y += -amp*1.00;
-    if(u>=0.40 && u<0.44) y +=  amp*0.30;
-    if(u>=0.44 && u<0.52) y += Math.sin((u-0.44)Math.PI*6)(amp*0.10);
-
-    var yy = mid + y;
-    if(x===0) c.moveTo(x,yy); else c.lineTo(x,yy);
-  }
-  c.stroke();
-  c.restore();
-
-  requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
-
-/* Init */
-updatePill();
-go("landing");
-</script>
+    // menu back button
+    // (data screen already has back, routine & ai have back)
+    // auto boot chat if user enters AI directly later
+    document.getElementById("btnAI").addEventListener("click", () => {
+      setTimeout(() => chatInput.focus(), 120);
+    });
+  </script>
 </body>
 </html>
