@@ -1,1246 +1,1054 @@
 <!doctype html>
 <html lang="sq">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MIA — Mjekët e Inteligjencës Artificiale</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MIA — Mjekët e Inteligjencës Artificiale</title>
+<style>
+:root{
+  --bg0:#050914; --bg1:#020817; --ink:#EAF4FF; --muted:#A7C1DF;
+  --glass1:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.14); --shadow:0 22px 70px rgba(0,0,0,.55);
+  --r1:18px; --r2:26px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 700px at 12% 0%, rgba(40,120,255,.22), transparent 60%),
+    radial-gradient(900px 600px at 85% 20%, rgba(0,220,255,.14), transparent 55%),
+    linear-gradient(180deg,var(--bg0),var(--bg1));
+  overflow:hidden;
+}
+.bg{position:absolute;inset:0;overflow:hidden}
+#ecg{position:absolute;inset:0;width:100%;height:100%;opacity:.92;filter:drop-shadow(0 0 16px rgba(0,180,255,.22))}
+.noise{
+  position:absolute;inset:-40px;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.30'/%3E%3C/svg%3E");
+}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(1000px 600px at 50% 30%,transparent 30%,rgba(0,0,0,.62) 82%)}
+.app{position:relative;height:100%;width:100%}
 
-  <style>
-    :root{
-      --bg0:#050914;
-      --bg1:#020817;
-      --ink:#EAF4FF;
-      --muted:#A7C1DF;
+.screen{
+  position:absolute;inset:0;display:grid;place-items:center;padding:24px;
+  opacity:0;transform:translateY(16px) scale(.985);pointer-events:none;
+  transition:opacity .45s ease, transform .55s cubic-bezier(.2,.9,.2,1);
+}
+.screen.active{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
 
-      --glass1: rgba(255,255,255,.11);
-      --glass2: rgba(255,255,255,.06);
-      --line: rgba(255,255,255,.14);
+.card{
+  width:min(980px,94vw);border-radius:var(--r2);
+  background:linear-gradient(180deg,var(--glass1),var(--glass2));
+  border:1px solid var(--line);box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  overflow:hidden;position:relative;
+}
+.card.wide{width:min(1160px,96vw)}
+.card::before{
+  content:"";position:absolute;inset:-2px;pointer-events:none;
+  background:
+    radial-gradient(700px 240px at 18% 0%, rgba(140,220,255,.20), transparent 60%),
+    radial-gradient(600px 240px at 92% 18%, rgba(0,160,255,.16), transparent 55%);
+}
+.inner{position:relative;padding:24px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px;user-select:none}
+.logo{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(120,220,255,.22),rgba(255,255,255,.06));
+  border:1px solid rgba(140,220,255,.22);box-shadow:0 12px 28px rgba(0,0,0,.30);
+}
+.logo::before{content:"";position:absolute;inset:-2px;opacity:.9;pointer-events:none;background:radial-gradient(100px 60px at 25% 10%, rgba(255,255,255,.32), transparent 60%)}
+.logo span{position:relative;font-weight:950;letter-spacing:.18em;transform:translateX(2px);text-shadow:0 0 18px rgba(0,200,255,.22)}
+.brandText .mia{font-weight:950;letter-spacing:.16em;font-size:18px;line-height:1.05}
+.brandText .sub{font-size:12.5px;color:var(--muted)}
+.pill{
+  font-size:12px;color:rgba(234,244,255,.90);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  padding:8px 10px;border-radius:999px;display:flex;gap:8px;align-items:center;max-width:560px
+}
+.pill strong{font-weight:800}
 
-      --shadow: 0 22px 70px rgba(0,0,0,.55);
-      --r2: 26px;
-    }
+.btnRow{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  appearance:none;border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
+  color:var(--ink);padding:13px 16px;border-radius:18px;font-weight:850;cursor:pointer;min-width:240px;
+  transition:transform .15s ease,border-color .2s ease,box-shadow .2s ease,opacity .2s ease;
+  box-shadow:0 12px 30px rgba(0,0,0,.26);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  position:relative;overflow:hidden;
+}
+.btn::before{
+  content:"";position:absolute;inset:-2px;opacity:.78;pointer-events:none;transform:translateY(-10px);
+  background:
+    radial-gradient(320px 90px at 18% 0%, rgba(255,255,255,.28), transparent 55%),
+    radial-gradient(280px 90px at 85% 8%, rgba(120,220,255,.22), transparent 55%);
+}
+.btn:hover{transform:translateY(-1px);border-color:rgba(170,230,255,.34);box-shadow:0 16px 38px rgba(0,0,0,.32)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(180deg,rgba(120,220,255,.22),rgba(0,140,255,.10));border-color:rgba(140,220,255,.28)}
+.btn.small{min-width:auto;padding:10px 12px;border-radius:16px;font-size:13px;font-weight:850}
+.btn.ghost{background:rgba(0,0,0,.12);border-color:rgba(255,255,255,.14);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+@media(max-width:720px){.btn{min-width:100%}}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(1200px 700px at 12% 0%, rgba(40,120,255,.22), transparent 60%),
-        radial-gradient(900px 600px at 85% 20%, rgba(0,220,255,.14), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow:hidden;
-    }
+.landing{width:min(920px,94vw);text-align:center;padding:26px 16px}
+.big{
+  font-size:clamp(58px,10vw,96px);font-weight:980;letter-spacing:.22em;margin:0;
+  display:inline-block;cursor:pointer;text-shadow:0 0 22px rgba(0,200,255,.25);user-select:none;position:relative
+}
+.big::after{
+  content:"";position:absolute;left:50%;top:100%;width:70%;height:2px;opacity:.7;
+  background:linear-gradient(90deg,transparent,rgba(120,220,255,.75),transparent);transform:translateX(-50%)
+}
+.subtitle{margin-top:14px;color:var(--muted);font-size:clamp(14px,2.2vw,18px)}
+.hint{margin-top:18px;font-size:13px;color:rgba(234,244,255,.72)}
+.kbd{
+  display:inline-block;padding:3px 8px;border-radius:10px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);margin:0 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px
+}
 
-    /* Background ECG */
-    .bg{ position:absolute; inset:0; overflow:hidden; }
-    #ecg{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      opacity:.92;
-      filter: drop-shadow(0 0 16px rgba(0,180,255,.22));
-    }
-    .noise{
-      position:absolute; inset:-40px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.30'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      opacity:.10;
-      pointer-events:none;
-    }
-    .vignette{
-      position:absolute; inset:0;
-      background: radial-gradient(1000px 600px at 50% 30%, transparent 30%, rgba(0,0,0,.62) 82%);
-      pointer-events:none;
-    }
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.field{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:18px;padding:12px}
+.field label{display:block;font-size:12px;color:rgba(234,244,255,.82);margin-bottom:8px}
+.req{color:rgba(180,240,255,.95);font-weight:900;margin-left:6px;font-size:11px}
+input,select{
+  width:100%;border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.18);color:var(--ink);border-radius:14px;padding:12px;font-size:14px;outline:none
+}
+input:focus,select:focus{border-color:rgba(140,220,255,.32);box-shadow:0 0 0 4px rgba(80,180,255,.10)}
 
-    /* Screens */
-    .app{ position:relative; height:100%; width:100%; }
-    .screen{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      padding:24px;
-      opacity:0;
-      transform: translateY(16px) scale(.985);
-      pointer-events:none;
-      transition: opacity .45s ease, transform .55s cubic-bezier(.2,.9,.2,1);
-    }
-    .screen.active{
-      opacity:1;
-      transform: translateY(0) scale(1);
-      pointer-events:auto;
-    }
+.note{
+  margin-top:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);color:rgba(234,244,255,.88);font-size:13px;line-height:1.35
+}
+.statusRow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:12px;color:rgba(234,244,255,.86)}
 
-    /* Card + Glass */
-    .card{
-      width:min(980px, 94vw);
-      border-radius: var(--r2);
-      background: linear-gradient(180deg, var(--glass1), var(--glass2));
-      border:1px solid var(--line);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      overflow:hidden;
-      position:relative;
-    }
-    .card.wide{ width:min(1160px, 96vw); }
-    .card::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(700px 240px at 18% 0%, rgba(140,220,255,.20), transparent 60%),
-        radial-gradient(600px 240px at 92% 18%, rgba(0,160,255,.16), transparent 55%);
-      pointer-events:none;
-    }
-    .inner{ position:relative; padding: 24px; }
+.panel{
+  margin-top:14px;border-radius:22px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.14);padding:14px;max-height:64vh;overflow:auto;scroll-behavior:smooth;position:relative
+}
+.fab{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:10px;z-index:5}
+.kpiRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.kpi{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:12px}
+.section{margin-top:12px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.05));padding:14px}
+.section h3{margin:0 0 8px;font-size:14.5px;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(140,220,255,.75);box-shadow:0 0 18px rgba(0,200,255,.22);border:1px solid rgba(255,255,255,.18)}
+ul{margin:8px 0 0 18px} li{color:rgba(234,244,255,.88);line-height:1.5;font-size:13.8px}
 
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; flex-wrap:wrap; margin-bottom:16px;
-    }
-    .brand{ display:flex; align-items:center; gap:12px; user-select:none; }
-    .logo{
-      width:44px; height:44px; border-radius:14px;
-      background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(255,255,255,.06));
-      border:1px solid rgba(140,220,255,.22);
-      display:grid; place-items:center;
-      box-shadow: 0 12px 28px rgba(0,0,0,.30);
-      position:relative; overflow:hidden;
-    }
-    .logo::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(100px 60px at 25% 10%, rgba(255,255,255,.32), transparent 60%);
-      opacity:.9;
-    }
-    .logo span{
-      position:relative;
-      font-weight:950;
-      letter-spacing:.18em;
-      transform: translateX(2px);
-      text-shadow: 0 0 18px rgba(0,200,255,.22);
-    }
-    .brandText .mia{
-      font-weight:950;
-      letter-spacing:.16em;
-      font-size:18px;
-      line-height:1.05;
-    }
-    .brandText .sub{
-      font-size:12.5px;
-      color:var(--muted);
-    }
+table{
+  width:100%;border-collapse:separate;border-spacing:0;border-radius:18px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.12);margin-top:10px
+}
+th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,.10);vertical-align:top;font-size:13px;color:rgba(234,244,255,.88)}
+th{font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:rgba(234,244,255,.78);background:rgba(255,255,255,.06)}
+tr:last-child td{border-bottom:none}
 
-    .pill{
-      font-size:12px;
-      color: rgba(234,244,255,.90);
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      padding: 8px 10px;
-      border-radius: 999px;
-      display:flex; gap:8px; align-items:center;
-      max-width: 560px;
-    }
-    .pill strong{ font-weight:800; }
-
-    .btnRow{ display:flex; gap:12px; flex-wrap:wrap; }
-    .btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.18);
-      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-      color: var(--ink);
-      padding: 13px 16px;
-      border-radius: 18px;
-      font-weight:850;
-      cursor:pointer;
-      min-width: 240px;
-      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
-      box-shadow: 0 12px 30px rgba(0,0,0,.26);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      position:relative; overflow:hidden;
-    }
-    .btn::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(320px 90px at 18% 0%, rgba(255,255,255,.28), transparent 55%),
-        radial-gradient(280px 90px at 85% 8%, rgba(120,220,255,.22), transparent 55%);
-      opacity:.78;
-      pointer-events:none;
-      transform: translateY(-10px);
-    }
-    .btn:hover{ transform: translateY(-1px); border-color: rgba(170,230,255,.34); box-shadow: 0 16px 38px rgba(0,0,0,.32); }
-    .btn:active{ transform: translateY(0); }
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(0,140,255,.10));
-      border-color: rgba(140,220,255,.28);
-    }
-    .btn.small{
-      min-width:auto;
-      padding: 10px 12px;
-      border-radius: 16px;
-      font-size: 13px;
-      font-weight:850;
-    }
-    .btn.ghost{
-      background: rgba(0,0,0,.12);
-      border-color: rgba(255,255,255,.14);
-      box-shadow:none;
-    }
-    @media (max-width: 720px){ .btn{ min-width: 100%; } }
-
-    /* Landing */
-    .landing{ width:min(920px, 94vw); text-align:center; padding: 26px 16px; }
-    .big{
-      font-size: clamp(58px, 10vw, 96px);
-      font-weight: 980;
-      letter-spacing: .22em;
-      margin:0;
-      display:inline-block;
-      cursor:pointer;
-      text-shadow: 0 0 22px rgba(0,200,255,.25);
-      user-select:none;
-      position:relative;
-    }
-    .big::after{
-      content:"";
-      position:absolute; left:50%; top:100%;
-      width:70%; height:2px;
-      background: linear-gradient(90deg, transparent, rgba(120,220,255,.75), transparent);
-      transform: translateX(-50%);
-      opacity:.7;
-    }
-    .subtitle{ margin-top: 14px; color: var(--muted); font-size: clamp(14px, 2.2vw, 18px); }
-    .hint{ margin-top: 18px; font-size: 13px; color: rgba(234,244,255,.72); }
-    .kbd{
-      display:inline-block;
-      padding: 3px 8px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08);
-      margin: 0 6px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-    }
-
-    /* Forms */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 720px){ .grid{ grid-template-columns: 1fr; } }
-    .field{
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      border-radius: 18px;
-      padding: 12px;
-    }
-    .field label{
-      display:block;
-      font-size: 12px;
-      color: rgba(234,244,255,.82);
-      margin-bottom: 8px;
-    }
-    .req{ color: rgba(180,240,255,.95); font-weight:900; margin-left:6px; font-size:11px; }
-    input, select{
-      width:100%;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: var(--ink);
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 14px;
-      outline:none;
-    }
-    input:focus, select:focus{
-      border-color: rgba(140,220,255,.32);
-      box-shadow: 0 0 0 4px rgba(80,180,255,.10);
-    }
-
-    .note{
-      margin-top:12px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(234,244,255,.88);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-    .statusRow{
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap:12px; flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      font-size: 12px;
-      color: rgba(234,244,255,.86);
-    }
-
-    /* Routine output (scrollable) */
-    .panel{
-      margin-top:14px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.14);
-      padding: 14px;
-      max-height: 64vh;
-      overflow:auto;
-      scroll-behavior:smooth;
-      position:relative;
-    }
-    .fab{
-      position:absolute; right: 14px; bottom: 14px;
-      display:flex; flex-direction:column; gap:10px;
-      z-index:5;
-    }
-    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    .kpi{
-      padding:8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      font-size:12px;
-    }
-    .section{
-      margin-top:12px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.05));
-      padding: 14px;
-    }
-    .section h3{
-      margin:0 0 8px;
-      font-size: 14.5px;
-      letter-spacing:.02em;
-      display:flex; align-items:center; gap:8px;
-    }
-    .dot{
-      width:10px; height:10px; border-radius: 50%;
-      background: rgba(140,220,255,.75);
-      box-shadow: 0 0 18px rgba(0,200,255,.22);
-      border:1px solid rgba(255,255,255,.18);
-    }
-    ul{ margin: 8px 0 0 18px; }
-    li{ color: rgba(234,244,255,.88); line-height:1.5; font-size:13.8px; }
-
-    /* Heart map 3D */
-    .threeWrap{
-      margin-top: 10px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-      overflow:hidden;
-      position:relative;
-      height: min(560px, 64vh);
-      min-height: 420px;
-    }
-    #threeCanvas{ width:100%; height:100%; display:block; }
-
-    .hud{
-      position:absolute; left: 14px; top: 14px; right: 14px;
-      display:flex; justify-content:space-between; gap:10px;
-      pointer-events:none;
-    }
-    .hintBox{
-      padding: 10px 12px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-      max-width: 560px;
-      color: rgba(234,244,255,.88);
-      font-size: 12.8px;
-      line-height: 1.35;
-    }
-
-    .infoPanel{
-      margin-top: 12px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.14);
-      padding: 14px;
-      position:relative;
-      overflow:hidden;
-    }
-    .infoPanel::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(600px 160px at 30% 0%, rgba(120,220,255,.16), transparent 60%);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .infoInner{ position:relative; }
-    .partTitle{
-      font-size: 16px;
-      font-weight: 950;
-      letter-spacing:.02em;
-      margin: 0 0 6px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .spark{
-      width:10px;height:10px;border-radius:50%;
-      background: rgba(255,255,255,.22);
-      border: 1px solid rgba(255,255,255,.22);
-      box-shadow: 0 0 18px rgba(120,220,255,.18);
-    }
-    .partBody{
-      margin:0;
-      color: rgba(234,244,255,.80);
-      font-size: 13.4px;
-      line-height:1.45;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: rgba(234,244,255,.88);
-      font-size: 12px;
-      margin-top: 10px;
-    }
-    .err{ color: rgba(255,220,140,.95); font-weight:950; }
-  </style>
+/* NeuroSpark */
+.neuroWrap{border-radius:22px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.14);overflow:hidden;position:relative;min-height:420px}
+.neuroCalm{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(1000px 600px at 20% 10%, rgba(120,220,255,.16), transparent 60%),
+    radial-gradient(700px 500px at 80% 30%, rgba(0,220,255,.10), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.36));
+  opacity:.96;
+}
+.neuroStage{position:absolute;inset:0;display:grid;place-items:center;padding:18px;text-align:center}
+.neuroTitle{font-weight:950;letter-spacing:.06em;font-size:18px;margin:0 0 6px}
+.neuroText{margin:0;color:rgba(234,244,255,.85);font-size:13.5px;line-height:1.45;max-width:720px}
+.neuroHUD{position:absolute;left:14px;right:14px;top:14px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;pointer-events:none}
+.neuroPill{font-size:12px;color:rgba(234,244,255,.88);background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.12);padding:8px 10px;border-radius:999px;backdrop-filter:blur(10px)}
+.flashOverlay{position:absolute;inset:0;background:radial-gradient(700px 380px at 50% 50%, rgba(255,255,255,.35), transparent 60%);opacity:0;pointer-events:none}
+.flashOverlay.on{animation:pulseFlash .8s ease-in-out infinite;opacity:.22}
+@keyframes pulseFlash{0%,100%{opacity:.10}50%{opacity:.36}}
+.shakeOverlay{position:absolute;inset:0;pointer-events:none;opacity:0}
+.shakeOverlay.on{opacity:1;animation:shake .55s ease-in-out infinite}
+@keyframes shake{0%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}100%{transform:translate(0,0)}}
+.breatheOverlay{position:absolute;inset:0;pointer-events:none;opacity:0}
+.breatheOverlay.on{opacity:.9;animation:breathe 5s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.08);opacity:.34}}
+.reactionDot{width:18px;height:18px;border-radius:50%;background:rgba(140,220,255,.85);box-shadow:0 0 22px rgba(0,200,255,.28);border:1px solid rgba(255,255,255,.18);display:inline-block;vertical-align:middle;margin-right:10px}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <div class="bg">
-      <canvas id="ecg"></canvas>
-      <div class="noise"></div>
-      <div class="vignette"></div>
-    </div>
-
-    <!-- Landing -->
-    <section class="screen active" id="s-landing">
-      <div class="landing">
-        <h1 class="big" id="miaBig">MIA</h1>
-        <div class="subtitle">Mjekët e Inteligjencës Artificiale</div>
-        <div class="hint">Kliko mbi <span class="kbd">MIA</span> ose shtyp <span class="kbd">Enter</span>.</div>
-      </div>
-    </section>
-
-    <!-- Menu -->
-    <section class="screen" id="s-menu">
-      <div class="card">
-        <div class="inner">
-          <div class="topbar">
-            <div class="brand">
-              <div class="logo"><span>MIA</span></div>
-              <div class="brandText">
-                <div class="mia">MIA</div>
-                <div class="sub">Mjekët e Inteligjencës Artificiale</div>
-              </div>
-            </div>
-            <div class="pill" id="pillProfile">
-              <strong>Profili:</strong> ende pa të dhëna — vendos të dhënat
-            </div>
-          </div>
-
-          <div class="btnRow">
-            <button class="btn primary" id="bData">Vendos të dhënat (e detyrueshme)</button>
-            <button class="btn" id="bRoutine">Gjenero Rutinën Personale</button>
-            <button class="btn" id="bMap">Harta e zemrës</button>
-          </div>
-
-          <div class="note">
-            <strong>Shënim:</strong> Kjo faqe jep udhëzime edukative. Nuk zëvendëson mjekun.
-            Nëse ke dhimbje gjoksi të forta, të fikët, gulçim të rëndë — kërko ndihmë mjekësore.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Data -->
-    <section class="screen" id="s-data">
-      <div class="card">
-        <div class="inner">
-          <div class="topbar">
-            <div class="brand">
-              <div class="logo"><span>MIA</span></div>
-              <div class="brandText">
-                <div class="mia">Vendos të dhënat</div>
-                <div class="sub">Fusha të detyrueshme: Mosha, Gjinia, Emri</div>
-              </div>
-            </div>
-            <button class="btn small ghost" id="backData">Kthehu</button>
-          </div>
-
-          <div class="grid">
-            <div class="field">
-              <label>Mosha <span class="req">(det.)</span></label>
-              <input id="age" type="number" min="5" max="120" placeholder="p.sh. 16" />
-            </div>
-
-            <div class="field">
-              <label>Gjinia <span class="req">(det.)</span></label>
-              <select id="gender">
-                <option value="">Zgjidh…</option>
-                <option value="Femër">Femër</option>
-                <option value="Mashkull">Mashkull</option>
-                <option value="Tjetër">Tjetër / s’dua të them</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Problemi i zemrës <span style="opacity:.75">(ops.)</span></label>
-              <select id="issue">
-                <option value="">—</option>
-                <option value="Takikardi">Takikardi</option>
-                <option value="Bradikardi">Bradikardi</option>
-                <option value="Aritmi">Aritmi</option>
-                <option value="Tension i lartë">Tension i lartë</option>
-                <option value="Dhimbje gjoksi">Dhimbje gjoksi</option>
-                <option value="Tjetër">Tjetër</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Emri <span class="req">(det.)</span></label>
-              <input id="name" type="text" placeholder="p.sh. Ardi" maxlength="32" />
-            </div>
-          </div>
-
-          <div class="statusRow">
-            <div class="chip" id="statusData">Plotëso fushat e detyrueshme.</div>
-            <button class="btn small primary" id="saveGo" style="display:none;">Kthehu në faqen kryesore</button>
-          </div>
-
-          <div class="note" style="opacity:.92;">
-            Të dhënat ruhen vetëm në shfletues (local) për personalizim brenda faqes.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Routine -->
-    <section class="screen" id="s-routine">
-      <div class="card wide">
-        <div class="inner">
-          <div class="topbar">
-            <div class="brand">
-              <div class="logo"><span>MIA</span></div>
-              <div class="brandText">
-                <div class="mia">Rutina personale</div>
-                <div class="sub">Vendos BPM për të gjeneruar planin</div>
-              </div>
-            </div>
-            <button class="btn small ghost" id="backRoutine">Kthehu</button>
-          </div>
-
-          <div class="note" style="margin-top:0;">
-            Vendos <strong>BPM</strong> (rrahje/minutë) dhe (nëse do) <strong>SpO₂</strong>.
-            Rezultati del me pika të qarta dhe është i personalizuar.
-          </div>
-
-          <div class="grid">
-            <div class="field">
-              <label>BPM <span class="req">(det.)</span></label>
-              <input id="bpm" type="number" min="30" max="220" placeholder="p.sh. 92" />
-            </div>
-            <div class="field">
-              <label>SpO₂ (%) <span style="opacity:.75">(ops.)</span></label>
-              <input id="spo2" type="number" min="50" max="100" placeholder="p.sh. 98" />
-            </div>
-            <div class="field">
-              <label>Konteksti i BPM <span style="opacity:.75">(ops.)</span></label>
-              <select id="ctx">
-                <option value="rest">Në qetësi</option>
-                <option value="after">Pas aktiviteti</option>
-                <option value="stress">Në stres/ankth</option>
-                <option value="unknown">Nuk jam i sigurt</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Burimi <span style="opacity:.75">(informues)</span></label>
-              <input value="Manual" disabled />
-            </div>
-          </div>
-
-          <div class="statusRow">
-            <div class="chip" id="statusBpm">Vendos BPM (30–220).</div>
-            <button class="btn small primary" id="gen">Gjenero</button>
-          </div>
-
-          <div id="wrapOut" style="display:none;">
-            <div class="panel" id="panelOut">
-              <div class="fab">
-                <button class="btn small ghost" id="topOut">⬆︎ Lart</button>
-                <button class="btn small primary" id="hideOut">↩︎ Mbrapa</button>
-              </div>
-
-              <div class="section" style="margin-top:0;">
-                <h3><span class="dot"></span> Përmbledhje</h3>
-                <div class="kpiRow" id="kpis"></div>
-              </div>
-
-              <div class="section">
-                <h3><span class="dot"></span> Udhëzime ditore</h3>
-                <ul id="daily"></ul>
-              </div>
-
-              <div class="section">
-                <h3><span class="dot"></span> Plan javor</h3>
-                <ul id="week"></ul>
-              </div>
-
-              <div class="section">
-                <h3><span class="dot"></span> Kujdes</h3>
-                <ul id="caution"></ul>
-              </div>
-
-              <div class="statusRow" style="margin-top:12px;">
-                <div class="chip">Përdor scroll + “Lart” për ta lexuar rehat.</div>
-                <button class="btn small primary" id="hideOut2">Kthehu në faqen e mëparshme</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Heart Map -->
-    <section class="screen" id="s-map">
-      <div class="card wide">
-        <div class="inner">
-          <div class="topbar">
-            <div class="brand">
-              <div class="logo"><span>MIA</span></div>
-              <div class="brandText">
-                <div class="mia">Harta e zemrës</div>
-                <div class="sub">3D — rrotulloje dhe eksploro pjesët</div>
-              </div>
-            </div>
-            <button class="btn small ghost" id="backMap">Kthehu</button>
-          </div>
-
-          <div class="note" style="margin-top:0;">
-            <strong>Përdorimi:</strong> Drag për rrotullim • Scroll për zoom • <strong>Double-click</strong> mbi një pjesë për fokus.
-          </div>
-
-          <div class="threeWrap" id="threeWrap">
-            <canvas id="threeCanvas"></canvas>
-            <div class="hud">
-              <div class="hintBox"><strong>Tip:</strong> Drag = rrotullim • Scroll = zoom • Double-click = pjesa + info</div>
-              <div class="hintBox" style="max-width: 300px; text-align:right;">
-                <strong>Gjendja:</strong> <span id="mapState">Duke u ngarkuar…</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="infoPanel">
-            <div class="infoInner">
-              <div class="partTitle"><span class="spark"></span> <span id="partName">Zemra</span></div>
-              <p class="partBody" id="partInfo">Zgjidh një pjesë me double-click për të parë shpjegimin e shkurtër.</p>
-              <div class="badge" id="partHint">Double-click mbi një pjesë</div>
-            </div>
-          </div>
-
-          <div class="note" id="webglNote" style="display:none;">
-            <span class="err">3D nuk u hap.</span> Provo Chrome/Edge dhe hape linkun e GitHub Pages (jo “Edit file”).
-          </div>
-        </div>
-      </div>
-    </section>
-
+<div class="app">
+  <div class="bg">
+    <canvas id="ecg"></canvas>
+    <div class="noise"></div>
+    <div class="vignette"></div>
   </div>
 
-  <!-- IMPORTANT: This is a module script to avoid "await" errors and ensure Three loads correctly -->
-  <script type="module">
-    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
-
-    /* ---------- small helpers ---------- */
-    const esc = (s)=> (s??"").toString()
-      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-
-    /* ---------- router ---------- */
-    const S = {
-      landing: document.getElementById("s-landing"),
-      menu: document.getElementById("s-menu"),
-      data: document.getElementById("s-data"),
-      routine: document.getElementById("s-routine"),
-      map: document.getElementById("s-map"),
-    };
-    function go(name){
-      Object.values(S).forEach(x => x.classList.remove("active"));
-      S[name].classList.add("active");
-
-      setTimeout(()=> {
-        const f = S[name].querySelector("button,input,select");
-        if(f) f.focus({ preventScroll:true });
-      }, 60);
-
-      if(name === "map"){
-        requestAnimationFrame(()=>requestAnimationFrame(()=>initHeartMap()));
-      }
-    }
-
-    /* ---------- state ---------- */
-    const state = { profile:{ age:null, gender:"", issue:"", name:"" } };
-    const pillProfile = document.getElementById("pillProfile");
-    function updatePill(){
-      const p = state.profile;
-      if(!(p.age && p.gender && p.name)){
-        pillProfile.innerHTML = "<strong>Profili:</strong> ende pa të dhëna — vendos të dhënat";
-        return;
-      }
-      const prob = p.issue ? ` · ${esc(p.issue)}` : " · pa problem të deklaruar";
-      pillProfile.innerHTML = `<strong>Profili:</strong> ${esc(p.name)} · ${p.age} vjeç · ${esc(p.gender)}${prob}`;
-    }
-
-    /* ---------- landing ---------- */
-    document.getElementById("miaBig").addEventListener("click", ()=>go("menu"));
-    window.addEventListener("keydown", (e)=>{
-      if(S.landing.classList.contains("active") && e.key === "Enter") go("menu");
-    });
-
-    /* ---------- menu ---------- */
-    document.getElementById("bData").addEventListener("click", ()=>go("data"));
-    document.getElementById("bRoutine").addEventListener("click", ()=>{
-      const p = state.profile;
-      if(!(p.age && p.gender && p.name)) return go("data");
-      go("routine");
-    });
-    document.getElementById("bMap").addEventListener("click", ()=>go("map"));
-
-    /* ---------- data form ---------- */
-    const age = document.getElementById("age");
-    const gender = document.getElementById("gender");
-    const issue = document.getElementById("issue");
-    const name = document.getElementById("name");
-    const statusData = document.getElementById("statusData");
-    const saveGo = document.getElementById("saveGo");
-
-    function validateData(){
-      const a = parseInt(age.value,10);
-      const okAge = Number.isFinite(a) && a>=5 && a<=120;
-      const okG = !!gender.value;
-      const okN = name.value.trim().length >= 2;
-      const ok = okAge && okG && okN;
-
-      if(ok){
-        statusData.textContent = "Gati ✅";
-        saveGo.style.display = "inline-flex";
-      }else{
-        const miss = [];
-        if(!okAge) miss.push("Mosha (5–120)");
-        if(!okG) miss.push("Gjinia");
-        if(!okN) miss.push("Emri (min 2 shkronja)");
-        statusData.textContent = "Plotëso: " + miss.join(" · ");
-        saveGo.style.display = "none";
-      }
-      return ok;
-    }
-    [age,gender,issue,name].forEach(el=>{
-      el.addEventListener("input", validateData);
-      el.addEventListener("change", validateData);
-    });
-    document.getElementById("backData").addEventListener("click", ()=>go("menu"));
-    saveGo.addEventListener("click", ()=>{
-      if(!validateData()) return;
-      state.profile.age = parseInt(age.value,10);
-      state.profile.gender = gender.value;
-      state.profile.issue = issue.value;
-      state.profile.name = name.value.trim();
-      updatePill();
-      go("menu");
-    });
-
-    /* ---------- routine (deterministic) ---------- */
-    document.getElementById("backRoutine").addEventListener("click", ()=>{ hideOut(); go("menu"); });
-
-    const bpm = document.getElementById("bpm");
-    const spo2 = document.getElementById("spo2");
-    const ctx = document.getElementById("ctx");
-    const statusBpm = document.getElementById("statusBpm");
-
-    function okBpm(){
-      const v = parseInt(bpm.value,10);
-      const ok = Number.isFinite(v) && v>=30 && v<=220;
-      statusBpm.textContent = ok ? "BPM i vlefshëm ✅" : "Vendos BPM (30–220).";
-      return ok;
-    }
-    bpm.addEventListener("input", okBpm);
-
-    function okSpo2(){
-      if(!spo2.value) return true;
-      const v = parseInt(spo2.value,10);
-      return Number.isFinite(v) && v>=50 && v<=100;
-    }
-
-    const wrapOut = document.getElementById("wrapOut");
-    const panelOut = document.getElementById("panelOut");
-    const kpis = document.getElementById("kpis");
-    const daily = document.getElementById("daily");
-    const week = document.getElementById("week");
-    const caution = document.getElementById("caution");
-
-    document.getElementById("topOut").addEventListener("click", ()=> panelOut.scrollTo({top:0, behavior:"smooth"}));
-    function hideOut(){ wrapOut.style.display="none"; panelOut.scrollTop=0; }
-    document.getElementById("hideOut").addEventListener("click", hideOut);
-    document.getElementById("hideOut2").addEventListener("click", hideOut);
-
-    function ageGroup(a){
-      if(a<=11) return "fëmijë";
-      if(a<=19) return "adoleshent";
-      if(a<=35) return "i ri";
-      if(a<=59) return "i rritur";
-      return "i moshuar";
-    }
-    function zoneOf(v){ return v<60 ? "i ulët" : (v<=100 ? "normal" : "i lartë"); }
-
-    function buildPlan(p, bpmVal, spo2Val, ctxVal){
-      const group = ageGroup(p.age);
-      const zone = zoneOf(bpmVal);
-      const prob = p.issue || "";
-
-      const ctxNote = {
-        rest: "Matje në qetësi: vlerë më e krahasueshme.",
-        after: "Pas aktiviteti: BPM rritet natyrshëm; mat sërish pas 10 minutash qetësi.",
-        stress: "Në stres/ankth: BPM mund të rritet përkohësisht.",
-        unknown: "Kontekst i panjohur: mat sërish në qetësi."
-      }[ctxVal] || "";
-
-      let water = (group==="fëmijë")?1.2:(group==="adoleshent")?1.8:(group==="i ri")?2.0:(group==="i rritur")?1.9:1.6;
-      if(zone==="i lartë") water += 0.2;
-      if(prob==="Takikardi") water += 0.1;
-      water = Math.max(1.0, Math.min(2.4, water));
-
-      let sleep = (group==="fëmijë")?9.0:(group==="adoleshent")?8.5:(group==="i moshuar")?7.0:7.5;
-
-      let cardio = "20–30 min ecje e shpejtë, 4–5 ditë/javë";
-      if(zone==="i lartë") cardio = "15–25 min ecje e moderuar, 4 ditë/javë (pa e tepruar)";
-      if(zone==="i ulët") cardio = "20 min ecje e lehtë, 4 ditë/javë (ngrohje e gjatë)";
-
-      let spo2Note = "SpO₂ nuk është vendosur.";
-      let spo2Flag = "none";
-      if(Number.isFinite(spo2Val)){
-        if(spo2Val>=95){ spo2Note="SpO₂ në nivel të mirë."; spo2Flag="ok"; }
-        else if(spo2Val>=92){ spo2Note="SpO₂ pak e ulët: pusho, mat sërish, kontrollo vendosjen e sensorit."; spo2Flag="mid"; }
-        else { spo2Note="SpO₂ e ulët: nëse ke gulçim/dobësi, kërko ndihmë mjekësore."; spo2Flag="low"; }
-      }
-
-      const d=[];
-      d.push(\`Ujë: \${water.toFixed(1)} L/ditë në 5 momente (08:00, 11:00, 14:00, 17:00, 20:00).\`);
-      d.push(\`Gjumë: \${sleep.toFixed(1)} orë/natë (orari i qëndrueshëm).\`);
-      d.push(\`Aktivitet: \${cardio}.\`);
-      d.push("Forcë: 2 ditë/javë ushtrime të lehta (pa e tepruar).");
-      d.push("Relaksim: 2–3 herë/ditë, 2 min frymëmarrje (4-4-6).");
-      d.push(\`Kontekst: \${ctxNote}\`);
-      if(group==="adoleshent") d.push("Shmang energizantët dhe kafeinën e tepërt (sidomos pas 15:00).");
-      if(prob==="Takikardi" || zone==="i lartë") d.push("Nëse BPM i lartë në qetësi përsëritet: rekomandohet vlerësim mjekësor.");
-      if(prob==="Bradikardi" || zone==="i ulët") d.push("Nëse BPM i ulët shoqërohet me marramendje/të fikët: rekomandohet vlerësim mjekësor.");
-      if(prob==="Aritmi") d.push("Nëse ndjen rrahje të parregullta: pusho, shëno kohën/ndjesitë, konsulto mjekun.");
-      if(prob==="Tension i lartë") d.push("Ushqim: më pak kripë, më shumë fruta/perime + ecje e përditshme.");
-      if(prob==="Dhimbje gjoksi") d.push("Dhimbja e gjoksit nuk neglizhohet—sidomos me gulçim/marramendje.");
-      d.push(spo2Note);
-
-      const w=[
-        "E Hënë: ecje + shtrirje 8 min.",
-        "E Martë: ushtrime të lehta (15–20 min) + shtrirje.",
-        "E Mërkurë: ecje + frymëmarrje 5 min.",
-        "E Enjte: ushtrime të lehta + shtrirje.",
-        "E Premte: ecje + aktivitet relaksues (lexim/muzikë).",
-        "E Shtunë: aktivitet i lehtë i lirë (shëtitje/biçikletë).",
-        "E Diel: rikuperim + planifikim jave."
-      ];
-
-      const c=[];
-      if(zone==="i lartë" && ctxVal==="rest") c.push("BPM i lartë në qetësi që përsëritet: rekomandohet vlerësim mjekësor.");
-      if(zone==="i ulët" && ctxVal==="rest") c.push("BPM i ulët në qetësi + simptoma: rekomandohet vlerësim mjekësor.");
-      if(spo2Flag==="low") c.push("SpO₂ e ulët + gulçim/dobësi: kërko ndihmë mjekësore.");
-      c.push("Ky plan është edukativ dhe nuk zëvendëson mjekun.");
-
-      return { group, zone, d, w, c };
-    }
-
-    document.getElementById("gen").addEventListener("click", ()=>{
-      const p = state.profile;
-      if(!(p.age && p.gender && p.name)) return go("data");
-      if(!okBpm()) return;
-      if(!okSpo2()){ statusBpm.textContent="SpO₂ duhet të jetë 50–100 (ose lëre bosh)."; return; }
-
-      const bpmVal = parseInt(bpm.value,10);
-      const spo2Val = spo2.value ? parseInt(spo2.value,10) : NaN;
-      const plan = buildPlan(p, bpmVal, spo2Val, ctx.value);
-
-      kpis.innerHTML = \`
-        <div class="kpi">Emri: <strong>\${esc(p.name)}</strong></div>
-        <div class="kpi">Mosha: <strong>\${p.age}</strong> (\${plan.group})</div>
-        <div class="kpi">BPM: <strong>\${bpmVal}</strong> (\${plan.zone})</div>
-        <div class="kpi">SpO₂: <strong>\${Number.isFinite(spo2Val) ? (spo2Val+"%") : "—"}</strong></div>
-        <div class="kpi">Problemi: <strong>\${esc(p.issue || "—")}</strong></div>
-      \`;
-      daily.innerHTML = plan.d.map(x=>\`<li>\${esc(x)}</li>\`).join("");
-      week.innerHTML  = plan.w.map(x=>\`<li>\${esc(x)}</li>\`).join("");
-      caution.innerHTML = plan.c.map(x=>\`<li>\${esc(x)}</li>\`).join("");
-
-      wrapOut.style.display = "block";
-      panelOut.scrollTop = 0;
-    });
-
-    /* ---------- heart map 3D ---------- */
-    document.getElementById("backMap").addEventListener("click", ()=>go("menu"));
-
-    const mapStateEl = document.getElementById("mapState");
-    const partNameEl = document.getElementById("partName");
-    const partInfoEl = document.getElementById("partInfo");
-    const partHintEl = document.getElementById("partHint");
-    const webglNote = document.getElementById("webglNote");
-
-    const PARTS = {
-      LV:{title:"Ventrikuli i majtë", info:"Pompon gjakun e oksigjenuar në aortë për gjithë trupin."},
-      RV:{title:"Ventrikuli i djathtë", info:"Pompon gjakun drejt mushkërive për oksigjenim."},
-      LA:{title:"Atriumi i majtë", info:"Merr gjakun e oksigjenuar nga mushkëritë dhe e kalon në ventrikulin e majtë."},
-      RA:{title:"Atriumi i djathtë", info:"Merr gjakun nga trupi dhe e kalon në ventrikulin e djathtë."},
-      AORTA:{title:"Aorta", info:"Arteria më e madhe: shpërndan gjakun nga zemra në trup."},
-      PULM:{title:"Arteria pulmonare", info:"Dërgon gjakun drejt mushkërive."},
-      CAVA:{title:"Vena kava", info:"Kthen gjakun nga trupi në zemër."},
-    };
-
-    function setInfo(key){
-      if(!key || !PARTS[key]){
-        partNameEl.textContent = "Zemra";
-        partInfoEl.textContent = "Zgjidh një pjesë me double-click për të parë shpjegimin e shkurtër.";
-        partHintEl.textContent = "Double-click mbi një pjesë";
-        return;
-      }
-      partNameEl.textContent = PARTS[key].title;
-      partInfoEl.textContent = PARTS[key].info;
-      partHintEl.textContent = "Double-click pjesë tjetër për fokus";
-    }
-
-    function webglAvailable(){
-      try{
-        const c = document.createElement("canvas");
-        return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
-      }catch{ return false; }
-    }
-
-    let mapInit = false;
-    let renderer, scene, camera, group, raycaster, pointer;
-    let parts = [];
-    let dragging=false, lastX=0, lastY=0;
-    let targetRotX=0.15, targetRotY=-0.35, zoom=1.9;
-
-    function tweenScale(mesh, mult, dur=260){
-      const start = mesh.scale.clone();
-      const base  = mesh.userData.baseScale || start.clone();
-      const end   = base.clone().multiplyScalar(mult);
-      const t0 = performance.now();
-      function step(now){
-        const p = Math.min(1, (now-t0)/dur);
-        const e = 1 - Math.pow(1-p, 3);
-        mesh.scale.lerpVectors(start, end, e);
-        if(p<1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    async function waitForSize(el, tries=60){
-      for(let i=0;i<tries;i++){
-        const w = el.clientWidth, h = el.clientHeight;
-        if(w>80 && h>80) return {w,h};
-        await new Promise(r=>setTimeout(r,50));
-      }
-      return {w: el.clientWidth, h: el.clientHeight};
-    }
-
-    async function initHeartMap(){
-      if(mapInit) return;
-      mapInit = true;
-
-      mapStateEl.textContent = "Duke u ngarkuar…";
-      webglNote.style.display = "none";
-      setInfo(null);
-
-      if(!webglAvailable()){
-        mapStateEl.textContent = "WebGL off";
-        webglNote.style.display = "block";
-        webglNote.innerHTML = `<span class="err">3D nuk u hap.</span> WebGL duket i çaktivizuar në këtë pajisje/shfletues.`;
-        return;
-      }
-
-      const wrap = document.getElementById("threeWrap");
-      const canvas = document.getElementById("threeCanvas");
-
-      // ensure size is real (critical on transitions)
-      await waitForSize(wrap, 60);
-
-      // renderer + scene
-      renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
-      renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-
-      scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x020817, 2.0, 7.5);
-
-      camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-
-      scene.add(new THREE.AmbientLight(0x88bbff, 0.55));
-      const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(2,2,2); scene.add(key);
-      const rim = new THREE.DirectionalLight(0x66ccff, 0.85); rim.position.set(-2,1.5,-1.5); scene.add(rim);
-
-      group = new THREE.Group();
-      scene.add(group);
-
-      const mat = (hex, em)=> new THREE.MeshStandardMaterial({
-        color: hex, roughness: 0.42, metalness: 0.05, emissive: em, emissiveIntensity: 0.12
-      });
-
-      const mV=mat(0x8b1f2f, 0x22040a);
-      const mA=mat(0x7a2136, 0x1a050b);
-      const mAo=mat(0x9b2b3a,0x26060e);
-      const mPu=mat(0x7f2a4a,0x220816);
-      const mCv=mat(0x5c2a52,0x160516);
-
-      parts = [];
-      function addPart(key, geom, material){
-        const mesh = new THREE.Mesh(geom, material);
-        mesh.userData.key = key;
-        mesh.userData.baseScale = mesh.scale.clone();
-        group.add(mesh);
-        parts.push(mesh);
-        return mesh;
-      }
-
-      // Ventricles
-      const gV = new THREE.SphereGeometry(0.22, 48, 48);
-      const LV = addPart("LV", gV.clone(), mV);
-      LV.scale.set(1.18, 1.40, 1.06);
-      LV.position.set(0.11, 0.18, 0.00);
-      LV.rotation.set(0.20, 0.25, 0.06);
-
-      const RV = addPart("RV", gV.clone(), mV);
-      RV.scale.set(1.06, 1.28, 0.96);
-      RV.position.set(-0.12, 0.15, 0.06);
-      RV.rotation.set(0.20, -0.22, -0.06);
-
-      // Atria
-      const gA = new THREE.SphereGeometry(0.15, 40, 40);
-      const LA = addPart("LA", gA.clone(), mA);
-      LA.scale.set(1.05, 0.95, 1.05);
-      LA.position.set(0.14, 0.40, -0.03);
-
-      const RA = addPart("RA", gA.clone(), mA);
-      RA.scale.set(1.00, 0.92, 1.00);
-      RA.position.set(-0.16, 0.38, 0.03);
-
-      // Aorta
-      const gCyl = new THREE.CylinderGeometry(0.06, 0.07, 0.36, 32);
-      const A1 = addPart("AORTA", gCyl, mAo);
-      A1.position.set(0.04, 0.56, -0.05);
-      A1.rotation.set(0.20, 0.0, -0.35);
-
-      const gT = new THREE.TorusGeometry(0.15, 0.055, 22, 60, Math.PI*0.82);
-      const A2 = addPart("AORTA", gT, mAo);
-      A2.position.set(0.08, 0.56, -0.11);
-      A2.rotation.set(0.25, 1.2, 0.85);
-
-      // Pulmonary artery
-      const gP = new THREE.CylinderGeometry(0.055, 0.06, 0.30, 32);
-      const P = addPart("PULM", gP, mPu);
-      P.position.set(-0.08, 0.54, 0.02);
-      P.rotation.set(0.15, 0.0, 0.45);
-
-      // Vena cava
-      const gCv = new THREE.CylinderGeometry(0.055, 0.065, 0.28, 32);
-      const C1 = addPart("CAVA", gCv.clone(), mCv);
-      C1.position.set(-0.26, 0.52, 0.02);
-      C1.rotation.set(0.12, 0.0, 0.20);
-
-      const C2 = addPart("CAVA", gCv.clone(), mCv);
-      C2.position.set(-0.22, 0.26, 0.08);
-      C2.rotation.set(-0.25, 0.25, 0.15);
-
-      // Decorative bumps (non clickable)
-      const detailMat = new THREE.MeshStandardMaterial({
-        color: 0x5b1720, roughness: 0.55, metalness: 0.02, transparent:true, opacity: 0.55
-      });
-      const gB = new THREE.SphereGeometry(0.07, 24, 24);
-      for(let i=0;i<10;i++){
-        const b = new THREE.Mesh(gB, detailMat);
-        b.position.set((Math.random()*0.34-0.17),(Math.random()*0.38+0.12),(Math.random()*0.26-0.13));
-        b.scale.setScalar(0.6 + Math.random()*0.7);
-        group.add(b);
-      }
-
-      group.position.set(0, 0.10, 0);
-      group.rotation.set(targetRotX, targetRotY, 0.03);
-
-      raycaster = new THREE.Raycaster();
-      pointer = new THREE.Vector2();
-
-      // Resize handling (robust)
-      const resize = ()=>{
-        const w = wrap.clientWidth;
-        const h = wrap.clientHeight;
-        if(w<10 || h<10) return;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      };
-      resize();
-      window.addEventListener("resize", resize);
-
-      const ro = new ResizeObserver(()=>resize());
-      ro.observe(wrap);
-
-      // Interactions
-      canvas.addEventListener("pointerdown", (e)=>{
-        dragging = true;
-        lastX = e.clientX; lastY = e.clientY;
-        try{ canvas.setPointerCapture(e.pointerId); }catch{}
-      });
-      canvas.addEventListener("pointerup", (e)=>{
-        dragging = false;
-        try{ canvas.releasePointerCapture(e.pointerId); }catch{}
-      });
-      canvas.addEventListener("pointermove", (e)=>{
-        if(!dragging) return;
-        const dx = e.clientX - lastX;
-        const dy = e.clientY - lastY;
-        lastX = e.clientX; lastY = e.clientY;
-        targetRotY += dx * 0.006;
-        targetRotX += dy * 0.006;
-        targetRotX = Math.max(-0.85, Math.min(0.85, targetRotX));
-      });
-      canvas.addEventListener("wheel", (e)=>{
-        e.preventDefault();
-        zoom += e.deltaY * 0.0016;
-        zoom = Math.max(1.15, Math.min(3.2, zoom));
-      }, { passive:false });
-
-      // Double click selects part
-      canvas.addEventListener("dblclick", (e)=>{
-        const rect = canvas.getBoundingClientRect();
-        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-        raycaster.setFromCamera(pointer, camera);
-        const hits = raycaster.intersectObjects(parts, false);
-        if(!hits.length) return;
-        const key = hits[0].object.userData.key;
-
-        setInfo(key);
-        mapStateEl.textContent = "Fokus";
-
-        for(const m of parts){
-          tweenScale(m, (m.userData.key === key) ? 1.16 : 1.0);
-        }
-      });
-
-      function updateCamera(){
-        camera.position.set(0.0, 0.40, zoom);
-        camera.lookAt(0, 0.30, 0);
-      }
-
-      setInfo(null);
-      mapStateEl.textContent = "Gati";
-
-      // Animation loop
-      function loop(){
-        const tt = performance.now()*0.001;
-        group.rotation.x += (targetRotX - group.rotation.x) * 0.10;
-        group.rotation.y += (targetRotY - group.rotation.y) * 0.10;
-        group.position.y = 0.10 + Math.sin(tt*1.2) * 0.003;
-
-        updateCamera();
-        renderer.render(scene, camera);
-        requestAnimationFrame(loop);
-      }
-      loop();
-    }
-
-    /* ---------- ECG background animation ---------- */
-    const ecg = document.getElementById("ecg");
-    const g = ecg.getContext("2d");
-    let W=0,H=0,t=0;
-
-    function resizeEcg(){
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      W = ecg.clientWidth; H = ecg.clientHeight;
-      ecg.width = Math.floor(W*dpr);
-      ecg.height = Math.floor(H*dpr);
-      g.setTransform(dpr,0,0,dpr,0,0);
-    }
-    window.addEventListener("resize", resizeEcg);
-    resizeEcg();
-
-    function drawEcg(){
-      t += 0.016;
-      g.fillStyle = "rgba(0,0,0,0.18)";
-      g.fillRect(0,0,W,H);
-
-      // grid
-      g.save();
-      g.globalAlpha = 0.10;
-      g.strokeStyle = "rgba(120,220,255,0.35)";
-      g.lineWidth = 1;
-      const step = 42;
-      for(let x=0;x<W;x+=step){ g.beginPath(); g.moveTo(x,0); g.lineTo(x,H); g.stroke(); }
-      for(let y=0;y<H;y+=step){ g.beginPath(); g.moveTo(0,y); g.lineTo(W,y); g.stroke(); }
-      g.restore();
-
-      // wave
-      const mid = H*0.52;
-      const amp = Math.min(64, H*0.10);
-
-      g.save();
-      g.lineWidth = 2.2;
-      g.strokeStyle = "rgba(140,220,255,0.95)";
-      g.shadowColor = "rgba(0,190,255,0.35)";
-      g.shadowBlur = 18;
-
-      g.beginPath();
-      const speed = 220;
-      const phase = (t*speed) % W;
-
-      for(let x=0;x<=W;x++){
-        const u = ((x + phase) % 260) / 260;
-        let y = 0;
-        y += Math.sin((x*0.014) + t*1.6) * (amp*0.08);
-        if(u > 0.30 && u < 0.34) y += -amp*0.20;
-        if(u >= 0.34 && u < 0.36) y +=  amp*0.55;
-        if(u >= 0.36 && u < 0.40) y += -amp*1.00;
-        if(u >= 0.40 && u < 0.44) y +=  amp*0.30;
-        if(u >= 0.44 && u < 0.52) y +=  Math.sin((u-0.44)*Math.PI*6) * (amp*0.10);
-
-        const yy = mid + y;
-        if(x===0) g.moveTo(x,yy); else g.lineTo(x,yy);
-      }
-      g.stroke();
-
-      g.globalAlpha = 0.25;
-      g.lineWidth = 6;
-      g.strokeStyle = "rgba(0,200,255,0.35)";
-      g.stroke();
-      g.restore();
-
-      requestAnimationFrame(drawEcg);
-    }
-    requestAnimationFrame(drawEcg);
-
-    /* ---------- init + navigation ---------- */
-    updatePill();
-    validateData();
-
-    document.getElementById("backMap").addEventListener("click", ()=>go("menu"));
-
-    go("landing");
-  </script>
+  <!-- LANDING -->
+  <section class="screen active" id="s-landing">
+    <div class="landing">
+      <h1 class="big" id="miaBig">MIA</h1>
+      <div class="subtitle">Mjekët e Inteligjencës Artificiale</div>
+      <div class="hint">Kliko mbi <span class="kbd">MIA</span> ose shtyp <span class="kbd">Enter</span>.</div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="screen" id="s-menu">
+    <div class="card">
+      <div class="inner">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo"><span>MIA</span></div>
+            <div class="brandText">
+              <div class="mia">MIA</div>
+              <div class="sub">Mjekët e Inteligjencës Artificiale</div>
+            </div>
+          </div>
+          <div class="pill" id="pillProfile"><strong>Profili:</strong> ende pa të dhëna — vendos të dhënat</div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn primary" id="bData">Vendos të dhënat (e detyrueshme)</button>
+          <button class="btn" id="bRoutine">Gjenero Rutinën Personale</button>
+          <button class="btn" id="bNeuro" disabled>NeuroSpark</button>
+        </div>
+
+        <div class="note">
+          <strong>Shënim:</strong> Kjo faqe jep udhëzime edukative. Nuk zëvendëson mjekun.
+          <br><strong>Kujdes:</strong> NeuroSpark përdor efekte vizuale/audio. Nëse ke epilepsi fotosensitive ose migrenë, mos e përdor.
+          <br><strong>Tip:</strong> NeuroSpark aktivizohet pasi të bësh Matjen 1.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section class="screen" id="s-data">
+    <div class="card">
+      <div class="inner">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo"><span>MIA</span></div>
+            <div class="brandText">
+              <div class="mia">Vendos të dhënat</div>
+              <div class="sub">Detyrueshme: Mosha, Gjinia, Emri</div>
+            </div>
+          </div>
+          <button class="btn small ghost" id="backData">Kthehu</button>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label>Mosha <span class="req">(det.)</span></label>
+            <input id="age" type="number" min="5" max="120" placeholder="p.sh. 16">
+          </div>
+          <div class="field">
+            <label>Gjinia <span class="req">(det.)</span></label>
+            <select id="gender">
+              <option value="">Zgjidh…</option>
+              <option value="Femër">Femër</option>
+              <option value="Mashkull">Mashkull</option>
+              <option value="Tjetër / s’dua të them">Tjetër / s’dua të them</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Problemi i zemrës <span style="opacity:.75">(ops.)</span></label>
+            <select id="issue">
+              <option value="">—</option>
+              <option value="Takikardi">Takikardi</option>
+              <option value="Bradikardi">Bradikardi</option>
+              <option value="Aritmi">Aritmi</option>
+              <option value="Tension i lartë">Tension i lartë</option>
+              <option value="Dhimbje gjoksi">Dhimbje gjoksi</option>
+              <option value="Tjetër">Tjetër</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Emri <span class="req">(det.)</span></label>
+            <input id="name" type="text" maxlength="32" placeholder="p.sh. Ardi">
+          </div>
+        </div>
+
+        <div class="statusRow">
+          <div class="chip" id="statusData">Plotëso fushat e detyrueshme.</div>
+          <button class="btn small primary" id="saveGo" style="display:none;">Kthehu në faqen kryesore</button>
+        </div>
+
+        <div class="note" style="opacity:.92;">Të dhënat ruhen vetëm në shfletues (local) për personalizim brenda faqes.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROUTINE / MEASURE -->
+  <section class="screen" id="s-routine">
+    <div class="card wide">
+      <div class="inner">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo"><span>MIA</span></div>
+            <div class="brandText">
+              <div class="mia" id="routineTitle">Rutina personale</div>
+              <div class="sub" id="routineSub">Vendos BPM për të gjeneruar planin</div>
+            </div>
+          </div>
+          <button class="btn small ghost" id="backRoutine">Kthehu</button>
+        </div>
+
+        <div class="note" style="margin-top:0;">
+          Vendos <strong>BPM</strong> (rrahje/minutë) dhe (nëse do) <strong>SpO₂</strong>.
+          <span id="measureHint" style="opacity:.9;"></span>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label>BPM <span class="req">(det.)</span></label>
+            <input id="bpm" type="number" min="30" max="220" placeholder="p.sh. 92">
+          </div>
+          <div class="field">
+            <label>SpO₂ (%) <span style="opacity:.75">(ops.)</span></label>
+            <input id="spo2" type="number" min="50" max="100" placeholder="p.sh. 98">
+          </div>
+          <div class="field">
+            <label>Konteksti i BPM <span style="opacity:.75">(ops.)</span></label>
+            <select id="ctx">
+              <option value="rest">Në qetësi</option>
+              <option value="after">Pas aktiviteti</option>
+              <option value="stress">Në stres/ankth</option>
+              <option value="unknown">Nuk jam i sigurt</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Burimi <span style="opacity:.75">(informues)</span></label>
+            <input value="Manual" disabled>
+          </div>
+        </div>
+
+        <div class="statusRow">
+          <div class="chip" id="statusBpm">Vendos BPM (30–220).</div>
+          <button class="btn small primary" id="gen">Gjenero</button>
+        </div>
+
+        <div id="wrapOut" style="display:none;">
+          <div class="panel" id="panelOut">
+            <div class="fab">
+              <button class="btn small ghost" id="topOut">⬆︎ Lart</button>
+              <button class="btn small primary" id="hideOut">↩︎ Mbrapa</button>
+            </div>
+
+            <div class="section" style="margin-top:0;">
+              <h3><span class="dot"></span> Përmbledhje</h3>
+              <div class="kpiRow" id="kpis"></div>
+            </div>
+
+            <div class="section">
+              <h3><span class="dot"></span> Udhëzime ditore</h3>
+              <ul id="daily"></ul>
+            </div>
+
+            <div class="section">
+              <h3><span class="dot"></span> Plan javor</h3>
+              <ul id="week"></ul>
+            </div>
+
+            <div class="section">
+              <h3><span class="dot"></span> Kujdes</h3>
+              <ul id="caution"></ul>
+            </div>
+
+            <div class="statusRow" style="margin-top:12px;">
+              <div class="chip">Përdor scroll + “Lart”.</div>
+              <button class="btn small primary" id="hideOut2">Kthehu në faqen e mëparshme</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- NEURO -->
+  <section class="screen" id="s-neuro">
+    <div class="card wide">
+      <div class="inner">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo"><span>MIA</span></div>
+            <div class="brandText">
+              <div class="mia">NeuroSpark</div>
+              <div class="sub">Test i thjeshtë i reagimit ndaj stresit</div>
+            </div>
+          </div>
+          <button class="btn small ghost" id="backNeuro">Kthehu</button>
+        </div>
+
+        <div class="note" style="margin-top:0;">
+          <strong>Kujdes:</strong> Efekte vizuale + audio. Shtyp <strong>ESC</strong> për ta ndalur menjëherë.
+        </div>
+
+        <div class="neuroWrap">
+          <div class="neuroCalm"></div>
+          <div class="flashOverlay" id="flash"></div>
+          <div class="shakeOverlay" id="shake"></div>
+          <div class="breatheOverlay" id="breathe" style="background:radial-gradient(700px 380px at 50% 50%, rgba(140,220,255,.22), transparent 60%);"></div>
+
+          <div class="neuroHUD">
+            <div class="neuroPill" id="nsState">Gjendja: gati</div>
+            <div class="neuroPill" id="nsSafe">Safe Mode: ON</div>
+          </div>
+
+          <div class="neuroStage">
+            <div>
+              <h3 class="neuroTitle" id="nsTitle">NeuroSpark</h3>
+              <p class="neuroText" id="nsText">
+                Faza 1: drita pulsante → Faza 2: zhurmë → Faza 3: sfidë reagimi.
+              </p>
+
+              <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button class="btn small primary" id="startNeuro">Fillo testin</button>
+                <button class="btn small ghost" id="toggleSafe">Ndrysho Safe Mode</button>
+              </div>
+
+              <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button class="btn small primary" id="reactBtn" style="display:none;">
+                  <span class="reactionDot"></span>Kliko SA MË SHPEJT
+                </button>
+              </div>
+
+              <div class="statusRow" style="justify-content:center;margin-top:14px;">
+                <button class="btn small primary" id="remeasureBtn" style="display:none;">Mat përsëri rrahjet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="opacity:.92;">Safe Mode ul intensitetin e efekteve.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="s-result">
+    <div class="card wide">
+      <div class="inner">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo"><span>MIA</span></div>
+            <div class="brandText">
+              <div class="mia">Rezultati i stresit</div>
+              <div class="sub">Matja 1 vs Matja 2</div>
+            </div>
+          </div>
+          <button class="btn small ghost" id="backResult">Kthehu</button>
+        </div>
+
+        <div class="note" id="resultNote" style="margin-top:0;"></div>
+
+        <div class="section">
+          <h3><span class="dot"></span> Krahasimi i vlerave</h3>
+          <div class="kpiRow" id="resultKpis"></div>
+        </div>
+
+        <div class="section">
+          <h3><span class="dot"></span> Menaxhimi i stresit/ankthit</h3>
+          <div id="tableWrap"></div>
+        </div>
+
+        <div class="statusRow">
+          <div class="chip">Ky interpretim është edukativ (jo diagnozë).</div>
+          <button class="btn small primary" id="toMenu">Kthehu në faqen kryesore</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===== hard guard: never freeze UI on errors ===== */
+window.addEventListener("error", (e)=>{ console.log("JS error:", e.message); });
+window.addEventListener("unhandledrejection", (e)=>{ console.log("Promise error:", e.reason); });
+
+const esc = (s)=> (s??"").toString()
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+const S={
+  landing:document.getElementById("s-landing"),
+  menu:document.getElementById("s-menu"),
+  data:document.getElementById("s-data"),
+  routine:document.getElementById("s-routine"),
+  neuro:document.getElementById("s-neuro"),
+  result:document.getElementById("s-result"),
+};
+function go(name){
+  Object.values(S).forEach(x=>x.classList.remove("active"));
+  S[name].classList.add("active");
+  setTimeout(()=>{const f=S[name].querySelector("button,input,select"); if(f) f.focus({preventScroll:true});},60);
+}
+
+const state={
+  profile:{age:null,gender:"",issue:"",name:""},
+  meas:{m1:null,m2:null},
+  flow:{remeasure:false,safe:true},
+  neuro:{reactionMs:null, running:false, cancelToken:0}
+};
+
+document.getElementById("miaBig").addEventListener("click",()=>go("menu"));
+window.addEventListener("keydown",(e)=>{ if(S.landing.classList.contains("active") && e.key==="Enter") go("menu"); });
+
+/* Menu pill */
+const pillProfile=document.getElementById("pillProfile");
+function updatePill(){
+  const p=state.profile;
+  if(!(p.age&&p.gender&&p.name)){
+    pillProfile.innerHTML="<strong>Profili:</strong> ende pa të dhëna — vendos të dhënat";
+    return;
+  }
+  const prob=p.issue?(" · "+esc(p.issue)):" · pa problem të deklaruar";
+  pillProfile.innerHTML=<strong>Profili:</strong> ${esc(p.name)} · ${p.age} vjeç · ${esc(p.gender)}${prob};
+}
+updatePill();
+
+/* Data */
+const age=document.getElementById("age");
+const gender=document.getElementById("gender");
+const issue=document.getElementById("issue");
+const name=document.getElementById("name");
+const statusData=document.getElementById("statusData");
+const saveGo=document.getElementById("saveGo");
+
+function validateData(){
+  const a=parseInt(age.value,10);
+  const okAge=Number.isFinite(a)&&a>=5&&a<=120;
+  const okG=!!gender.value;
+  const okN=name.value.trim().length>=2;
+  const ok=okAge&&okG&&okN;
+  if(ok){
+    statusData.textContent="Gati ✅";
+    saveGo.style.display="inline-flex";
+  }else{
+    const miss=[];
+    if(!okAge) miss.push("Mosha (5–120)");
+    if(!okG) miss.push("Gjinia");
+    if(!okN) miss.push("Emri (min 2 shkronja)");
+    statusData.textContent="Plotëso: "+miss.join(" · ");
+    saveGo.style.display="none";
+  }
+  return ok;
+}
+[age,gender,issue,name].forEach(el=>{
+  el.addEventListener("input",validateData);
+  el.addEventListener("change",validateData);
+});
+document.getElementById("backData").addEventListener("click",()=>go("menu"));
+saveGo.addEventListener("click",()=>{
+  if(!validateData()) return;
+  state.profile.age=parseInt(age.value,10);
+  state.profile.gender=gender.value;
+  state.profile.issue=issue.value;
+  state.profile.name=name.value.trim();
+  updatePill();
+  go("menu");
+});
+validateData();
+
+/* Navigation buttons */
+document.getElementById("bData").addEventListener("click",()=>go("data"));
+
+const bRoutine=document.getElementById("bRoutine");
+bRoutine.addEventListener("click",()=>{
+  const p=state.profile;
+  if(!(p.age&&p.gender&&p.name)) return go("data");
+  state.flow.remeasure=false;
+  setRoutineHeader();
+  go("routine");
+});
+
+const bNeuro=document.getElementById("bNeuro");
+bNeuro.addEventListener("click",()=>{
+  if(!state.meas.m1){
+    state.flow.remeasure=false;
+    setRoutineHeader(true);
+    go("routine");
+    flashMeasureHint("(Së pari bëj Matjen 1, pastaj NeuroSpark.)");
+    return;
+  }
+  resetNeuroUI();
+  go("neuro");
+});
+
+document.getElementById("backRoutine").addEventListener("click",()=>{ hideOut(); go("menu"); });
+
+/* Routine header */
+const routineTitle=document.getElementById("routineTitle");
+const routineSub=document.getElementById("routineSub");
+const measureHint=document.getElementById("measureHint");
+function setRoutineHeader(forceBaseline=false){
+  if(state.flow.remeasure){
+    routineTitle.textContent="Rimatja (Matja 2)";
+    routineSub.textContent="Pas NeuroSpark — vendos vlerat e reja";
+    measureHint.textContent="(Tani po bën Matjen 2.)";
+  }else{
+    routineTitle.textContent="Rutina personale";
+    routineSub.textContent="Vendos BPM për të gjeneruar planin";
+    measureHint.textContent=forceBaseline ? "(Bëj Matjen 1 përpara se të vazhdosh.)" : "";
+  }
+}
+function flashMeasureHint(txt){
+  const old=measureHint.textContent;
+  measureHint.textContent=txt;
+  setTimeout(()=>measureHint.textContent=old,2500);
+}
+
+/* Routine validate */
+const bpm=document.getElementById("bpm");
+const spo2=document.getElementById("spo2");
+const ctx=document.getElementById("ctx");
+const statusBpm=document.getElementById("statusBpm");
+
+function okBpm(){
+  const v=parseInt(bpm.value,10);
+  const ok=Number.isFinite(v)&&v>=30&&v<=220;
+  statusBpm.textContent= ok ? "BPM i vlefshëm ✅" : "Vendos BPM (30–220).";
+  return ok;
+}
+bpm.addEventListener("input",okBpm);
+function okSpo2(){
+  if(!spo2.value) return true;
+  const v=parseInt(spo2.value,10);
+  return Number.isFinite(v)&&v>=50&&v<=100;
+}
+
+/* Output panel */
+const wrapOut=document.getElementById("wrapOut");
+const panelOut=document.getElementById("panelOut");
+document.getElementById("topOut").addEventListener("click",()=>panelOut.scrollTo({top:0,behavior:"smooth"}));
+function hideOut(){wrapOut.style.display="none"; panelOut.scrollTop=0;}
+document.getElementById("hideOut").addEventListener("click",hideOut);
+document.getElementById("hideOut2").addEventListener("click",hideOut);
+
+const kpis=document.getElementById("kpis");
+const daily=document.getElementById("daily");
+const week=document.getElementById("week");
+const caution=document.getElementById("caution");
+
+function ageGroup(a){ if(a<=11) return "fëmijë"; if(a<=19) return "adoleshent"; if(a<=35) return "i ri"; if(a<=59) return "i rritur"; return "i moshuar"; }
+function zoneOf(v){ return v<60 ? "i ulët" : (v<=100 ? "normal" : "i lartë"); }
+
+function buildPlan(p,bpmVal,spo2Val,ctxVal){
+  const group=ageGroup(p.age);
+  const zone=zoneOf(bpmVal);
+  const prob=p.issue||"";
+
+  let water=(group==="fëmijë")?1.2:(group==="adoleshent")?1.8:(group==="i ri")?2.0:(group==="i rritur")?1.9:1.6;
+  if(zone==="i lartë") water+=0.2;
+  if(prob==="Takikardi") water+=0.1;
+  water=Math.max(1.0,Math.min(2.4,water));
+
+  let sleep=(group==="fëmijë")?9.0:(group==="adoleshent")?8.5:(group==="i moshuar")?7.0:7.5;
+
+  let cardio="20–30 min ecje e shpejtë, 4–5 ditë/javë";
+  if(zone==="i lartë") cardio="15–25 min ecje e moderuar, 4 ditë/javë";
+  if(zone==="i ulët") cardio="20 min ecje e lehtë, 4 ditë/javë (ngrohje e gjatë)";
+
+  const ctxNote={
+    rest:"Matje në qetësi: vlerë më e krahasueshme.",
+    after:"Pas aktiviteti: BPM rritet natyrshëm; mat sërish pas 10 minutash qetësi.",
+    stress:"Në stres/ankth: BPM mund të rritet përkohësisht.",
+    unknown:"Kontekst i panjohur: mat sërish në qetësi."
+  }[ctxVal]||"";
+
+  let spo2Note="SpO₂ nuk është vendosur.";
+  let spo2Flag="none";
+  if(Number.isFinite(spo2Val)){
+    if(spo2Val>=95){spo2Note="SpO₂ në nivel të mirë.";spo2Flag="ok";}
+    else if(spo2Val>=92){spo2Note="SpO₂ pak e ulët: pusho, mat sërish, kontrollo vendosjen e sensorit.";spo2Flag="mid";}
+    else {spo2Note="SpO₂ e ulët: nëse ke gulçim/dobësi, kërko ndihmë mjekësore.";spo2Flag="low";}
+  }
+
+  const d=[];
+  d.push(Ujë: ${water.toFixed(1)} L/ditë në 5 momente (08:00, 11:00, 14:00, 17:00, 20:00).);
+  d.push(Gjumë: ${sleep.toFixed(1)} orë/natë (orari i qëndrueshëm).);
+  d.push(Aktivitet: ${cardio}.);
+  d.push("Forcë: 2 ditë/javë ushtrime të lehta (pa e tepruar).");
+  d.push("Relaksim: 2–3 herë/ditë, 2 minuta frymëmarrje (4-4-6).");
+  d.push(Kontekst: ${ctxNote});
+  if(group==="adoleshent") d.push("Shmang energizantët dhe kafeinën e tepërt (sidomos pas 15:00).");
+  if(prob==="Takikardi" || zone==="i lartë") d.push("Nëse BPM i lartë në qetësi përsëritet: konsultë mjekësore.");
+  if(prob==="Bradikardi" || zone==="i ulët") d.push("Nëse BPM i ulët shoqërohet me marramendje/të fikët: konsultë mjekësore.");
+  if(prob==="Aritmi") d.push("Nëse ndjen rrahje të parregullta: pusho dhe konsulto mjekun.");
+  if(prob==="Tension i lartë") d.push("Ushqim: më pak kripë, më shumë fruta/perime.");
+  if(prob==="Dhimbje gjoksi") d.push("Dhimbja e gjoksit nuk neglizhohet—sidomos me gulçim/marramendje.");
+  d.push(spo2Note);
+
+  const w=[
+    "E Hënë: ecje + shtrirje 8 min.",
+    "E Martë: ushtrime të lehta (15–20 min) + shtrirje.",
+    "E Mërkurë: ecje + frymëmarrje 5 min.",
+    "E Enjte: ushtrime të lehta + shtrirje.",
+    "E Premte: ecje + aktivitet relaksues (lexim/muzikë).",
+    "E Shtunë: aktivitet i lehtë i lirë (shëtitje/biçikletë).",
+    "E Diel: rikuperim + planifikim jave."
+  ];
+
+  const c=[];
+  if(zone==="i lartë" && ctxVal==="rest") c.push("BPM i lartë në qetësi që përsëritet: rekomandohet vlerësim mjekësor.");
+  if(zone==="i ulët" && ctxVal==="rest") c.push("BPM i ulët në qetësi + simptoma: rekomandohet vlerësim mjekësor.");
+  if(spo2Flag==="low") c.push("SpO₂ e ulët + gulçim/dobësi: kërko ndihmë mjekësore.");
+  c.push("Ky plan është edukativ dhe nuk zëvendëson mjekun.");
+  return {group,zone,d,w,c};
+}
+
+function store(which,bpmVal,spo2Val,ctxVal){
+  const obj={bpm:bpmVal,spo2:Number.isFinite(spo2Val)?spo2Val:null,ctx:ctxVal,ts:Date.now()};
+  state.meas[which]=obj;
+}
+
+document.getElementById("gen").addEventListener("click",()=>{
+  const p=state.profile;
+  if(!(p.age&&p.gender&&p.name)) return go("data");
+  if(!okBpm()) return;
+  if(!okSpo2()){ statusBpm.textContent="SpO₂ duhet të jetë 50–100 (ose lëre bosh)."; return; }
+
+  const bpmVal=parseInt(bpm.value,10);
+  const spo2Val=spo2.value ? parseInt(spo2.value,10) : NaN;
+  const ctxVal=ctx.value;
+
+  if(state.flow.remeasure) store("m2",bpmVal,spo2Val,ctxVal);
+  else store("m1",bpmVal,spo2Val,ctxVal);
+
+  const plan=buildPlan(p,bpmVal,spo2Val,ctxVal);
+
+  kpis.innerHTML=`
+    <div class="kpi">Emri: <strong>${esc(p.name)}</strong></div>
+    <div class="kpi">Mosha: <strong>${p.age}</strong> (${plan.group})</div>
+    <div class="kpi">BPM: <strong>${bpmVal}</strong> (${plan.zone})</div>
+    <div class="kpi">SpO₂: <strong>${Number.isFinite(spo2Val)?(spo2Val+"%"):"—"}</strong></div>
+    <div class="kpi">Problemi: <strong>${esc(p.issue||"—")}</strong></div>
+  `;
+  daily.innerHTML=plan.d.map(x=><li>${esc(x)}</li>).join("");
+  week.innerHTML=plan.w.map(x=><li>${esc(x)}</li>).join("");
+  caution.innerHTML=plan.c.map(x=><li>${esc(x)}</li>).join("");
+
+  wrapOut.style.display="block";
+  panelOut.scrollTop=0;
+
+  // enable NeuroSpark after Matja 1
+  if(state.meas.m1) bNeuro.disabled=false;
+
+  if(state.flow.remeasure){
+    setTimeout(()=>{
+      hideOut();
+      state.flow.remeasure=false;
+      setRoutineHeader();
+      renderResult();
+      go("result");
+    }, 450);
+  }
+});
+
+/* ===== NeuroSpark: safe async + cancel ===== */
+const nsState=document.getElementById("nsState");
+const nsSafe=document.getElementById("nsSafe");
+const nsTitle=document.getElementById("nsTitle");
+const nsText=document.getElementById("nsText");
+const flash=document.getElementById("flash");
+const shake=document.getElementById("shake");
+const breathe=document.getElementById("breathe");
+const startNeuro=document.getElementById("startNeuro");
+const toggleSafe=document.getElementById("toggleSafe");
+const reactBtn=document.getElementById("reactBtn");
+const remeasureBtn=document.getElementById("remeasureBtn");
+
+function setSafeUI(){ nsSafe.textContent="Safe Mode: "+(state.flow.safe?"ON":"OFF"); }
+setSafeUI();
+
+toggleSafe.addEventListener("click",()=>{ state.flow.safe=!state.flow.safe; setSafeUI(); });
+
+let reactionStart=0;
+reactBtn.addEventListener("click",()=>{
+  if(!reactionStart) return;
+  state.neuro.reactionMs=Math.max(1,Math.round(performance.now()-reactionStart));
+  reactionStart=0;
+  reactBtn.style.display="none";
+  nsState.textContent="Gjendja: përfundoi";
+  nsTitle.textContent="Gati për rimatje";
+  nsText.textContent=Koha e reagimit: ${state.neuro.reactionMs} ms. Tani rimat BPM/SpO₂ për Matjen 2.;
+  remeasureBtn.style.display="inline-flex";
+});
+
+remeasureBtn.addEventListener("click",()=>{
+  stopAllNeuro();
+  state.flow.remeasure=true;
+  setRoutineHeader();
+  bpm.value=""; spo2.value="";
+  okBpm();
+  go("routine");
+});
+
+document.getElementById("backNeuro").addEventListener("click",()=>{ stopAllNeuro(); go("menu"); });
+
+function resetNeuroUI(){
+  stopAllNeuro();
+  nsState.textContent="Gjendja: gati";
+  nsTitle.textContent="NeuroSpark";
+  nsText.textContent="Faza 1: drita pulsante → Faza 2: zhurmë → Faza 3: sfidë reagimi.";
+  flash.classList.remove("on"); shake.classList.remove("on"); breathe.classList.remove("on");
+  reactBtn.style.display="none"; remeasureBtn.style.display="none";
+  startNeuro.disabled=false;
+  state.neuro.reactionMs=null;
+}
+function delay(ms, token){
+  return new Promise(res=>{
+    const t=setTimeout(()=>res(true), ms);
+    // early cancel
+    const chk=()=>{ if(state.neuro.cancelToken!==token){ clearTimeout(t); res(false);} else requestAnimationFrame(chk); };
+    requestAnimationFrame(chk);
+  });
+}
+
+/* Audio (safe) */
+let audioCtx=null, osc=null, gain=null;
+function startToneSafe(){
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    osc=audioCtx.createOscillator();
+    gain=audioCtx.createGain();
+    osc.type="square"; osc.frequency.value=920;
+    gain.gain.value = state.flow.safe ? 0.05 : 0.10;
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start();
+    return true;
+  }catch(e){
+    stopToneSafe();
+    return false;
+  }
+}
+function stopToneSafe(){
+  try{ if(osc) osc.stop(); }catch{}
+  osc=null;
+  try{ if(audioCtx) audioCtx.close(); }catch{}
+  audioCtx=null; gain=null;
+}
+function stopAllNeuro(){
+  state.neuro.running=false;
+  state.neuro.cancelToken++;
+  stopToneSafe();
+  flash.classList.remove("on"); shake.classList.remove("on"); breathe.classList.remove("on");
+  reactBtn.style.display="none";
+  reactionStart=0;
+}
+
+/* ESC panic stop */
+window.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape" && S.neuro.classList.contains("active")){
+    stopAllNeuro();
+    nsState.textContent="Gjendja: u ndal (ESC)";
+    nsTitle.textContent="Testi u ndal";
+    nsText.textContent="Mund ta nisësh sërish kur të jesh gati.";
+    startNeuro.disabled=false;
+  }
+});
+
+startNeuro.addEventListener("click", async ()=>{
+  if(!state.meas.m1){
+    nsTitle.textContent="Së pari Matja 1";
+    nsText.textContent="Bëj Matjen 1 te “Gjenero Rutinën Personale”.";
+    return;
+  }
+  if(state.neuro.running) return;
+  state.neuro.running=true;
+  const token=++state.neuro.cancelToken;
+
+  startNeuro.disabled=true;
+  remeasureBtn.style.display="none";
+  reactBtn.style.display="none";
+  state.neuro.reactionMs=null;
+
+  try{
+    // Phase 1: visual
+    nsState.textContent="Gjendja: stimul vizual";
+    nsTitle.textContent="Stimul vizual";
+    nsText.textContent="Drita pulsante për pak sekonda. (ESC për ndalim)";
+    flash.classList.add("on");
+    if(!(await delay(state.flow.safe?3200:4800, token))) throw new Error("cancel");
+    flash.classList.remove("on");
+
+    // Phase 2: audio + shake
+    nsState.textContent="Gjendja: stimul audio";
+    nsTitle.textContent="Stimul audio";
+    nsText.textContent="Po luhet tingull (nëse shfletuesi e lejon).";
+    shake.classList.add("on");
+    startToneSafe(); // may fail silently
+    if(!(await delay(state.flow.safe?1400:2100, token))) throw new Error("cancel");
+    stopToneSafe();
+    shake.classList.remove("on");
+
+    // Phase 3: calm + reaction
+    nsState.textContent="Gjendja: fokus";
+    nsTitle.textContent="Fokus & reagim";
+    nsText.textContent="Merr 2 frymëmarrje të ngadalta. Pastaj do shfaqet butoni.";
+    breathe.classList.add("on");
+    if(!(await delay(2200, token))) throw new Error("cancel");
+    breathe.classList.remove("on");
+
+    nsState.textContent="Gjendja: prit…";
+    nsTitle.textContent="Prit…";
+    nsText.textContent="Mos kliko derisa të shfaqet butoni.";
+    if(!(await delay(900 + Math.random()*1200, token))) throw new Error("cancel");
+
+    nsTitle.textContent="TANI!";
+    nsText.textContent="Kliko sa më shpejt.";
+    reactBtn.style.display="inline-flex";
+    reactionStart=performance.now();
+
+  }catch(err){
+    // canceled or error
+  }finally{
+    state.neuro.running=false;
+    startNeuro.disabled=false;
+  }
+});
+
+/* Result page */
+document.getElementById("backResult").addEventListener("click",()=>go("menu"));
+document.getElementById("toMenu").addEventListener("click",()=>go("menu"));
+const resultNote=document.getElementById("resultNote");
+const resultKpis=document.getElementById("resultKpis");
+const tableWrap=document.getElementById("tableWrap");
+
+function renderResult(){
+  const a=state.meas.m1, b=state.meas.m2;
+  if(!a||!b){
+    resultNote.innerHTML="<strong>Gabim:</strong> mungon Matja 1 ose Matja 2.";
+    resultKpis.innerHTML=""; tableWrap.innerHTML="";
+    return;
+  }
+  const dBpm=b.bpm-a.bpm;
+  const pct=Math.round((dBpm/a.bpm)*100);
+  const dSpo2=(a.spo2!=null && b.spo2!=null) ? (b.spo2-a.spo2) : null;
+
+  const slowReact = (state.neuro.reactionMs!=null && state.neuro.reactionMs>=550);
+  const spo2Drop = (dSpo2!=null && dSpo2<=-3);
+  const strong = (dBpm>=25) || (pct>=20) || spo2Drop || slowReact;
+
+  resultKpis.innerHTML=`
+    <div class="kpi">Matja 1 BPM: <strong>${a.bpm}</strong></div>
+    <div class="kpi">Matja 2 BPM: <strong>${b.bpm}</strong></div>
+    <div class="kpi">Ndryshimi: <strong>${dBpm>0?"+":""}${dBpm}</strong> (${pct>0?"+":""}${pct}%)</div>
+    <div class="kpi">SpO₂: <strong>${a.spo2??"—"}%</strong> → <strong>${b.spo2??"—"}%</strong> ${dSpo2==null?"":(${dSpo2>0?"+":""}${dSpo2}%)}</div>
+    <div class="kpi">Reagimi: <strong>${state.neuro.reactionMs??"—"} ms</strong></div>
+  `;
+
+  if(strong){
+    resultNote.innerHTML = `
+      <strong>Interpretim edukativ:</strong> Ndryshimi është relativisht i madh.
+      Kjo mund të tregojë <strong>reagim të fortë ndaj stresit/ankthit</strong>.
+      <br><span style="opacity:.9">Nuk është diagnozë. Nëse kjo përsëritet shpesh, konsultohu me profesionist.</span>
+    `;
+    tableWrap.innerHTML=`
+      <table>
+        <thead><tr><th>Metoda</th><th>Si bëhet</th><th>Sa shpesh</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Frymëmarrja 4-4-6</strong></td><td>4 sek merr frymë, 4 sek mbaj, 6 sek nxirr (5 cikle).</td><td>2–3 herë/ditë</td></tr>
+          <tr><td><strong>Grounding “5 gjëra”</strong></td><td>5 që sheh, 4 që prek, 3 që dëgjon, 2 që nuhat, 1 që shijon.</td><td>Kur rritet ankthi</td></tr>
+          <tr><td><strong>Ecje e lehtë</strong></td><td>10 min ecje + frymëmarrje e kontrolluar.</td><td>1 herë/ditë</td></tr>
+          <tr><td><strong>Ul kafeinën</strong></td><td>Redukto kafe/energizantë sidomos pas 15:00.</td><td>Çdo ditë</td></tr>
+          <tr><td><strong>Rutina e gjumit</strong></td><td>Orar i qëndrueshëm + 30 min pa ekran para gjumit.</td><td>Çdo natë</td></tr>
+        </tbody>
+      </table>
+    `;
+  }else{
+    resultNote.innerHTML=`
+      <strong>Interpretim edukativ:</strong> Matjet nuk tregojnë ndryshim të madh.
+      Website sugjeron që je <strong>pa shenja të forta ankthi</strong> në këtë test.
+      <br><span style="opacity:.9">Vazhdo me rutinë të shëndetshme dhe gjumë të mirë.</span>
+    `;
+    tableWrap.innerHTML=`
+      <table>
+        <thead><tr><th>Vazhdo kështu</th><th>Pse ndihmon</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Aktivitet i rregullt</strong></td><td>Stabilizon pulsin dhe ul stresin.</td></tr>
+          <tr><td><strong>Gjumë i mirë</strong></td><td>Rregullon sistemin nervor.</td></tr>
+          <tr><td><strong>Hidratim</strong></td><td>Dehidratimi mund të rrisë pulsin.</td></tr>
+          <tr><td><strong>Pushime të shkurtra</strong></td><td>2–3 min qetësi rrit fokusin.</td></tr>
+        </tbody>
+      </table>
+    `;
+  }
+}
+
+/* Init */
+go("landing");
+setRoutineHeader();
+
+/* ===== ECG background (FPS limited) ===== */
+const canvasEcg=document.getElementById("ecg");
+const ctxE=canvasEcg.getContext("2d",{alpha:true});
+let W=0,H=0,t=0, last=0;
+function resizeEcg(){
+  const dpr=Math.max(1, window.devicePixelRatio||1);
+  W=canvasEcg.clientWidth; H=canvasEcg.clientHeight;
+  canvasEcg.width=Math.floor(W*dpr); canvasEcg.height=Math.floor(H*dpr);
+  ctxE.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",resizeEcg); resizeEcg();
+
+function drawEcg(now){
+  // ~30fps
+  if(now-last < 33){ requestAnimationFrame(drawEcg); return; }
+  last=now;
+  t+=0.016;
+
+  ctxE.fillStyle="rgba(0,0,0,0.18)";
+  ctxE.fillRect(0,0,W,H);
+
+  ctxE.save();
+  ctxE.globalAlpha=0.10;
+  ctxE.strokeStyle="rgba(120,220,255,0.35)";
+  ctxE.lineWidth=1;
+  const step=42;
+  for(let x=0;x<W;x+=step){ctxE.beginPath();ctxE.moveTo(x,0);ctxE.lineTo(x,H);ctxE.stroke();}
+  for(let y=0;y<H;y+=step){ctxE.beginPath();ctxE.moveTo(0,y);ctxE.lineTo(W,y);ctxE.stroke();}
+  ctxE.restore();
+
+  const mid=H*0.52;
+  const amp=Math.min(64,H*0.10);
+
+  ctxE.save();
+  ctxE.lineWidth=2.2;
+  ctxE.strokeStyle="rgba(140,220,255,0.95)";
+  ctxE.shadowColor="rgba(0,190,255,0.35)";
+  ctxE.shadowBlur=18;
+
+  ctxE.beginPath();
+  const speed=220;
+  const phase=(t*speed)%W;
+  for(let x=0;x<=W;x++){
+    const u=((x+phase)%260)/260;
+    let y=0;
+    y += Math.sin((x*0.014)+t*1.6)*(amp*0.08);
+    if(u>0.30 && u<0.34) y+=-amp*0.20;
+    if(u>=0.34 && u<0.36) y+= amp*0.55;
+    if(u>=0.36 && u<0.40) y+=-amp*1.00;
+    if(u>=0.40 && u<0.44) y+= amp*0.30;
+    if(u>=0.44 && u<0.52) y+= Math.sin((u-0.44)Math.PI*6)(amp*0.10);
+    const yy=mid+y;
+    if(x===0) ctxE.moveTo(x,yy); else ctxE.lineTo(x,yy);
+  }
+  ctxE.stroke();
+  ctxE.globalAlpha=0.25;
+  ctxE.lineWidth=6;
+  ctxE.strokeStyle="rgba(0,200,255,0.35)";
+  ctxE.stroke();
+  ctxE.restore();
+
+  requestAnimationFrame(drawEcg);
+}
+requestAnimationFrame(drawEcg);
+</script>
 </body>
 </html>
