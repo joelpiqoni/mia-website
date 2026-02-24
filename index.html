@@ -15,9 +15,9 @@
       --line: rgba(255,255,255,.16);
       --aero1: rgba(120,190,255,.22);
       --aero2: rgba(0,170,255,.12);
-      --ok: rgba(80,255,190,.14);
-      --warn: rgba(255,220,120,.14);
-      --bad: rgba(255,120,160,.14);
+      --ok: rgba(80,255,190,.18);
+      --warn: rgba(255,220,120,.18);
+      --bad: rgba(255,120,160,.18);
       --shadow: 0 20px 60px rgba(0,0,0,.45);
       --radius: 22px;
       --radius2: 28px;
@@ -54,7 +54,10 @@
     }
 
     /* --- Background ECG layer --- */
-    .bg{ position:absolute; inset:0; overflow:hidden; }
+    .bg{
+      position:absolute; inset:0;
+      overflow:hidden;
+    }
     .noise{
       position:absolute; inset:-40px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
@@ -138,7 +141,7 @@
     }
     .pill strong{ font-weight:700; }
 
-    /* --- Buttons --- */
+    /* --- Buttons (iOS glass + Aero shine) --- */
     .btnRow{ display:flex; gap:14px; flex-wrap:wrap; }
     .btn{
       appearance:none;
@@ -184,6 +187,12 @@
       background: linear-gradient(180deg, rgba(120,220,255,.22), rgba(0,140,255,.10));
       border-color: rgba(140,220,255,.28);
     }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(255,120,160,.16), rgba(255,255,255,.06));
+      border-color: rgba(255,160,190,.24);
+    }
+
+    .topActions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
     /* --- Landing --- */
     .landingWrap{
@@ -244,6 +253,7 @@
     @media (max-width: 720px){
       .grid{ grid-template-columns: 1fr; }
       .btn{ min-width: 100%; }
+      .topActions{ width:100%; justify-content:flex-start; }
     }
 
     .field{
@@ -282,6 +292,7 @@
       border-color: rgba(140,220,255,.32);
       box-shadow: 0 0 0 4px rgba(80,180,255,.10);
     }
+    textarea{ resize: vertical; min-height: 92px; }
 
     .note{
       margin-top: 12px;
@@ -313,8 +324,6 @@
       background: rgba(255,255,255,.06);
       font-size: 12px;
       color: rgba(230,241,255,.86);
-      margin-right: 8px;
-      margin-bottom: 8px;
     }
 
     /* --- Output --- */
@@ -336,7 +345,6 @@
       font-size: 13.5px;
     }
     .out ul{ margin: 8px 0 0 18px; }
-
     .twoCol{
       display:grid;
       grid-template-columns: 1.15fr .85fr;
@@ -361,36 +369,22 @@
     .week .day:last-child{ margin-bottom:0; }
     .week .day strong{ display:block; margin-bottom: 6px; letter-spacing:.02em; }
 
-    .statGrid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap:10px;
-      margin-top: 10px;
+    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+    /* --- Floating scroll button in routine --- */
+    .fab{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      display:none;
     }
-    @media (max-width: 860px){ .statGrid{ grid-template-columns: 1fr; } }
-    .stat{
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding: 10px 12px;
-    }
-    .stat .k{
-      font-size: 12px;
-      color: rgba(230,241,255,.72);
-      margin-bottom: 6px;
-    }
-    .stat .v{
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing:.01em;
-    }
-    .stat.ok{ background: var(--ok); border-color: rgba(80,255,190,.18); }
-    .stat.warn{ background: var(--warn); border-color: rgba(255,220,120,.18); }
-    .stat.bad{ background: var(--bad); border-color: rgba(255,120,160,.18); }
+    .fab.show{ display:block; }
+    .fab .btn{ min-width:auto; }
 
     /* --- Chat --- */
     .chatBox{
-      height: 320px;
+      height: 340px;
       overflow:auto;
       padding: 12px;
       border-radius: 18px;
@@ -418,45 +412,12 @@
     }
     .chatRow input{ flex:1; }
 
-    /* --- Floating scroll button (Routine screen) --- */
-    .fab{
-      position:absolute;
-      right: 18px;
-      bottom: 18px;
-      width: 46px;
-      height: 46px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: linear-gradient(180deg, rgba(120,220,255,.18), rgba(255,255,255,.06));
-      color: var(--ink);
-      cursor:pointer;
-      box-shadow: 0 14px 38px rgba(0,0,0,.28);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      font-size: 18px;
-      user-select:none;
-    }
-
+    /* tiny footer */
     .footer{
       margin-top: 14px;
       color: rgba(230,241,255,.62);
       font-size: 12px;
       line-height: 1.35;
-    }
-
-    .cardInner.scrollable{
-      max-height: min(80vh, 720px);
-      overflow:auto;
-      padding-right: 18px;
-    }
-    .cardInner.scrollable::-webkit-scrollbar{ width:10px; }
-    .cardInner.scrollable::-webkit-scrollbar-thumb{
-      background: rgba(255,255,255,.12);
-      border-radius: 10px;
-      border: 2px solid rgba(0,0,0,.2);
     }
   </style>
 </head>
@@ -499,7 +460,7 @@
           </div>
 
           <div class="note" style="margin-top:16px;">
-            <strong>Shënim:</strong> Ky projekt është edukativ. Informacioni i gjeneruar nuk është diagnozë dhe nuk zëvendëson mjekun.
+            <strong>Shënim:</strong> Ky projekt është edukativ për panairin e shkencës. Nuk bën diagnozë dhe nuk zëvendëson mjekun.
           </div>
         </div>
       </div>
@@ -514,7 +475,10 @@
               <div class="mia">MIA</div>
               <div class="tag">Vendos të dhënat</div>
             </div>
-            <button class="btn small ghost" id="backToMenu1">Kthehu</button>
+            <div class="topActions">
+              <button class="btn small ghost" id="backToMenu1">Kthehu</button>
+              <button class="btn small ghost" id="homeFromData">Kryefaqja</button>
+            </div>
           </div>
 
           <div class="grid">
@@ -554,7 +518,7 @@
 
           <div class="statusRow">
             <div class="chip" id="formStatus">Plotëso fushat e detyrueshme për të aktivizuar kthimin.</div>
-            <button class="btn small primary" id="btnReturnFromData" style="display:none;">Kthehu në faqen kryesore</button>
+            <button class="btn small primary" id="btnReturnFromData" style="display:none;">Ruaj & kthehu</button>
           </div>
 
           <div class="footer">
@@ -567,23 +531,21 @@
     <!-- SCREEN 4: Routine Generator -->
     <section class="screen" id="screen-routine" aria-label="Gjenero rutinën">
       <div class="card">
-        <div class="cardInner scrollable" id="routineInner">
+        <div class="cardInner">
           <div class="topbar">
             <div class="brand">
               <div class="mia">MIA</div>
               <div class="tag">Rutina personale (edukative)</div>
             </div>
-            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div class="topActions">
               <button class="btn small ghost" id="backToMenu2">Kthehu</button>
-              <button class="btn small primary" id="btnHomeFromRoutine">Faqja kryesore</button>
+              <button class="btn small ghost" id="homeFromRoutine">Kryefaqja</button>
             </div>
           </div>
 
           <div class="note" id="routineIntro">
-            Vendos <strong>BPM</strong> (rrahjet/minutë). MIA do të krijojë <strong>plan javor të personalizuar</strong>
-            bazuar te mosha, konteksti i matjes dhe (nëse ke zgjedhur) një shqetësim.
-            <br><br>
-            <strong>Kujdes:</strong> Nëse BPM është shumë i lartë në qetësi dhe përsëritet, ose ka simptoma alarmi (dhimbje gjoksi, të fikët, gulçim i rëndë), kërko ndihmë mjekësore.
+            Jep <strong>numrin e rrahjeve të zemrës për 1 minutë (BPM)</strong>. MIA do të përgatisë një plan javor edukativ
+            të përshtatur sipas profilit dhe kontekstit të matjes.
           </div>
 
           <div class="grid" style="margin-top:12px;">
@@ -618,16 +580,19 @@
             </div>
 
             <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+              <button class="btn small ghost" id="scrollToTopFromPlan">Lart ↑</button>
               <button class="btn small ghost" id="backToMenu3">Kthehu</button>
-              <button class="btn small primary" id="homeFromOutput">Faqja kryesore</button>
-              <button class="btn small ghost" id="scrollTopBtnInline">Shko lart</button>
+              <button class="btn small ghost" id="homeFromPlan">Kryefaqja</button>
             </div>
           </div>
         </div>
-
-        <button class="fab" id="routineScrollFab" title="Shko lart/poshtë" aria-label="Shko lart/poshtë">↕</button>
       </div>
     </section>
+
+    <!-- Floating scroll button (Routine screen) -->
+    <div class="fab" id="fabScroll">
+      <button class="btn small primary" id="scrollBtn">Shko te Plani ↓</button>
+    </div>
 
     <!-- SCREEN 5: AI Assistant (offline) -->
     <section class="screen" id="screen-ai" aria-label="Asistenti AI">
@@ -638,14 +603,15 @@
               <div class="mia">MIA</div>
               <div class="tag">Asistenti AI (offline, edukativ)</div>
             </div>
-            <button class="btn small ghost" id="backToMenu4">Kthehu</button>
+            <div class="topActions">
+              <button class="btn small ghost" id="backToMenu4">Kthehu</button>
+              <button class="btn small ghost" id="homeFromAI">Kryefaqja</button>
+            </div>
           </div>
 
           <div class="note">
-            Mund të pyesësh për: <strong>BPM</strong>, matjen e pulsit, <strong>EKG</strong> (P–QRS–T), aritmi/palpitacione,
-            tension, oksimetër (SpO₂), kafeinë/energizantë, duhan/vape, stres/ankth, gjumë, ushqim, aktivitet.
-            <br><br>
-            Për situata urgjente (dhimbje gjoksi e fortë, të fikët, gulçim i rëndë), kërko ndihmë mjekësore.
+            Ky asistent është <strong>offline</strong> (pa internet, pa API key) dhe jep përgjigje të përgjithshme edukative.
+            Për urgjenca (dhimbje gjoksi e fortë, gulçim, të fikët, dobësi e papritur), kërko ndihmë mjekësore.
           </div>
 
           <div class="chatBox" id="chatBox" aria-live="polite"></div>
@@ -656,7 +622,7 @@
           </div>
 
           <div class="footer">
-            * Asistenti është offline (pa internet, pa API key) dhe jep përgjigje të përgjithshme edukative.
+            * Këshillat janë të përgjithshme. Nëse ke diagnozë, mjekime ose simptoma të vazhdueshme, ndiq mjekun.
           </div>
         </div>
       </div>
@@ -665,7 +631,7 @@
 
   <script>
     // --------------------
-    // Router
+    // Simple screen router
     // --------------------
     const screens = {
       landing: document.getElementById("screen-landing"),
@@ -678,6 +644,10 @@
     function go(to){
       Object.values(screens).forEach(s => s.classList.remove("active"));
       screens[to].classList.add("active");
+
+      // hide floating button by default
+      document.getElementById("fabScroll").classList.remove("show");
+
       setTimeout(() => {
         const focusables = screens[to].querySelectorAll("button, input, select, textarea");
         if (focusables.length) focusables[0].focus({preventScroll:true});
@@ -688,9 +658,17 @@
     // State
     // --------------------
     const state = {
-      profile: { age: null, gender: "", heartIssue: "", name: "" }
+      profile: {
+        age: null,
+        gender: "",
+        heartIssue: "",
+        name: ""
+      }
     };
 
+    // --------------------
+    // Profile pill
+    // --------------------
     const profilePill = document.getElementById("profilePill");
     function updateProfilePill(){
       const p = state.profile;
@@ -708,23 +686,28 @@
         "pain":"shqetësim/dhimbje gjoksi",
         "other":"tjetër"
       })[p.heartIssue ?? ""] || "—";
-      const g = (p.gender==="F" ? "F" : (p.gender==="M" ? "M" : "X"));
-      profilePill.innerHTML = `<strong>Profili:</strong> ${escapeHtml(p.name)} · ${p.age} vjeç · gjinia ${g} · ${issueLabel}`;
+
+      const g = p.gender === "F" ? "F" : (p.gender === "M" ? "M" : "X");
+      profilePill.innerHTML =
+        `<strong>Profili:</strong> ${escapeHtml(p.name)} · ${p.age} vjeç · gjinia ${g} · ${issueLabel}`;
     }
 
     // --------------------
-    // Landing
+    // Landing interaction
     // --------------------
     const miaLogo = document.getElementById("miaLogo");
     miaLogo.addEventListener("click", () => go("menu"));
     window.addEventListener("keydown", (e) => {
-      if(screens.landing.classList.contains("active") && e.key === "Enter") go("menu");
+      if(screens.landing.classList.contains("active") && e.key === "Enter"){
+        go("menu");
+      }
     });
 
     // --------------------
     // Menu buttons
     // --------------------
     document.getElementById("btnData").addEventListener("click", () => go("data"));
+
     document.getElementById("btnRoutine").addEventListener("click", () => {
       const p = state.profile;
       if(!(p.age && p.gender && p.name)){
@@ -733,9 +716,12 @@
         return;
       }
       go("routine");
-      setTimeout(() => document.getElementById("routineInner").scrollTo({top:0, behavior:"instant"}), 40);
-      setTimeout(updateRoutineFab, 120);
+      // floating scroll appears only after a plan exists
+      if(document.getElementById("output").style.display !== "none"){
+        document.getElementById("fabScroll").classList.add("show");
+      }
     });
+
     document.getElementById("btnAI").addEventListener("click", () => {
       go("ai");
       bootChat();
@@ -743,7 +729,7 @@
     });
 
     // --------------------
-    // Data form
+    // Data form validation
     // --------------------
     const ageEl = document.getElementById("age");
     const genderEl = document.getElementById("gender");
@@ -764,10 +750,10 @@
       const ok = ageOk && genderOk && nameOk;
 
       if(ok){
-        formStatus.textContent = "Gati ✅ Tani mund të kthehesh në faqen kryesore.";
+        formStatus.textContent = "Gati ✅ Tani mund të ruash dhe të kthehesh.";
         btnReturnFromData.style.display = "inline-flex";
       } else {
-        const missing = [];
+        let missing = [];
         if(!ageOk) missing.push("Mosha (5–120)");
         if(!genderOk) missing.push("Gjinia");
         if(!nameOk) missing.push("Emri (min 2 shkronja)");
@@ -798,41 +784,39 @@
     });
 
     document.getElementById("backToMenu1").addEventListener("click", () => go("menu"));
+    document.getElementById("homeFromData").addEventListener("click", () => go("menu"));
 
     // --------------------
-    // Routine UI: buttons + scroll
+    // Routine generator - navigation
     // --------------------
     document.getElementById("backToMenu2").addEventListener("click", () => go("menu"));
-    document.getElementById("backToMenu3").addEventListener("click", () => go("menu"));
-    document.getElementById("btnHomeFromRoutine").addEventListener("click", () => go("menu"));
-    document.getElementById("homeFromOutput").addEventListener("click", () => go("menu"));
+    document.getElementById("homeFromRoutine").addEventListener("click", () => go("menu"));
 
-    const routineInner = document.getElementById("routineInner");
-    const routineFab = document.getElementById("routineScrollFab");
-    const scrollTopBtnInline = document.getElementById("scrollTopBtnInline");
+    document.getElementById("backToMenu3").addEventListener("click", () => go("routine"));
+    document.getElementById("homeFromPlan").addEventListener("click", () => go("menu"));
+    document.getElementById("scrollToTopFromPlan").addEventListener("click", () => {
+      document.getElementById("routineIntro").scrollIntoView({behavior:"smooth", block:"start"});
+    });
 
-    function updateRoutineFab(){
-      const canScroll = routineInner.scrollHeight - routineInner.clientHeight > 40;
-      routineFab.style.display = canScroll ? "inline-flex" : "none";
-    }
-    function routineScrollToggle(){
-      const nearTop = routineInner.scrollTop < 60;
-      routineInner.scrollTo({ top: nearTop ? routineInner.scrollHeight : 0, behavior:"smooth" });
-    }
-    routineFab.addEventListener("click", routineScrollToggle);
-    scrollTopBtnInline.addEventListener("click", () => routineInner.scrollTo({top:0, behavior:"smooth"}));
-    routineInner.addEventListener("scroll", () => {
-      const nearTop = routineInner.scrollTop < 60;
-      routineFab.textContent = nearTop ? "↓" : "↑";
+    // Floating scroll button (Routine)
+    const fabScroll = document.getElementById("fabScroll");
+    document.getElementById("scrollBtn").addEventListener("click", () => {
+      const out = document.getElementById("output");
+      if(out.style.display !== "none"){
+        out.scrollIntoView({behavior:"smooth", block:"start"});
+      } else {
+        document.getElementById("routineIntro").scrollIntoView({behavior:"smooth", block:"start"});
+      }
     });
 
     // --------------------
-    // Routine generator (PERSONALIZED + realistic ranges)
+    // Routine generator - logic
     // --------------------
     const bpmEl = document.getElementById("bpm");
     const bpmContextEl = document.getElementById("bpmContext");
     const bpmStatus = document.getElementById("bpmStatus");
     const btnGenerate = document.getElementById("btnGenerate");
+
     const output = document.getElementById("output");
     const outTitle = document.getElementById("outTitle");
     const outSummary = document.getElementById("outSummary");
@@ -860,390 +844,280 @@
       }
       const bpm = parseInt(bpmEl.value, 10);
       const ctx = bpmContextEl.value;
-      const plan = buildPersonalPlan(p, bpm, ctx);
-      renderPlan(p, bpm, ctx, plan);
-      output.style.display = "block";
 
-      setTimeout(() => {
-        const y = output.offsetTop - 10;
-        routineInner.scrollTo({ top: y, behavior:"smooth" });
-        setTimeout(updateRoutineFab, 200);
-      }, 80);
+      const plan = buildPlan(p, bpm, ctx);
+      renderPlan(p, bpm, ctx, plan);
+
+      output.style.display = "block";
+      output.scrollIntoView({behavior:"smooth", block:"start"});
+
+      // show floating button on routine screen
+      if(screens.routine.classList.contains("active")){
+        fabScroll.classList.add("show");
+      }
     });
 
-    function ageGroup(age){
-      if(age >= 12 && age <= 19) return "teen";
-      if(age >= 20 && age <= 39) return "young";
-      if(age >= 40 && age <= 59) return "adult";
-      return "senior";
-    }
+    function buildPlan(profile, bpm, ctx){
+      const age = profile.age;
 
-    function bpmBand(bpm){
-      // educational banding (not diagnostic)
-      if(bpm < 50) return "veryLow";
-      if(bpm < 60) return "low";
-      if(bpm <= 84) return "typical";
-      if(bpm <= 100) return "highTypical";
-      if(bpm <= 120) return "high";
-      return "veryHigh";
-    }
+      const zone = bpm < 60 ? "low" : (bpm <= 100 ? "normal" : "high");
+      const ctxNote = ({
+        rest: "Matje në qetësi: zakonisht më e krahasueshme me vlerat standarde.",
+        after: "Pas aktiviteti: rritja e BPM është normale; mat sërish pas 5–10 min qetësi.",
+        stress: "Në stres/ankth: BPM mund të rritet përkohësisht; ndihmon frymëmarrja dhe qetësimi.",
+        unknown: "Kontekst i paqartë: mat sërish në qetësi për krahasim."
+      })[ctx] || "";
 
-    function ctxLabel(ctx){
-      return ({
-        rest: "Në qetësi",
-        after: "Pas aktiviteti të lehtë",
-        stress: "Në stres/ankth",
-        unknown: "Kontekst i panjohur"
-      })[ctx] || "—";
-    }
-
-    function issueLabel(issue){
-      return ({
-        "": "Pa problem të deklaruar",
-        "tachy":"Takikardi / rrahje të shpejta",
-        "brady":"Bradikardi / rrahje të ngadalta",
-        "arr":"Aritmi (të parregullta)",
-        "bp":"Tension i lartë / probleme presioni",
-        "pain":"Dhimbje gjoksi / shqetësim",
-        "other":"Tjetër"
-      })[issue ?? ""] || "—";
-    }
-
-    function buildPersonalPlan(profile, bpm, ctx){
-      const ag = ageGroup(profile.age);
-      const band = bpmBand(bpm);
       const issue = profile.heartIssue || "";
+      const flags = [];
+      if(zone === "high" && ctx === "rest") flags.push("BPM i lartë në qetësi");
+      if(zone === "low" && ctx === "rest") flags.push("BPM i ulët në qetësi");
+      if(issue === "pain") flags.push("Simptomë e deklaruar: dhimbje/shqetësim gjoksi");
+      if(issue === "arr") flags.push("Simptomë e deklaruar: rrahje të parregullta (aritmi)");
 
-      // Realistic sleep targets as ranges (and explained as "average", not perfect daily)
-      const sleepRange = (ag === "teen") ? "8–10 orë (syno mesatare javore)"
-                        : (ag === "senior") ? "7–8 orë (syno mesatare javore)"
-                        : "7–9 orë (syno mesatare javore)";
+      // Sleep ranges (realistic, flexible)
+      let sleepRange = "7–9 orë (mesatarisht)";
+      if(age >= 12 && age <= 19) sleepRange = "8–10 orë (mesatarisht) — shpesh me luhatje";
+      if(age >= 20 && age <= 64) sleepRange = "7–9 orë (mesatarisht)";
+      if(age >= 65) sleepRange = "7–8 orë (mesatarisht)";
 
-      // Hydration as range (not strict medical)
-      let waterRange = (ag === "teen") ? "1.6–2.3 L/ditë"
-                    : (ag === "senior") ? "1.5–2.1 L/ditë"
-                    : "1.8–2.5 L/ditë";
-      if(ctx === "after") waterRange = bumpWater(waterRange);
-      if(band === "high" || band === "veryHigh") waterRange = bumpWater(waterRange);
+      // Practical sleep plan (not "every day 8h")
+      const sleepPlan = [
+        "Syno një orar të qëndrueshëm fjetjeje/zgjimi (±60 min).",
+        "Në ditët e ngarkuara: syno të paktën 6.5–7 orë dhe kompenso me një gjumë më të mirë në fundjavë (pa e tepruar).",
+        "Ule ekranin 30 min para gjumit; ajros dhomën."
+      ];
 
-      // Intensity suggestion by context + bpm band
-      const intensity = pickIntensity(band, ctx, issue);
+      // Hydration (general)
+      let waterTarget = "1.6–2.2 L/ditë";
+      if(age >= 12 && age <= 19) waterTarget = "1.7–2.4 L/ditë";
+      if(zone === "high") waterTarget = "1.8–2.6 L/ditë (sidomos nëse djersitesh)";
 
-      // Priority focus (what this week should optimize)
-      const focus = computeFocus(band, ctx, issue);
+      // Caffeine guidance
+      let caffeine = "Nëse përdor kafeinë, mbaje herët në ditë dhe jo shumë; shmang energizantët.";
+      if(age < 18) caffeine = "Shmang energizantët; kafeina sa më pak (sidomos pasdite).";
 
-      // Monitoring suggestion (how to re-check)
-      const monitoring = computeMonitoring(band, ctx, issue);
+      // Activity (tailored by zone + issue)
+      const baseCardio = (zone === "high" && ctx === "rest")
+        ? "10–20 min ecje e moderuar, 4 ditë/javë (me ritëm të kontrolluar)"
+        : (zone === "low" ? "15–25 min ecje e lehtë, 4–5 ditë/javë (ngrohje e gjatë)"
+                          : "20–35 min ecje e shpejtë / aktivitet i moderuar, 4–5 ditë/javë");
 
-      // Red flags / caution list
-      const cautions = computeCautions(band, ctx, issue);
+      const strength = (zone === "high" && ctx === "rest")
+        ? "2 ditë/javë ushtrime shumë të lehta + pushime (peshë e trupit)"
+        : "2 ditë/javë ushtrime të lehta (peshë e trupit)";
 
-      // Daily routine template personalized
-      const daily = buildDailyRoutine(band, ctx, issue, intensity);
+      const breathing = (ctx === "stress" || zone === "high")
+        ? "Frymëmarrje 4-4-6 për 3–5 min, 1–2 herë/ditë"
+        : "Frymëmarrje e qetë 2–3 min kur ke nevojë";
 
-      // Weekly plan personalized
-      const weekly = buildWeeklyPlan(ag, band, ctx, issue, intensity);
+      const screenBreaks = (age <= 19)
+        ? "Pushime nga ekrani: 5 min çdo 45–60 min."
+        : "Pushime nga ekrani: 3–5 min çdo 60–90 min.";
 
-      // “BPM interpretation” short summary (educational)
-      const interpretation = interpretBpm(bpm, band, ctx, ag);
+      // Emphasis (personalized)
+      const emphasis = [];
+      if(age >= 12 && age <= 19){
+        emphasis.push("Te adoleshentët, BPM ndikohet shpesh nga stresi, mungesa e gjumit, kafeina/energizantët dhe nikotina.");
+      }
+      if(zone === "high" && ctx === "rest"){
+        emphasis.push("Nëse BPM i lartë në qetësi përsëritet në ditë të ndryshme, është ide e mirë një konsultë mjekësore.");
+      }
+      if(ctx === "after"){
+        emphasis.push("Pas aktivitetit, prit 5–10 min qetësi dhe mat sërish për krahasim.");
+      }
+      if(ctx === "stress"){
+        emphasis.push("Në stres/ankth, fokusohu te frymëmarrja dhe hidratimi; mos e kontrollo puls-in shumë shpesh (rrit ankthin).");
+      }
+      if(issue === "tachy"){
+        emphasis.push("Kufizo kafeinë/energizantë, hidrato, dhe shto ecje të moderuar me rritje graduale.");
+      }
+      if(issue === "brady"){
+        emphasis.push("BPM i ulët mund të jetë normal te personat aktivë; nëse shoqërohet me lodhje/të fikët, kërko vlerësim mjekësor.");
+      }
+      if(issue === "arr"){
+        emphasis.push("Nëse ndjen rrahje të parregullta me marramendje, dobësi ose dhimbje gjoksi, mos e neglizho.");
+      }
+      if(issue === "bp"){
+        emphasis.push("Balanco kripën, rrit ecjen e rregullt, dhe mbaj një ritëm të qëndrueshëm gjumi/ushqimi.");
+      }
+      if(issue === "pain"){
+        emphasis.push("Dhimbja e gjoksit kërkon kujdes profesional, sidomos nëse shoqërohet me gulçim, djersë të ftohta ose përhapje në krah/qafë.");
+      }
 
-      // Status classes for stat cards
-      const riskClass = (band === "veryHigh" || (band === "high" && ctx === "rest") || issue === "pain") ? "bad"
-                      : (band === "high" || band === "highTypical") ? "warn"
-                      : "ok";
+      // Routine day template (specific + variable)
+      const daily = [
+        {t:"08:00", a:"Ujë 250 ml + mëngjes i lehtë (proteina + karbo të mira: kos/vezë + fruta/drithëra)"},
+        {t:"11:00", a:`Ujë 200–250 ml + ${breathing}`},
+        {t:"14:00", a:"Drekë e balancuar (perime + proteina) + ujë 300 ml"},
+        {t:"17:00", a:`Aktivitet: ${baseCardio}`},
+        {t:"20:30", a:`Shtrirje 6–10 min + ${screenBreaks} (sidomos mbrëmjes)`},
+      ];
+
+      // Week plan tailored by zone/issue/context
+      const week = makeWeekPlan({age, zone, ctx, issue});
+
+      // Caution / red flags
+      const caution = [];
+      caution.push("Ky plan është edukativ dhe i përgjithshëm — jo diagnozë.");
+      caution.push("Nëse ke: të fikët, gulçim i rëndë, dhimbje gjoksi e fortë, dobësi e papritur, ose rrahje shumë të çrregullta → kërko ndihmë mjekësore.");
+      if(zone === "high" && ctx === "rest"){
+        caution.push("BPM i lartë në qetësi i përsëritur është arsye e mirë për kontroll mjekësor.");
+      }
+      if(zone === "low" && ctx === "rest"){
+        caution.push("BPM i ulët në qetësi mund të jetë normal te sportistët; nëse ka simptoma (lodhje e fortë, marramendje), konsultohu.");
+      }
+
+      // “KPI” summary chips
+      const kpis = [
+        {label:`Ujë: ${waterTarget}`},
+        {label:`Gjumë: ${sleepRange}`},
+        {label:`Aktivitet: ${baseCardio}`},
+        {label:`Kafeinë: ${age < 18 ? "shmang energizantët" : "kujdes pasdite"}`},
+      ];
 
       return {
-        meta: { ag, band, issue, riskClass },
+        meta: { zone, ctxNote, flags, age, issue },
+        waterTarget,
         sleepRange,
-        waterRange,
-        intensity,
-        focus,
-        monitoring,
-        cautions,
+        sleepPlan,
+        caffeine,
+        activity: { cardio: baseCardio, strength, breathing, screenBreaks },
         daily,
-        weekly,
-        interpretation
+        week,
+        emphasis,
+        caution,
+        kpis
       };
     }
 
-    function bumpWater(rangeStr){
-      // simple bump: add +0.2L to both ends if parseable
-      const m = rangeStr.match(/(\d+(\.\d+)?)–(\d+(\.\d+)?)/);
-      if(!m) return rangeStr;
-      const a = (parseFloat(m[1]) + 0.2).toFixed(1);
-      const b = (parseFloat(m[3]) + 0.2).toFixed(1);
-      return `${a}–${b} L/ditë`;
-    }
+    function makeWeekPlan({age, zone, ctx, issue}){
+      // intensity tuning
+      const light = zone === "high" && ctx === "rest";
+      const low = zone === "low" && ctx === "rest";
 
-    function pickIntensity(band, ctx, issue){
-      // educational & conservative
-      if(issue === "pain") return "Shumë e lehtë (prioritet siguria)";
-      if(band === "veryHigh" && ctx === "rest") return "Shumë e lehtë (monitorim + qetësim)";
-      if(band === "high" && ctx === "rest") return "E lehtë–moderuar (pa e tepruar)";
-      if(band === "veryHigh" && ctx !== "rest") return "E lehtë (rikthim në qetësi, mos e tepro)";
-      if(band === "high") return "E lehtë–moderuar";
-      if(band === "highTypical") return "Moderuar";
-      if(band === "veryLow") return "E lehtë–moderuar (me ngrohje të gjatë)";
-      if(band === "low") return "Moderuar (me ngrohje)";
-      return "Moderuar";
-    }
+      const cardioA = light ? "Ecje e moderuar 12–18 min (pa sprint)" :
+                      low ? "Ecje e lehtë 15–20 min (ngrohje e gjatë)" :
+                            "Ecje e shpejtë 20–30 min";
 
-    function computeFocus(band, ctx, issue){
-      const arr = [];
-      if(ctx === "stress") arr.push("Menaxhim stresi (frymëmarrje + pauza)");
-      if(ctx === "after") arr.push("Rikuperim & hidratim pas aktivitetit");
-      if(band === "high" || band === "veryHigh") arr.push("Stabilizim pulsi (kafeinë ↓, ujë ↑, gjumë i rregullt)");
-      if(band === "veryLow" || band === "low") arr.push("Aktivizim gradual (ngrohje + ecje e kontrolluar)");
-      if(issue === "arr") arr.push("Vëzhgim i palpitacioneve + shmang stimuluesit");
-      if(issue === "bp") arr.push("Më pak kripë + ecje e rregullt");
-      if(!arr.length) arr.push("Konsistencë: ecje, gjumë, ujë");
-      return arr;
-    }
+      const cardioB = light ? "Ecje 10–15 min + frymëmarrje 5 min" :
+                      low ? "Ecje e lehtë 15–25 min" :
+                            "Aktivitet moderuar 25–35 min (ecje/biçikletë e lehtë)";
 
-    function computeMonitoring(band, ctx, issue){
-      const m = [];
-      m.push("Mat pulsin në qetësi (pas 5 min ulur), 1–2 herë/ditë për 3 ditë dhe mbaj shënim.");
-      if(ctx !== "rest") m.push("Nëse matja ishte jo në qetësi, përsërite matjen edhe në qetësi për krahasim.");
-      if(band === "high" || band === "veryHigh") m.push("Shmang kafeinë/energizantë për 24–48 orë dhe shiko nëse BPM ulet.");
-      if(issue === "arr") m.push("Nëse ndjen rrahje të parregullta, shëno: sa zgjati, çfarë po bëje, dhe a pati marramendje/gulçim.");
-      if(band === "veryLow") m.push("Nëse je sportist, mund të jetë normale; nëse ke lodhje/të fikët, kërko kontroll mjekësor.");
-      return m;
-    }
+      const strength = light ? "Forcë shumë e lehtë 10–15 min (pushime të shpeshta)" :
+                       "Forcë e lehtë 15–20 min (peshë e trupit)";
 
-    function computeCautions(band, ctx, issue){
-      const c = [];
-      if(issue === "pain") c.push("Dhimbja e gjoksit: nëse është e fortë, me gulçim, djersë të ftohta, marramendje ose të fikët — urgjencë.");
-      if((band === "veryHigh" || band === "high") && ctx === "rest") c.push("BPM i lartë në qetësi që përsëritet është arsye e mirë për kontroll mjekësor.");
-      if(band === "veryHigh") c.push("Nëse BPM është >120 dhe nuk zbret me qetësi/hidratim, kërko vlerësim mjekësor.");
-      if(issue === "arr") c.push("Aritmi + marramendje/të fikët/gulçim: kërko ndihmë mjekësore.");
-      return c;
-    }
+      const stressBlock = (ctx === "stress" || zone === "high") ? "Frymëmarrje 4-4-6 5 min + shëtitje e qetë" : "Relaks 10 min";
 
-    function buildDailyRoutine(band, ctx, issue, intensity){
-      // time blocks, but actions vary by band/context/issue
-      const baseBreath = "Frymëmarrje 4-4-6 për 3–5 min";
-      const caffeineRule = (band === "high" || band === "veryHigh" || ctx === "stress" || issue === "arr")
-        ? "Kufizo kafeinë/energizantë sot"
-        : "Kafeinë me masë (nëse përdor)";
+      // issue-specific add-ons
+      let addon = "Shënim: mat pulsin 1 herë në javë në qetësi (jo çdo orë).";
+      if(issue === "tachy") addon = "Shënim: shmang energizantët dhe mat pulsin në qetësi 2 herë në javë (jo shpesh).";
+      if(issue === "bp") addon = "Shënim: kujdes me kripën dhe ushqimet shumë të përpunuara.";
+      if(issue === "arr") addon = "Shënim: nëse ndjen rrahje të parregullta + marramendje, shëno kohën/simptomat dhe fol me mjek.";
+      if(issue === "pain") addon = "Shënim: dhimbja e gjoksit nuk neglizhohet—nëse përsëritet, kërko vlerësim mjekësor.";
 
-      const activityBlock = (issue === "pain")
-        ? "Aktivitet: vetëm ecje e qetë 10–15 min (nëse je mirë) + pushim"
-        : (band === "veryHigh" && ctx === "rest")
-          ? "Aktivitet: ecje shumë e lehtë 10–15 min ose pushim aktiv (shtrirje)"
-          : (band === "high" && ctx === "rest")
-            ? "Aktivitet: ecje e lehtë 15–25 min (pa vrap/sprint)"
-            : (band === "veryLow")
-              ? "Aktivitet: ecje 20 min + ngrohje e gjatë 8–10 min"
-              : "Aktivitet: ecje 20–30 min (ritëm i moderuar)";
-
-      const hydration = (ctx === "after" || band === "high" || band === "veryHigh")
-        ? "Ujë: shpërndaje gjatë ditës + 1 gotë pas aktivitetit"
-        : "Ujë: shpërndaje gjatë ditës";
-
-      const meals = (issue === "bp")
-        ? "Ushqim: më pak kripë, më shumë perime + burim proteine"
-        : "Ushqim: pjatë e balancuar (perime + proteinë + karbo të plota)";
+      // teen-friendly structure
+      const studyBreak = (age <= 19) ? "Pushim nga ekrani 5 min çdo 45–60 min" : "Pushim 3–5 min çdo 60–90 min";
 
       return [
-        {t:"08:00", a:"Ujë 1 gotë + mëngjes i lehtë (drithëra të plota/fruta/kos)"},
-        {t:"11:00", a:`${baseBreath} + pauzë nga ekrani 2–3 min`},
-        {t:"14:00", a:`${meals} + ujë`},
-        {t:"17:00", a:`${activityBlock} · Intensitet: ${intensity}`},
-        {t:"20:30", a:`Shtrirje 6–10 min + ${caffeineRule} + ekranet ulur 30 min para gjumit`},
-        {t:"Para gjumit", a:`Mat pulsin në qetësi (opsionale) dhe shëno si u ndjeve (energji/stres)`},
-        {t:"Gjithë ditën", a: hydration},
+        {d:"E Hënë", items:[cardioA, stressBlock, studyBreak, addon]},
+        {d:"E Martë", items:[strength, "Shtrirje 8–10 min", "Hidratim i rregullt gjatë ditës", addon]},
+        {d:"E Mërkurë", items:[cardioB, "Koha jashtë 20–40 min (nëse mundesh)", "Gjumë sa më i rregullt", addon]},
+        {d:"E Enjte", items:[strength, "Frymëmarrje 3–5 min", "Ushqim më i lehtë në mbrëmje", addon]},
+        {d:"E Premte", items:[cardioA, "Aktivitet relaksues (muzikë/lexim) 15–20 min", "Shmang kafeinë pas orës 15:00", addon]},
+        {d:"E Shtunë", items:[light ? "Shëtitje e qetë 20–30 min" : "Aktivitet i lirë 30–45 min (pa e tepruar)", "Shtrirje 10 min", addon]},
+        {d:"E Diel", items:["Rikuperim: ecje shumë e lehtë 10–20 min", "Planifikim i javës (gjumi/ushqimi)", addon]},
       ];
     }
 
-    function buildWeeklyPlan(ag, band, ctx, issue, intensity){
-      // Personalized weekly structure:
-      // - Always: 1–2 "recovery" days
-      // - Adjust volume for high/high in rest or pain
-      const days = ["E Hënë","E Martë","E Mërkurë","E Enjte","E Premte","E Shtunë","E Diel"];
-
-      const baseCardio = (ag === "teen") ? "20–35 min"
-                      : (ag === "senior") ? "15–30 min"
-                      : "20–40 min";
-      const baseStrength = (ag === "teen") ? "15–20 min (peshë trupi)"
-                        : (ag === "senior") ? "10–15 min (shumë e lehtë)"
-                        : "15–25 min (peshë trupi)";
-
-      let cardio = baseCardio;
-      let strength = baseStrength;
-      let breath = "3–5 min frymëmarrje";
-      let screenBreaks = "Pauza nga ekrani 2–3 herë/ditë";
-
-      if(issue === "pain"){
-        cardio = "10–15 min ecje e qetë (vetëm nëse je mirë)";
-        strength = "— (mos e detyro)";
-        breath = "5 min frymëmarrje + qetësim";
-        screenBreaks = "Pauza të shpeshta + qetësi";
-      } else if((band === "high" || band === "veryHigh") && ctx === "rest"){
-        cardio = "15–25 min ecje e lehtë (pa sprint)";
-        strength = "10–15 min shumë e lehtë";
-        breath = "5 min frymëmarrje çdo ditë";
-      } else if(band === "veryHigh"){
-        cardio = "15–25 min ecje e lehtë";
-        strength = "10–15 min e lehtë";
-      } else if(band === "veryLow"){
-        cardio = "20–30 min ecje + ngrohje e gjatë";
-      }
-
-      const saltTip = (issue === "bp") ? "Kripë ↓ (shmang ushqimet shumë të përpunuara)" : "Ushqim i balancuar";
-      const stimulantTip = (band === "high" || band === "veryHigh" || ctx === "stress" || issue === "arr")
-        ? "Kafeinë/energizantë ↓"
-        : "Kafeinë me masë";
-
-      // template per day, but varied across the week
-      const plan = [];
-
-      // pattern: cardio (Mon, Wed, Fri, Sat), strength (Tue, Thu), recovery (Sun)
-      for(let i=0;i<7;i++){
-        const d = days[i];
-        const items = [];
-
-        // Always include one "core anchor"
-        items.push(`${breath}`);
-        items.push(`${screenBreaks}`);
-
-        const isStrengthDay = (d === "E Martë" || d === "E Enjte");
-        const isLongerCardio = (d === "E Shtunë");
-        const isRecovery = (d === "E Diel");
-
-        if(issue === "pain"){
-          if(isRecovery){
-            items.unshift("Prioritet: qetësi + monitorim simptomash");
-            items.push("Nëse ka dhimbje të fortë/urgjente: kërko ndihmë mjekësore");
-          } else {
-            items.unshift(`Ecje e qetë ${cardio}`);
-            items.push("Shënim: si u ndjeve (dhimbje/gulçim/marramendje)");
-          }
-        } else if(isRecovery){
-          items.unshift("Ditë rikuperimi: ecje shumë e lehtë 10–20 min ose shëtitje");
-          items.push("Planifikim i javës + orar gjumi më i rregullt");
-        } else if(isStrengthDay){
-          items.unshift(`Ushtrime të lehta: ${strength} (pa e tepruar)`);
-          items.push("Shtrirje 6–10 min");
-        } else {
-          let cmin = cardio;
-          if(isLongerCardio && (band !== "high" && band !== "veryHigh")) cmin = (ag === "teen") ? "30–45 min" : "30–50 min";
-          items.unshift(`Ecje/kardio: ${cmin} · Intensitet: ${intensity}`);
-          items.push("Shtrirje 6–10 min");
-        }
-
-        // add heart-issue specific item
-        if(issue === "arr") items.push("Shmang stimuluesit (kafeinë/energizantë) dhe mbaj shënim palpitacionet");
-        if(issue === "bp") items.push(`${saltTip} + ecje e rregullt`);
-        if((band === "high" || band === "veryHigh") && ctx === "rest") items.push("Mat pulsin në qetësi 1 herë/ditë për 3 ditë (shënime)");
-
-        // always include hydration + nutrition anchor
-        items.push(`Hidratim: shpërndaje ujin gjatë ditës · ${stimulantTip}`);
-
-        plan.push({ d, items });
-      }
-
-      return plan;
-    }
-
-    function interpretBpm(bpm, band, ctx, ag){
-      const base = [];
-      base.push(`BPM i vendosur: ${bpm}.`);
-      base.push(`Konteksti: ${ctxLabel(ctx)}.`);
-      if(ctx !== "rest"){
-        base.push("Shënim: jashtë qetësisë BPM rritet natyrshëm; vlera krahasohet më mirë kur matet në qetësi.");
-      }
-      // Educational interpretation
-      if(band === "veryHigh"){
-        base.push("Kjo është e lartë. Nëse është në qetësi dhe përsëritet, është arsye e mirë për kontroll mjekësor.");
-      } else if(band === "high" && ctx === "rest"){
-        base.push("Kjo është e lartë për matje në qetësi. Provo qetësi + ujë + frymëmarrje dhe mat sërish.");
-      } else if(band === "high"){
-        base.push("Kjo është e lartë, por konteksti mund ta shpjegojë. Mat sërish në qetësi për krahasim.");
-      } else if(band === "veryLow"){
-        base.push("Kjo është e ulët. Te sportistët mund të jetë normale; nëse ka lodhje/të fikët, konsultohu.");
-      } else if(band === "low"){
-        base.push("Kjo është pak e ulët. Vlerësoje bashkë me simptomat dhe aktivitetin fizik.");
-      } else {
-        base.push("Kjo është brenda një zone tipike edukative për shumë persona (varet nga individi).");
-      }
-
-      if(ag === "teen") base.push("Te adoleshentët ndikojnë shumë: gjumi, stresi, kafeina/energizantët dhe nikotina.");
-      return base.join(" ");
-    }
-
     function renderPlan(profile, bpm, ctx, plan){
-      outTitle.textContent = `Plani i personalizuar për ${profile.name}`;
+      const zoneLabel = plan.meta.zone === "high" ? "i lartë" : (plan.meta.zone==="low" ? "i ulët" : "normal");
+      const issueLabel = ({
+        "": "pa problem të deklaruar",
+        "tachy":"takikardi",
+        "brady":"bradikardi",
+        "arr":"aritmi",
+        "bp":"tension i lartë",
+        "pain":"dhimbje/shqetësim gjoksi",
+        "other":"tjetër"
+      })[profile.heartIssue ?? ""] || "—";
 
-      const issueTxt = issueLabel(profile.heartIssue || "");
-      const bandTxt = ({
-        veryLow: "shumë i ulët",
-        low: "i ulët",
-        typical: "tipik",
-        highTypical: "pak i lartë",
-        high: "i lartë",
-        veryHigh: "shumë i lartë"
-      })[plan.meta.band] || "—";
+      outTitle.textContent = `Plani javor për ${profile.name}`;
 
-      const bandClass = plan.meta.riskClass;
+      const ctxLabel = ({
+        rest:"në qetësi",
+        after:"pas aktiviteti",
+        stress:"në stres/ankth",
+        unknown:"kontekst i paqartë"
+      })[ctx] || ctx;
 
-      // SUMMARY block (same structure, but now fully personalized)
-      outSummary.innerHTML = `
+      const headline = `
         <div class="note" style="margin-top:0;">
-          <strong>Profili:</strong> ${escapeHtml(profile.name)}, ${profile.age} vjeç · <strong>Shqetësim:</strong> ${escapeHtml(issueTxt)}<br>
-          <strong>Interpretim edukativ:</strong> ${escapeHtml(plan.interpretation)}
-          <div class="statGrid">
-            <div class="stat ${bandClass}">
-              <div class="k">BPM (kategorim edukativ)</div>
-              <div class="v">${bpm} · ${bandTxt}</div>
-            </div>
-            <div class="stat ok">
-              <div class="k">Gjumë i synuar</div>
-              <div class="v">${escapeHtml(plan.sleepRange)}</div>
-            </div>
-            <div class="stat warn">
-              <div class="k">Hidratim i synuar</div>
-              <div class="v">${escapeHtml(plan.waterRange)}</div>
-            </div>
+          <p style="margin:0 0 8px;">
+            <strong>Profili:</strong> ${escapeHtml(profile.name)}, ${profile.age} vjeç · problemi: <strong>${escapeHtml(issueLabel)}</strong>
+          </p>
+          <p style="margin:0;">
+            <strong>BPM:</strong> ${bpm} (${zoneLabel}) · <strong>Matja:</strong> ${escapeHtml(ctxLabel)}<br>
+            <span style="color: rgba(230,241,255,.72);">${escapeHtml(plan.meta.ctxNote)}</span>
+          </p>
+          <div class="kpiRow">
+            ${plan.kpis.map(k => `<span class="chip">${escapeHtml(k.label)}</span>`).join("")}
           </div>
         </div>
       `;
 
-      const focusList = plan.focus.map(x => `<li>${escapeHtml(x)}</li>`).join("");
-      const monitorList = plan.monitoring.map(x => `<li>${escapeHtml(x)}</li>`).join("");
-
-      const cautionBlock = plan.cautions.length ? `
-        <div class="note" style="background: var(--bad); border-color: rgba(255,120,160,.22);">
-          <strong>Kujdes (sinjale alarmi):</strong>
-          <ul>${plan.cautions.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+      const emphasisList = (plan.emphasis.length ? `
+        <div class="note" style="background: var(--aero2); border-color: rgba(120,220,255,.22);">
+          <strong>Përshtatje sipas profilit:</strong>
+          <ul>${plan.emphasis.map(e => `<li>${escapeHtml(e)}</li>`).join("")}</ul>
         </div>
-      ` : "";
+      ` : "");
 
-      const dailyList = plan.daily.map(x => `<li><strong>${escapeHtml(x.t)}</strong> — ${escapeHtml(x.a)}</li>`).join("");
+      const cautionList = (plan.caution.length ? `
+        <div class="note" style="background: rgba(255,200,120,.10); border-color: rgba(255,220,140,.20);">
+          <strong>Kujdes:</strong>
+          <ul>${plan.caution.map(c => `<li>${escapeHtml(c)}</li>`).join("")}</ul>
+        </div>
+      ` : "");
+
+      // Daily routine list
+      const dailyList = plan.daily.map(x => `<li><strong>${x.t}</strong> — ${escapeHtml(x.a)}</li>`).join("");
+
+      // Sleep tips list
+      const sleepList = plan.sleepPlan.map(s => `<li>${escapeHtml(s)}</li>`).join("");
+
+      outSummary.innerHTML = headline;
 
       outTips.innerHTML = `
         <div class="out" style="margin-top:12px;">
-          <h3>Fokus i javës</h3>
-          <ul>${focusList}</ul>
+          <h3>Rutina ditore (shembull i zbatueshëm)</h3>
+          <ul>${dailyList}</ul>
         </div>
 
         <div class="out" style="margin-top:12px;">
-          <h3>Rutina ditore (shembull i personalizuar)</h3>
-          <ul>${dailyList}</ul>
+          <h3>Gjumë & rikuperim (realist)</h3>
+          <p style="margin:0 0 8px;">Synim: <strong>${escapeHtml(plan.sleepRange)}</strong> (jo domosdoshmërisht çdo natë njësoj).</p>
+          <ul>${sleepList}</ul>
+        </div>
+
+        <div class="out" style="margin-top:12px;">
+          <h3>Këshilla të shpejta</h3>
+          <ul>
+            <li><strong>Hidratim:</strong> ${escapeHtml(plan.waterTarget)} (ujë gjatë ditës, jo vetëm në mbrëmje).</li>
+            <li><strong>Kafeinë/energizantë:</strong> ${escapeHtml(plan.caffeine)}</li>
+            <li><strong>Aktivitet:</strong> ${escapeHtml(plan.activity.cardio)} + ${escapeHtml(plan.activity.strength)}.</li>
+            <li><strong>Stres:</strong> ${escapeHtml(plan.activity.breathing)}.</li>
+          </ul>
           <p style="margin-top:10px; color: rgba(230,241,255,.72);">
-            * Gjumë/hidratim janë objektiva realistë si <strong>mesatare javore</strong> — nuk dalin perfekt çdo ditë.
+            * Kjo është rutinë edukative. Nëse ke sëmundje të diagnostikuar, mjekime, ose simptoma të forta, ndiq mjekun.
           </p>
         </div>
 
-        <div class="out" style="margin-top:12px;">
-          <h3>Monitorim i thjeshtë (i sigurt, edukativ)</h3>
-          <ul>${monitorList}</ul>
-        </div>
-
-        ${cautionBlock}
+        ${emphasisList}
+        ${cautionList}
       `;
 
-      // WEEKLY plan (specific per day)
-      outWeek.innerHTML = plan.weekly.map(d => `
+      outWeek.innerHTML = plan.week.map(d => `
         <div class="day">
           <strong>${escapeHtml(d.d)}</strong>
           <ul style="margin:0 0 0 18px;">
@@ -1254,12 +1128,14 @@
     }
 
     // --------------------
-    // AI Assistant (offline) - unchanged core, still rich
+    // AI Assistant (offline) - expanded
     // --------------------
     const chatBox = document.getElementById("chatBox");
     const chatInput = document.getElementById("chatInput");
     const chatSend = document.getElementById("chatSend");
+
     document.getElementById("backToMenu4").addEventListener("click", () => go("menu"));
+    document.getElementById("homeFromAI").addEventListener("click", () => go("menu"));
 
     function addMsg(text, who="bot"){
       const div = document.createElement("div");
@@ -1271,87 +1147,223 @@
 
     function bootChat(){
       chatBox.innerHTML = "";
-      addMsg("Përshëndetje! Unë jam MIA (offline). Më pyet për BPM, matjen e pulsit, EKG (P–QRS–T), aritmi/palpitacione, tension, oksimetër (SpO₂), kafeinë/energizantë, duhan/vape, stres/ankth, gjumë, ushqim, aktivitet.");
+
+      addMsg("Përshëndetje! Unë jam MIA (offline). Jam këtu për shpjegime dhe këshilla të përgjithshme rreth zemrës, pulsit dhe EKG-së.");
       const p = state.profile;
       if(p.age && p.gender && p.name){
-        addMsg(`E shoh që profili yt është: ${p.name}, ${p.age} vjeç. Pyet sa të duash. (Këshilla edukative)`);
+        addMsg(`E shoh që profili yt është: ${p.name}, ${p.age} vjeç. Mund të pyesësh lirshëm. (Këshilla edukative)`);
       } else {
         addMsg("Nëse do përgjigje më të përshtatura, plotëso më parë “Vendos të dhënat”.");
       }
-      addMsg("Mund të më thuash: “Kam 105 BPM në qetësi”, “Si je?”, “Çfarë do të thotë QRS?”, “Si ta mas pulsin saktë?”");
+
+      addMsg(
+`Shembuj pyetjesh:
+• Si je?
+• Kam 95 BPM në qetësi, a është normale?
+• Pse më rritet pulsi kur jam në ankth?
+• Si ta mas pulsin saktë?
+• Çfarë është vala P / QRS / QT?
+• Çfarë të bëj kur ndjej rrahje të forta zemre?
+• A ndikon kafeina, energizantët, nikotina?
+• Çfarë sinjalesh janë urgjencë?`
+      );
+    }
+
+    // quick knowledge blocks
+    const KB = {
+      emergency: [
+        "Nëse ke dhimbje gjoksi të fortë, gulçim, të fikët, dobësi të papritur, konfuzion, ose dhimbje që përhapet në krah/qafë/ nofull → kërko ndihmë mjekësore menjëherë.",
+        "Nëse pulsi është shumë i shpejtë dhe nuk ulet pas qetësimit (ose shoqërohet me marramendje), mos e neglizho."
+      ],
+      bpmBasics:
+        "BPM = rrahje zemre për minutë. Për matje të saktë: ulu qetë 5 minuta, mat 30 sekonda dhe shumëzo me 2 (ose mat 60 sekonda). Matja në qetësi është më krahasuese.",
+      pulseHow:
+        "Matja e pulsit: vendos 2 gishta te kyçi i dorës (ana e gishtit të madh). Mos përdor gishtin e madh. Numëro rrahjet 30 sekonda dhe shumëzo me 2.",
+      normalRanges:
+        "Në përgjithësi (të rritur): 60–100 BPM në qetësi. Te sportistët mund të jetë më i ulët. Te adoleshentët mund të ketë luhatje me stres, gjumë, kafeinë.",
+      ecgBasics:
+        "EKG-ja regjistron aktivitetin elektrik të zemrës. Vala P (aktivizim i atriumeve), kompleksi QRS (aktivizim i ventrikujve), vala T (rikuperim i ventrikujve). Intervali QT lidhet me kohën e aktivizim+rikuperimit.",
+      lifestyle:
+        "Zakonet që shpesh stabilizojnë pulsin: hidratim, gjumë më i rregullt (mesatarisht), aktivitet i moderuar, ulje e energizantëve/kafeinës, pushime nga ekrani, frymëmarrje e qetë.",
+      stressBreath:
+        "Teknikë e thjeshtë: 4-4-6 (thith 4s, mbaj 4s, nxirr 6s) për 3–5 minuta. Mund të ulë ndjesinë e rrahjeve të forta në stres."
+    };
+
+    function normalize(s){
+      return (s||"")
+        .toLowerCase()
+        .replaceAll("ë","e")
+        .replaceAll("ç","c")
+        .trim();
+    }
+
+    function extractNumber(text){
+      const m = text.match(/(\d{2,3})/);
+      if(!m) return null;
+      const n = parseInt(m[1], 10);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function isGreeting(t){
+      return ["pershendetje","hi","hej","hello","tung","miremengjes","mirembrema","mirdita"].some(x => t.includes(x));
+    }
+    function isHowAreYou(t){
+      return ["si je","si jeni","ca ben","çka ben","cka ben","si po shkon","si po ecen","si po kalon"].some(x => t.includes(x));
+    }
+    function isThanks(t){
+      return ["faleminderit","rrofsh","thanks","thank you","shume faleminderit"].some(x => t.includes(x));
+    }
+    function isRandomSmallTalk(t){
+      return ["kush je","cfare je","a je i vertete","a je robot","me njeh","me do","me ndihmon dot"].some(x => t.includes(x));
     }
 
     function answer(q){
       const p = state.profile;
-      const raw = (q ?? "").trim();
-      const text = raw.toLowerCase();
+      const t = normalize(q);
 
-      const hasAny = (...keys) => keys.some(k => text.includes(k));
-      const extractNumber = () => {
-        const m = text.match(/(\d{2,3})/);
-        return m ? parseInt(m[1], 10) : null;
-      };
-      const profileHint = (p.age && p.gender && p.name)
-        ? ` (Bazuar te profili: ${p.name}, ${p.age} vjeç)`
-        : "";
+      // Emergency triggers (simple)
+      const mentionsChest = (t.includes("dhimbje") && t.includes("gjoks")) || t.includes("dhimbje gjoksi");
+      const mentionsFaint = t.includes("te fik") || t.includes("te fiket") || t.includes("humbje ndjenjash");
+      const mentionsBreath = t.includes("gulcim") || t.includes("frym") && (t.includes("vesht") || t.includes("vësht"));
+      const mentionsSevereDizzy = t.includes("marramend") && (t.includes("fort") || t.includes("shume"));
 
-      const t = text.replace(/[?!.,;:()]/g," ").replace(/\s+/g," ").trim();
-
-      if(t === "si je" || hasAny("si je", "si jeni")){
-        return "Jam mirë, faleminderit që pyete 😊 Jam këtu dhe gati të të ndihmoj. Çfarë do të dish sot për zemrën/pulsin?";
-      }
-      if(hasAny("faleminderit","rrofsh","thanks","thank you")){
-        return "Me kënaqësi! Nëse do, më thuaj BPM-in (dhe nëse ishte në qetësi apo pas aktiviteti) dhe ta shpjegoj si informacion edukativ.";
-      }
-      if(hasAny("përshëndetje","pershendetje","hello","hi","tung")){
-        return "Përshëndetje! Më pyet ç’të duash për BPM, matjen e pulsit, EKG-në, aritmitë, ose zakone të mira për zemrën.";
-      }
-      if(hasAny("kush je","cfare je","çfarë je")){
-        return "Unë jam MIA (offline) — asistent edukativ për zemrën dhe shëndetin kardiovaskular. Nuk bëj diagnozë, por shpjegoj koncepte dhe hapa praktikë.";
-      }
-
-      // red flags
-      if(hasAny("dhimbje gjoksi","dhimbje ne gjoks","shtrengim gjoksi","shqetesim gjoksi")){
-        return "Dhimbja e gjoksit mund të jetë serioze. Nëse është e fortë, zgjat >10 minuta, shoqërohet me gulçim, djersë të ftohta, të përziera, marramendje ose përhapet në krah/qafë/nofull — kërko ndihmë mjekësore menjëherë (urgjencë).";
-      }
-      if(hasAny("të fikët","te fiket","humbje vetedije","humbje ndjenje")){
-        return "Të fikët/humbja e ndjenjës nuk duhet injoruar. Ulu/shtrihu, mos ngis makinën dhe kontakto mjekun/urgjencën, sidomos nëse përsëritet.";
-      }
-      if(hasAny("gulçim","veshtiresi ne frymemarrje","nuk marr fryme","s'marr dot fryme")){
-        return "Gulçimi i papritur ose i rëndë, sidomos me dhimbje gjoksi, është sinjal alarmi. Kërko ndihmë mjekësore menjëherë.";
-      }
-
-      const bpm = extractNumber();
-      if((hasAny("bpm","puls","rrahje") || text.includes("kam")) && bpm !== null){
+      if(mentionsChest || mentionsFaint || mentionsBreath || mentionsSevereDizzy){
         return [
-          `Nëse BPM = ${bpm}, konteksti i matjes është shumë i rëndësishëm.${profileHint}`,
-          "Sugjerim: ulu 5 minuta, pi ujë, bëj frymëmarrje 4-4-6 për 3–5 minuta dhe mat sërish në qetësi.",
-          "Nëse BPM është i lartë në qetësi dhe përsëritet, ose ka simptoma (dhimbje gjoksi, të fikët, gulçim), kërko kontroll mjekësor."
+          "Kjo mund të jetë serioze.",
+          ...KB.emergency,
+          "",
+          "Nëse je i sigurt që nuk është urgjencë, më thuaj: sa BPM ke, në çfarë situate u mat, dhe çfarë simptomash ke."
         ].join("\n");
       }
 
-      if(hasAny("ekg","ecg","p-qrs-t","p qrs t","qrs","t vale","valet")){
+      // Greetings / small talk
+      if(isGreeting(t) && !isHowAreYou(t)){
+        return "Përshëndetje! 😊 Më thuaj çfarë të shqetëson: BPM/puls, EKG, stres, kafeinë, lodhje, apo rutinë javor?";
+      }
+      if(isHowAreYou(t)){
+        return "Jam mirë, faleminderit që pyet! 🙂 Jam gati të të ndihmoj. Çfarë po do të kuptosh sot rreth pulsit/zemrës?";
+      }
+      if(isThanks(t)){
+        return "Me kënaqësi! Nëse do, mund të më thuash BPM-në dhe kontekstin (në qetësi / pas aktivitetit / në stres) që ta shpjegoj më konkret.";
+      }
+      if(isRandomSmallTalk(t)){
+        return "Jam MIA, një asistent edukativ offline. Nuk bëj diagnozë, por të ndihmoj të kuptosh më mirë pulsin, EKG-në dhe zakonet e shëndetshme. Çfarë pyetje ke?";
+      }
+
+      // Direct BPM number handling
+      const n = extractNumber(t);
+      const mentionsBpm = t.includes("bpm") || t.includes("puls") || t.includes("rrahje") || t.includes("rrahjet");
+      if(n && (mentionsBpm || (n>=30 && n<=220))){
+        // interpret with context hints
+        let ctxGuess = "nuk e di";
+        if(t.includes("qet") || t.includes("ulur") || t.includes("pushim")) ctxGuess = "në qetësi";
+        if(t.includes("pas") && (t.includes("vrap")||t.includes("ecj")||t.includes("ushtrim")||t.includes("sport"))) ctxGuess = "pas aktivitetit";
+        if(t.includes("stres") || t.includes("ankth") || t.includes("panik")) ctxGuess = "në stres/ankth";
+
+        const zone = n < 60 ? "i ulët" : (n <= 100 ? "normal" : "i lartë");
+
+        const lines = [];
+        lines.push(`BPM = ${n}. Kjo duket ${zone}${ctxGuess!=="nuk e di" ? " ("+ctxGuess+")" : ""}.`);
+        lines.push("");
+
+        // safe guidance
+        if(n > 120 && (ctxGuess === "në qetësi" || ctxGuess === "nuk e di")){
+          lines.push("Nëse ky BPM është në qetësi dhe përsëritet, është mirë ta diskutosh me mjekun, sidomos nëse ke marramendje, dobësi ose dhimbje gjoksi.");
+        } else if(n > 100 && ctxGuess === "në stres/ankth"){
+          lines.push("Në stres, rritja e BPM mund të jetë e përkohshme. Provo 3–5 minuta frymëmarrje 4-4-6 dhe mat sërish pas 5 minutash qetësi.");
+        } else if(n > 100 && ctxGuess === "pas aktivitetit"){
+          lines.push("Pas aktivitetit, BPM rritet normalisht. Prit 5–10 minuta në qetësi dhe mat sërish për krahasim.");
+        } else if(n < 60){
+          lines.push("BPM i ulët mund të jetë normal te personat aktivë. Nëse shoqërohet me lodhje të fortë, marramendje ose të fikët, kërko vlerësim mjekësor.");
+        } else {
+          lines.push("Nëse ndihesh mirë dhe është matje normale, fokusohu te hidratimi, gjumi i rregullt (mesatarisht) dhe aktiviteti i moderuar.");
+        }
+
+        lines.push("");
+        lines.push("Nëse do përgjigje më të saktë: më thuaj mosha + a ishte matje në qetësi, pas aktivitetit, apo në stres.");
+        return lines.join("\n");
+      }
+
+      // Core topics
+      if(t.includes("bpm") || t.includes("puls") || t.includes("rrahje")){
         return [
-          "EKG/ECG është regjistrimi elektrik i zemrës.",
-          "• P-valë: aktivizimi i atriumeve",
-          "• QRS: aktivizimi i ventrikujve",
-          "• T-valë: rikthimi/relaksimi i ventrikujve",
-          "Mjekët shohin ritmin, shpejtësinë dhe intervalet (p.sh. PR, QT) për të kuptuar nëse ka aritmi ose shenja stresi."
+          KB.bpmBasics,
+          "",
+          KB.pulseHow,
+          "",
+          KB.normalRanges
         ].join("\n");
       }
 
-      if(hasAny("si ta mat","si mas","si matet pulsi","si mat pulsin")){
+      // ECG questions
+      if(t.includes("ekg") || t.includes("ecg") || t.includes("qrs") || t.includes("qt") || t.includes("vala p") || t.includes("vala t")){
+        const extra = [];
+        if(t.includes("qt")) extra.push("QT: Në praktikë vlerësohet shpesh si QTc (korrigjuar me ritmin). QT shumë i gjatë/shkurtër kërkon vlerësim mjekësor (sidomos me simptoma).");
+        if(t.includes("qrs")) extra.push("QRS: Kompleksi i ventrikujve. QRS i zgjeruar mund të lidhet me përcjelljen elektrike (p.sh. blloqe), por interpretimi është klinik.");
+        if(t.includes("vala p")) extra.push("Vala P: Aktivizimi i atriumeve. Mungesa/ndryshimet mund të shihen në disa aritmi.");
+        return [KB.ecgBasics, ...(extra.length?["", ...extra]:[]), "", "Nëse do, më thuaj çfarë po shikon (p.sh. ‘QRS i madh’, ‘QT’), dhe do ta shpjegoj me gjuhë të thjeshtë."].join("\n");
+      }
+
+      // Caffeine/energy drinks/nicotine
+      if(t.includes("energ") || t.includes("kafein") || t.includes("kafe") || t.includes("duhan") || t.includes("nikotin")){
         return [
-          "Si ta matësh pulsin (më saktë):",
-          "1) Ulu qetë 5 minuta.",
-          "2) Vendos 2 gishta te kyçi i dorës (ana e gishtit të madh).",
-          "3) Numëro 30 sekonda ×2 (ose 60 sekonda).",
-          "4) Përsërite 2 herë dhe merr mesataren.",
-          "5) Shëno kontekstin: qetësi / pas aktiviteti / stres."
+          "Po—këto mund të ndikojnë te pulsi.",
+          "• Kafeina/energizantët: mund të rrisin BPM dhe ankthin (sidomos nëse je i lodhur ose i dehidratuar).",
+          "• Nikotina: rrit ritmin e zemrës dhe ngushton enët e gjakut.",
+          "Çfarë mund të bësh: redukto gradualisht, pi ujë, ha rregullisht, dhe shiko si ndryshon pulsi pas 1–2 javësh."
         ].join("\n");
       }
 
-      return "E kuptova. Po kërkon diçka për BPM, EKG, aritmi, tension, oksimetër (SpO₂), apo zakone (gjumë, stres, kafeinë, aktivitet)?";
+      // Stress/anxiety
+      if(t.includes("stres") || t.includes("ankth") || t.includes("panik") || t.includes("frym") || t.includes("frymarr")){
+        return [
+          "Stresi/ankthi shpesh rrit BPM përkohësisht.",
+          KB.stressBreath,
+          "",
+          "Këshillë praktike: ulu, vendos një dorë në bark, bëj 10 cikle 4-4-6 dhe mat pulsin vetëm një herë pas qetësimit.",
+        ].join("\n");
+      }
+
+      // Sleep
+      if(t.includes("gjum") || t.includes("pagjumes") || t.includes("lodhje")){
+        let s = "Për shumicën e të rriturve syno 7–9 orë (mesatarisht), por jo çdo natë del njësoj.";
+        if(p.age && p.age <= 19) s = "Te adoleshentët synimi shpesh është 8–10 orë (mesatarisht), por realisht ka luhatje.";
+        return [
+          s,
+          "Praktikisht:",
+          "• Vendos një orë fikse zgjimi (edhe në fundjavë, afërsisht).",
+          "• Ule ekranin 30 min para gjumit.",
+          "• Nëse një natë fle pak, mos e ‘dëno’ veten—syno rikuperim gradual ditët në vijim.",
+        ].join("\n");
+      }
+
+      // Exercise
+      if(t.includes("sport") || t.includes("vrap") || t.includes("ecje") || t.includes("ushtrim")){
+        return [
+          "Aktiviteti i moderuar zakonisht ndihmon zemrën në afatgjatë.",
+          "• Nëse je fillestar: ecje 15–25 min, 4 ditë/javë.",
+          "• Nëse je ok: ecje e shpejtë 20–35 min, 4–5 ditë/javë.",
+          "• Nëse ke rrahje të shpejta në qetësi: fillo më butë, rrit gradualisht dhe mos e tepro.",
+          "Nëse gjatë aktivitetit ke dhimbje gjoksi, marramendje ose të fikët — ndalo dhe kërko ndihmë."
+        ].join("\n");
+      }
+
+      // Routine generator help
+      if(t.includes("rut") || t.includes("plan") || t.includes("jav")){
+        if(p.age && p.gender && p.name){
+          return "Për planin: shko te “Gjenero Rutinën Personale”, vendos BPM + kontekstin, dhe do marrësh javën të përshtatur.";
+        }
+        return "Për plan të përshtatur: plotëso “Vendos të dhënat”, pastaj shko te “Gjenero Rutinën Personale”.";
+      }
+
+      // Default fallback with suggested categories
+      return [
+        "Më thuaj pak më konkret se për çfarë po pyet:",
+        "• BPM/puls (p.sh. ‘kam 88 bpm në qetësi’)",
+        "• EKG (P, QRS, QT, aritmi)",
+        "• Stres/ankth, gjumë, kafeinë/energizantë, aktivitet fizik",
+        "Dhe nëse ke numra (BPM), shkruaji që ta interpretoj më qartë."
+      ].join("\n");
     }
 
     function sendChat(){
@@ -1362,7 +1374,9 @@
       setTimeout(() => addMsg(answer(q), "bot"), 180);
     }
     chatSend.addEventListener("click", sendChat);
-    chatInput.addEventListener("keydown", (e) => { if(e.key === "Enter") sendChat(); });
+    chatInput.addEventListener("keydown", (e) => {
+      if(e.key === "Enter") sendChat();
+    });
 
     // --------------------
     // Helpers
@@ -1393,7 +1407,7 @@
     // --------------------
     const canvas = document.getElementById("ecg");
     const ctx = canvas.getContext("2d");
-    let W=0, H=0, tt=0;
+    let W=0, H=0, t=0;
 
     function resize(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -1407,11 +1421,12 @@
     resize();
 
     function draw(){
-      tt += 0.016;
+      t += 0.016;
 
       ctx.fillStyle = "rgba(0,0,0,0.18)";
       ctx.fillRect(0,0,W,H);
 
+      // Grid
       ctx.save();
       ctx.globalAlpha = 0.10;
       ctx.strokeStyle = "rgba(120,220,255,0.35)";
@@ -1425,6 +1440,7 @@
       }
       ctx.restore();
 
+      // ECG wave
       const mid = H*0.52;
       const amp = Math.min(64, H*0.10);
 
@@ -1436,13 +1452,13 @@
 
       ctx.beginPath();
       const speed = 220;
-      const phase = (tt*speed) % W;
+      const phase = (t*speed) % W;
 
       for(let x=0; x<=W; x++){
         const u = ((x + phase) % 260) / 260;
         let y = 0;
 
-        y += Math.sin((x*0.014) + tt*1.6) * (amp*0.08);
+        y += Math.sin((x*0.014) + t*1.6) * (amp*0.08);
 
         if(u > 0.30 && u < 0.34) y += -amp*0.20;
         if(u >= 0.34 && u < 0.36) y +=  amp*0.55;
@@ -1464,7 +1480,6 @@
       ctx.restore();
       requestAnimationFrame(draw);
     }
-
     ctx.fillStyle = "rgba(0,0,0,1)";
     ctx.fillRect(0,0,W,H);
     requestAnimationFrame(draw);
@@ -1474,7 +1489,9 @@
     // --------------------
     updateProfilePill();
     validateProfile();
-    window.addEventListener("resize", () => setTimeout(updateRoutineFab, 120));
+
+    // Home buttons
+    document.getElementById("homeFromData").addEventListener("click", () => go("menu"));
   </script>
 </body>
 </html>
